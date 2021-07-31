@@ -1,33 +1,33 @@
 // header
-import {createNewEventButtonTemplate} from './templates/header/create-btn-new-event.js';
-import {createTripControlsWrapperTemplate} from './templates/create-trip-controls-wrapper.js';
+import {createNewEventButtonTemplate} from './views/header/create-btn-new-event.js';
+import {createTripControlsWrapperTemplate} from './views/create-trip-controls-wrapper.js';
 
-import {createTripTabsHeader} from './templates/header/create-trip-tabs-header.js';
+import {createTripTabsHeader} from './views/header/create-trip-tabs-header.js';
 
-import {createTripFilterHeaderTemplate} from './templates/header/create-trip-filters-header.js';
-import {createTripInfoHeaderTemplate} from './templates/header/create-trip-info-header.js';
+import {createTripFilterHeaderTemplate} from './views/header/create-trip-filters-header.js';
+import {createTripInfoHeaderTemplate} from './views/header/create-trip-info-header.js';
 
 // body-main
-import {createTripEventsSortTemplate} from './templates/create-trip-events-sort.js';
+import {createTripEventsSortTemplate} from './views/create-trip-events-sort.js';
 
 // list wrapper
-import {createTripEventListWrapperTemplate} from './templates/create-trip-events-list-wrapper.js';
+import {createTripEventListWrapperTemplate} from './views/create-trip-events-list-wrapper.js';
 
 // create edit/add new item
-import {createTripEventItemEditWrapper} from './templates/event-item/create-trip-event-item-edit/create-trip-event-item-edit-wrapper.js';
-import {createTripEventItemEditHeader} from './templates/event-item/create-trip-event-item-edit/create-trip-event-item-edit-header.js';
-import {createEventItemCollapsibleBtn} from './templates/event-item/create-trip-event-item-edit/create-event-item-collapsible-btn.js';
+import {createTripEventItemEditWrapper} from './views/event-item/create-trip-event-item-edit/create-trip-event-item-edit-wrapper.js';
+import {createTripEventItemEditHeader} from './views/event-item/create-trip-event-item-edit/create-trip-event-item-edit-header.js';
+import {createEventItemCollapsibleBtn} from './views/event-item/create-trip-event-item-edit/create-event-item-collapsible-btn.js';
 // event details
-import {createTripEventDetailsWrapper} from './templates/event-item/create-trip-event-item-edit/create-trip-event-details-wrapper.js';
-import {createTripEventItemEditOffers} from './templates/event-item/create-trip-event-item-edit/create-trip-event-item-edit-offers.js';
-import {createTripEventDestinationWrapper} from './templates/event-item/create-trip-event-item-edit/create-trip-event-destination-wrapper.js';
-import {createTripEventDestinationDescription} from './templates/event-item/create-trip-event-item-edit/create-trip-event-destination-description.js';
-import {createTripEventDestinationPhotos} from './templates/event-item/create-trip-event-item-edit/create-trip-event-destination-photos.js';
+import {createTripEventDetailsWrapper} from './views/event-item/create-trip-event-item-edit/create-trip-event-details-wrapper.js';
+import {createTripEventItemEditOffers} from './views/event-item/create-trip-event-item-edit/create-trip-event-item-edit-offers.js';
+import {createTripEventDestinationWrapper} from './views/event-item/create-trip-event-item-edit/create-trip-event-destination-wrapper.js';
+import {createTripEventDestinationDescription} from './views/event-item/create-trip-event-item-edit/create-trip-event-destination-description.js';
+import {createTripEventDestinationPhotos} from './views/event-item/create-trip-event-item-edit/create-trip-event-destination-photos.js';
 
 
 // content for list
-import {createTripEventItemTemplate} from './templates/event-item/create-trip-event-item.js';
-import {createTripEventsListTemplate} from './templates/create-trip-events-list.js';
+import {createTripEventItemTemplate} from './views/event-item/create-trip-event-item.js';
+import {createTripEventsListTemplate} from './views/create-trip-events-list.js';
 
 
 const render = (container, template, place) => {
