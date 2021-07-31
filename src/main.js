@@ -1,6 +1,6 @@
 // header
 import {createNewEventButtonTemplate} from './templates/header/create-btn-new-event.js';
-import {createTripControlsWrapperTemplate} from './templates/wrappers/create-trip-controls-wrapper.js';
+import {createTripControlsWrapperTemplate} from './templates/create-trip-controls-wrapper.js';
 
 import {createTripTabsHeader} from './templates/header/create-trip-tabs-header.js';
 
@@ -11,14 +11,19 @@ import {createTripInfoHeaderTemplate} from './templates/header/create-trip-info-
 import {createTripEventsSortTemplate} from './templates/create-trip-events-sort.js';
 
 // list wrapper
-import {createTripEventListWrapperTemplate} from './templates/wrappers/create-trip-events-list-wrapper.js';
+import {createTripEventListWrapperTemplate} from './templates/create-trip-events-list-wrapper.js';
 
-// create edit item
+// create edit/add new item
 import {createTripEventItemEditWrapper} from './templates/event-item/create-trip-event-item-edit/create-trip-event-item-edit-wrapper.js';
 import {createTripEventItemEditHeader} from './templates/event-item/create-trip-event-item-edit/create-trip-event-item-edit-header.js';
+import {createEventItemCollapsibleBtn} from './templates/event-item/create-trip-event-item-edit/create-event-item-collapsible-btn.js';
+// event details
 import {createTripEventDetailsWrapper} from './templates/event-item/create-trip-event-item-edit/create-trip-event-details-wrapper.js';
 import {createTripEventItemEditOffers} from './templates/event-item/create-trip-event-item-edit/create-trip-event-item-edit-offers.js';
-import {createTripEventItemEditDestination} from './templates/event-item/create-trip-event-item-edit/create-trip-event-item-edit-destination.js';
+import {createTripEventDestinationWrapper} from './templates/event-item/create-trip-event-item-edit/create-trip-event-destination-wrapper.js';
+import {createTripEventDestinationDescription} from './templates/event-item/create-trip-event-item-edit/create-trip-event-destination-description.js';
+import {createTripEventDestinationPhotos} from './templates/event-item/create-trip-event-item-edit/create-trip-event-destination-photos.js';
+
 
 // content for list
 import {createTripEventItemTemplate} from './templates/event-item/create-trip-event-item.js';
@@ -47,19 +52,40 @@ render(tripControlsHeader, createTripFilterHeaderTemplate(), 'beforeend');
 const pageMainElement = pageBodyElement.querySelector('.trip-events');
 render(pageMainElement, createTripEventsSortTemplate(), 'beforeend');
 render(pageMainElement, createTripEventListWrapperTemplate(), 'beforeend');
-
-// content for list
 const eventList = pageBodyElement.querySelector('.trip-events__list');
+
+//create new event item
+render(eventList, createTripEventItemEditWrapper(), 'beforeend');
+const newEvent = eventList.querySelector('.event--edit');
+render(newEvent, createTripEventItemEditHeader(), 'beforeend');
+render(newEvent, createTripEventDetailsWrapper(), 'beforeend');
+const newEventDetails = eventList.querySelector('.event__details');
+render(newEventDetails, createTripEventItemEditOffers(), 'beforeend');
+render(newEventDetails, createTripEventDestinationWrapper(), 'beforeend');
+const eventDestination = eventList.querySelector('.event__section--destination');
+render(eventDestination, createTripEventDestinationDescription(), 'beforeend');
+render(eventDestination, createTripEventDestinationPhotos(), 'beforeend');
+
+
+// add just event item
+render(eventList, createTripEventItemTemplate(), 'beforeend');
 render(eventList, createTripEventItemTemplate(), 'beforeend');
 
-//create edit item
+//create edit event item
 render(eventList, createTripEventItemEditWrapper(), 'beforeend');
-const editItem = eventList.querySelector('.event--edit');
+const editItem = eventList.querySelectorAll('.event--edit')[1];
 render(editItem, createTripEventItemEditHeader(), 'beforeend');
+const editItemHeader = editItem.querySelector('.event__header');
+// console.log('editItem', editItemHeader);
+render(editItemHeader, createEventItemCollapsibleBtn(), 'beforeend');
+
 render(editItem, createTripEventDetailsWrapper(), 'beforeend');
-const eventDetails = eventList.querySelector('.event__details');
+const eventDetails = editItem.querySelector('.event__details');
 render(eventDetails, createTripEventItemEditOffers(), 'beforeend');
-render(eventDetails, createTripEventItemEditDestination(), 'beforeend');
+render(eventDetails, createTripEventDestinationWrapper(), 'beforeend');
+const editEventDestination = editItem.querySelector('.event__section--destination');
+render(editEventDestination, createTripEventDestinationDescription(), 'beforeend');
+
 
 //add events list
 render(eventList, createTripEventsListTemplate(), 'beforeend');
