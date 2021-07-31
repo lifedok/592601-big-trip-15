@@ -1,6 +1,5 @@
-export const editEventFormTemplate = () => (
+export const createEditEventFormTemplate = () => (
   `
-<ul class="trip-events__list">
   <li class="trip-events__item">
     <form class="event event--edit" action="#" method="post">
       <header class="event__header">
@@ -168,6 +167,5 @@ export const editEventFormTemplate = () => (
       </section>
     </form>
     </li>
-  </ul>
   `
 );
