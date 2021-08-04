@@ -9,3 +9,8 @@ export const getRandomInteger = (a = 0, b = 1) => {
 };
 
 export const customDate = (date) => dayjs(date).format('D MMMM');
+
+export const getRandomInObj = (obj) => {
+  const renderKeyIndex = Math.floor(Math.random() * Object.keys(obj).length);
+  return Object.keys(obj)[renderKeyIndex];
+};

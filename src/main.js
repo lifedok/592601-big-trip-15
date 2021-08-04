@@ -14,12 +14,15 @@ import {createTripEventItemTemplate} from './views/trip-event-item.js';
 
 // generate mock data
 import {generateTripDestinationData} from './mock/trip-destination-data.js';
+import {generateTripOfferData} from './mock/trip-offer-data.js';
 
 const render = (container, template, place) => {
   container.insertAdjacentHTML(place, template);
 };
 
 const NUMBER_OF_TRIPS = 5;
+
+const tripOffer = new Array(1).fill(generateTripOfferData());
 
 const tripDestination = new Array(1).fill(generateTripDestinationData());
 
@@ -41,7 +44,7 @@ render(pageMainElement, createTripEventsSortTemplate(), 'beforeend');
 render(pageMainElement, createTripEventListWrapperTemplate(), 'beforeend');
 
 const eventList = pageBodyElement.querySelector('.trip-events__list');
-render(eventList, createTripModifyItemTemplate(tripDestination[0]), 'beforeend');
+render(eventList, createTripModifyItemTemplate(tripOffer, tripDestination), 'beforeend');
 
 
 for (let i = 0; i < NUMBER_OF_TRIPS; i++) {
