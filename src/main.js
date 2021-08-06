@@ -15,16 +15,18 @@ import {createTripEventItemTemplate} from './views/trip-event-item.js';
 // generate mock data
 import {generateTripDestinationData} from './mock/trip-destination-data.js';
 import {generateTripOfferData} from './mock/trip-offer-data.js';
+import {generateTripEventListData} from './mock/trip-event-list-data.js';
 
 const render = (container, template, place) => {
   container.insertAdjacentHTML(place, template);
 };
 
-const NUMBER_OF_TRIPS = 5;
-
-const tripOffer = new Array(1).fill(generateTripOfferData());
-
-const tripDestination = new Array(1).fill(generateTripDestinationData());
+// const tripOffer = new Array(1).fill(generateTripOfferData());
+// const tripDestination = new Array(1).fill(generateTripDestinationData());
+// const tripEventList = new Array(1).fill(generateTripEventListData());
+const tripEventList = generateTripEventListData();
+console.log('TEST ==> tripEventList', tripEventList);
+// console.log('TEST ', generateTripEventListData());
 
 const pageBodyElement = document.querySelector('.page-body');
 
@@ -44,9 +46,14 @@ render(pageMainElement, createTripEventsSortTemplate(), 'beforeend');
 render(pageMainElement, createTripEventListWrapperTemplate(), 'beforeend');
 
 const eventList = pageBodyElement.querySelector('.trip-events__list');
-render(eventList, createTripModifyItemTemplate(tripOffer, tripDestination), 'beforeend');
 
-
-for (let i = 0; i < NUMBER_OF_TRIPS; i++) {
-  render(eventList, createTripEventItemTemplate(), 'beforeend');
+if (!!tripEventList.length) {
+  render(eventList, createTripModifyItemTemplate(tripEventList[0]), 'beforeend');
+  tripEventList.map((item) =>
+    render(eventList, createTripEventItemTemplate(item), 'beforeend'),
+  );
+} else {
+  pageBodyElement.querySelector('.trip-events__msg').textContent('Click New Event to create your first point');
 }
+
+

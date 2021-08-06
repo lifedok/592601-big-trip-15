@@ -1,10 +1,10 @@
-import {OFFER_TITTLES} from '../const.js';
+import {OFFER_TITTLES, POINTS_TYPE} from '../const.js';
+import {capitalizeFirstLetter} from '../utils.js';
 
+export const createTripModifyItemTemplate = (tripEvent) => {
+  const {offers, destination} = tripEvent;
 
-export const createTripModifyItemTemplate = (offersInfo, destination) => {
-  const {offers} = offersInfo[0];
-  const {description, pictures} = destination[0];
-
+  console.log('tripEvent', tripEvent);
   const createOffersTemplate = () => (
     offers.map((offer) =>
       `<div class="event__offer-selector">
@@ -16,14 +16,23 @@ export const createTripModifyItemTemplate = (offersInfo, destination) => {
           </label>
         </div>`).join('')
   );
-
-
   const offersTemplate = createOffersTemplate();
 
+
   const createPicturesSrcTemplate = () => (
-    pictures.map((picture) => `<img class="event__photo" src=${picture.src} alt=${picture.description}>`).join('')
+    destination.pictures.map((picture) => `<img class="event__photo" src=${picture.src} alt=${picture.description}>`).join('')
   );
   const picturesSrc = createPicturesSrcTemplate();
+
+
+  const createPointsTypeItemTemplate = () => (
+    POINTS_TYPE.map((point) =>
+      `<div class="event__type-item">
+        <input id="event-type-${point}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${point}">
+        <label class="event__type-label  event__type-label--${point}" for="event-type-${point}-1">${capitalizeFirstLetter(point)}</label>
+      </div>`).join('')
+  );
+
 
   return `
   <li class="trip-events__item">
@@ -39,56 +48,7 @@ export const createTripModifyItemTemplate = (offersInfo, destination) => {
           <div class="event__type-list">
             <fieldset class="event__type-group">
               <legend class="visually-hidden">Event type</legend>
-
-              <div class="event__type-item">
-                <input id="event-type-taxi-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="taxi">
-                <label class="event__type-label  event__type-label--taxi" for="event-type-taxi-1">Taxi</label>
-              </div>
-
-              <div class="event__type-item">
-                <input id="event-type-bus-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="bus">
-                <label class="event__type-label  event__type-label--bus" for="event-type-bus-1">Bus</label>
-              </div>
-
-              <div class="event__type-item">
-                <input id="event-type-train-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="train">
-                <label class="event__type-label  event__type-label--train" for="event-type-train-1">Train</label>
-              </div>
-
-              <div class="event__type-item">
-                <input id="event-type-ship-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="ship">
-                <label class="event__type-label  event__type-label--ship" for="event-type-ship-1">Ship</label>
-              </div>
-
-              <div class="event__type-item">
-                <input id="event-type-transport-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="transport">
-                <label class="event__type-label  event__type-label--transport" for="event-type-transport-1">Transport</label>
-              </div>
-
-              <div class="event__type-item">
-                <input id="event-type-drive-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="drive">
-                <label class="event__type-label  event__type-label--drive" for="event-type-drive-1">Drive</label>
-              </div>
-
-              <div class="event__type-item">
-                <input id="event-type-flight-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="flight" checked>
-                <label class="event__type-label  event__type-label--flight" for="event-type-flight-1">Flight</label>
-              </div>
-
-              <div class="event__type-item">
-                <input id="event-type-check-in-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="check-in">
-                <label class="event__type-label  event__type-label--check-in" for="event-type-check-in-1">Check-in</label>
-              </div>
-
-              <div class="event__type-item">
-                <input id="event-type-sightseeing-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="sightseeing">
-                <label class="event__type-label  event__type-label--sightseeing" for="event-type-sightseeing-1">Sightseeing</label>
-              </div>
-
-              <div class="event__type-item">
-                <input id="event-type-restaurant-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="restaurant">
-                <label class="event__type-label  event__type-label--restaurant" for="event-type-restaurant-1">Restaurant</label>
-              </div>
+              ${createPointsTypeItemTemplate()}
             </fieldset>
           </div>
         </div>
@@ -140,7 +100,7 @@ export const createTripModifyItemTemplate = (offersInfo, destination) => {
 
         <section class="event__section  event__section--destination">
           <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-          <p class="event__destination-description">${description}</p>
+          <p class="event__destination-description">${destination.description}</p>
 
           <div class="event__photos-container">
             <div class="event__photos-tape">

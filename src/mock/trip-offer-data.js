@@ -1,6 +1,6 @@
 import {getRandomInteger} from '../utils.js';
 import {getRandomInObj} from '../utils.js';
-import {OFFER_TITTLES} from '../const.js';
+import {OFFER_TITTLES, POINTS_TYPE} from '../const.js';
 
 
 const generateOffers = () => ({
@@ -9,9 +9,8 @@ const generateOffers = () => ({
 });
 
 const getOfferType = () => {
-  const types = ['taxi', 'bus', 'train', 'ship', 'drive', 'flight', 'check-in', 'sightseeing', 'restaurant'];
-  const randomIndex = getRandomInteger(0, types.length - 1);
-  return types[randomIndex];
+  const randomIndex = getRandomInteger(0, POINTS_TYPE.length - 1);
+  return POINTS_TYPE[randomIndex];
 };
 
 
