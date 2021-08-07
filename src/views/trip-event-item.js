@@ -12,12 +12,14 @@ export const createTripEventItemTemplate = (item) => {
       `).join('') : ''
   );
 
-  console.log('OFFERS', offers);
+  const getDuration = () => (
+    `${item.dateTo.format('H') - item.dateFrom.format('H')}H ${item.dateTo.format('mm') - item.dateFrom.format('mm')}M`
+  );
 
   return `
    <li class="trip-events__item">
       <div class="event">
-        <time class="event__date" datetime="2019-03-18">MAR 18</time>
+        <time class="event__date" datetime="2019-03-18">${item.dateFrom.format('MMM D')}</time>
         <div class="event__type">
           <img class="event__type-icon" width="42" height="42" src="img/icons/${type.toLowerCase()}.png" alt="Event type icon">
         </div>
@@ -26,11 +28,11 @@ export const createTripEventItemTemplate = (item) => {
 
         <div class="event__schedule">
           <p class="event__time">
-            <time class="event__start-time" datetime="2019-03-18T10:30">10:30</time>
+            <time class="event__start-time" datetime="2019-03-18T10:30">${item.dateFrom.format('HH:mm')}</time>
             &mdash;
-            <time class="event__end-time" datetime="2019-03-18T11:00">11:00</time>
+            <time class="event__end-time" datetime="2019-03-18T11:00">${item.dateTo.format('HH:mm')}</time>
           </p>
-          <p class="event__duration">30M</p>
+          <p class="event__duration">${getDuration()}</p>
         </div>
         <p class="event__price">
           &euro;&nbsp;<span class="event__price-value">20</span>

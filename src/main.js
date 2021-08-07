@@ -1,4 +1,3 @@
-
 // header
 import {createTripInfoHeaderTemplate} from './views/header/trip-info-header.js';
 import {createTripControlsWrapperTemplate} from './views/header/trip-controls-wrapper.js';
@@ -19,13 +18,7 @@ const render = (container, template, place) => {
   container.insertAdjacentHTML(place, template);
 };
 
-// const tripOffer = new Array(1).fill(generateTripOfferData());
-// const tripDestination = new Array(1).fill(generateTripDestinationData());
-// const tripEventList = new Array(1).fill(generateTripEventListData());
 const tripEventList = generateTripEventListData();
-console.log('TEST ==> tripEventList', tripEventList);
-// console.log('TEST ', generateTripEventListData());
-
 const pageBodyElement = document.querySelector('.page-body');
 
 // create header

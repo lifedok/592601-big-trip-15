@@ -5,29 +5,26 @@ import {generateRandomString, getRandomInteger, generateRandomBoolean} from '../
 
 
 const generateDateFrom = () => {
-  const fromDaysGap = -7;
-  const daysGap = getRandomInteger(fromDaysGap, 0);
-
-  return dayjs().add(daysGap, 'day').toDate();
+  const fromDaysGap = -1;
+  return dayjs().add(fromDaysGap, 'day')
+    .add(getRandomInteger(5, 12), 'hour')
+    .add(getRandomInteger(1, 30), 'minute');
 };
 
 const generateDateTo = () => {
-  const toDaysGap = 7;
-  const daysGap = getRandomInteger(0, toDaysGap);
-
-  return dayjs().add(daysGap, 'day').toDate();
+  const toDaysGap = 1;
+  return dayjs().add(toDaysGap, 'day')
+    .add(getRandomInteger(12, 22), 'hour')
+    .add(getRandomInteger(30, 60), 'minute');
 };
 
 export const generateTripEventListData = () => {
   const COUNT_ITEMS = 9;
 
-  const dateFrom = generateDateFrom(); //'2019-07-10T22:55:56.845Z';
-  const dateTo = generateDateTo(); //'2019-07-11T11:22:13.375Z';
-
   const item = () => ({
     basePrice: getRandomInteger(6, 15) * 100, // 1100,
-    dateFrom: dateFrom, // '2019-07-10T22:55:56.845Z',
-    dateTo: dateTo, //'2019-07-11T11:22:13.375Z',
+    dateFrom: generateDateFrom(),
+    dateTo: generateDateTo(),
     destination: generateTripDestinationData(),
     id: generateRandomString(8, 15),
     isFavorite: generateRandomBoolean(0.7),

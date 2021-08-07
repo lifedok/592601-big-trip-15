@@ -1,33 +1,38 @@
 import {OFFER_TITTLES, POINTS_TYPE, CITIES} from '../const.js';
 import {capitalizeFirstLetter, getRandomInteger} from '../utils.js';
+import {generateRandomBoolean} from '../utils';
 
 export const createTripModifyItemTemplate = (tripEvent, isEdit) => {
   const {type, offers, destination} = tripEvent;
 
-  console.log('tripEvent', tripEvent);
-
   const createOffersTemplate = () => (
     isEdit === true ?
-      offers.map((offer) =>
-        !offer ? '' :
-          `<div class="event__offer-selector">
-              <input class="event__offer-checkbox  visually-hidden" id="event-offer-${OFFER_TITTLES[offer.title]}-1" type="checkbox" name="event-offer-${OFFER_TITTLES[offer.title]}" checked>
-              <label class="event__offer-label" for="event-offer-${OFFER_TITTLES[offer.title]}-1">
-                <span class="event__offer-title">${offer.title}</span>
-                &plus;&euro;&nbsp;
-                <span class="event__offer-price">${offer.price}</span>
-            </label>
-          </div>`).join('')
+      offers.map((offer) => {
+        const isChecked = generateRandomBoolean(0.3) ? 'checked' : '';
+        return (
+          !offer ? '' :
+            `<div class="event__offer-selector">
+                <input class="event__offer-checkbox  visually-hidden" id="event-offer-${OFFER_TITTLES[offer.title]}-1" 
+                type="checkbox" name="event-offer-${OFFER_TITTLES[offer.title]}" ${isChecked}>
+                <label class="event__offer-label" for="event-offer-${OFFER_TITTLES[offer.title]}-1">
+                  <span class="event__offer-title">${offer.title}</span>
+                  &plus;&euro;&nbsp;
+                  <span class="event__offer-price">${offer.price}</span>
+              </label>
+            </div>`);
+      },
+      ).join('')
       :
       Object.keys(OFFER_TITTLES).map((offer) =>
         `<div class="event__offer-selector">
-              <input class="event__offer-checkbox  visually-hidden" id="event-offer-${OFFER_TITTLES[offer]}-1" type="checkbox" name="event-offer-${OFFER_TITTLES[offer]}">
-              <label class="event__offer-label" for="event-offer-${OFFER_TITTLES[offer]}-1">
-                <span class="event__offer-title">${offer}</span>
-                &plus;&euro;&nbsp;
-                <span class="event__offer-price">${getRandomInteger(20, 120)}</span>
-            </label>
-          </div>`).join('')
+                <input class="event__offer-checkbox  visually-hidden" id="event-offer-${OFFER_TITTLES[offer]}-1" 
+                type="checkbox" name="event-offer-${OFFER_TITTLES[offer]}">
+                <label class="event__offer-label" for="event-offer-${OFFER_TITTLES[offer]}-1">
+                  <span class="event__offer-title">${offer}</span>
+                  &plus;&euro;&nbsp;
+                  <span class="event__offer-price">${getRandomInteger(20, 120)}</span>
+              </label>
+            </div>`).join('')
   );
 
 
@@ -80,10 +85,12 @@ export const createTripModifyItemTemplate = (tripEvent, isEdit) => {
 
         <div class="event__field-group  event__field-group--time">
           <label class="visually-hidden" for="event-start-time-1">From</label>
-          <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="19/03/19 00:00">
+          <input class="event__input  event__input--time" 
+          id="event-start-time-1" type="text" name="event-start-time" value="${tripEvent.dateFrom.format('DD/MM/YY HH:mm')}">
           &mdash;
           <label class="visually-hidden" for="event-end-time-1">To</label>
-          <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="19/03/19 00:00">
+          <input class="event__input  event__input--time" 
+          id="event-end-time-1" type="text" name="event-end-time" value="${tripEvent.dateTo.format('DD/MM/YY HH:mm')}">
         </div>
 
         <div class="event__field-group  event__field-group--price">
