@@ -21,9 +21,11 @@ const render = (container, template, place) => {
 const tripEventList = generateTripEventListData();
 const pageBodyElement = document.querySelector('.page-body');
 
+const listEvent = tripEventList.slice(1);
+
 // create header
 const tripMainHeader = pageBodyElement.querySelector('.trip-main');
-render(tripMainHeader, createTripInfoHeaderTemplate(), 'beforeend');
+render(tripMainHeader, createTripInfoHeaderTemplate(listEvent), 'beforeend');
 render(tripMainHeader, createTripControlsWrapperTemplate(), 'beforeend');
 
 const tripMainControls = pageBodyElement.querySelector('.trip-main__trip-controls');
@@ -40,7 +42,7 @@ const eventList = pageBodyElement.querySelector('.trip-events__list');
 
 if (tripEventList.length) {
   render(eventList, createTripModifyItemTemplate(tripEventList[0], true), 'beforeend');
-  tripEventList.map((item) =>
+  listEvent.map((item) =>
     render(eventList, createTripEventItemTemplate(item), 'beforeend'),
   );
 } else {

@@ -35,7 +35,7 @@ export const createTripEventItemTemplate = (item) => {
           <p class="event__duration">${getDuration()}</p>
         </div>
         <p class="event__price">
-          &euro;&nbsp;<span class="event__price-value">20</span>
+          &euro;&nbsp;<span class="event__price-value">${item.basePrice}</span>
         </p>
         <h4 class="visually-hidden">Offers:</h4>
         

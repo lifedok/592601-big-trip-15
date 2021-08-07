@@ -22,7 +22,7 @@ export const generateTripEventListData = () => {
   const COUNT_ITEMS = 9;
 
   const item = () => ({
-    basePrice: getRandomInteger(6, 15) * 100, // 1100,
+    basePrice: getRandomInteger(30, 600),
     dateFrom: generateDateFrom(),
     dateTo: generateDateTo(),
     destination: generateTripDestinationData(),
