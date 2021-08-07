@@ -1,10 +1,9 @@
-import {getRandomInteger} from '../utils.js';
-
+import {getRandomInteger, generateRandomBoolean} from '../utils.js';
+import {CITIES} from '../const';
 
 const generateCity = () => {
-  const city = ['Geneva', 'Berlin', 'Athens', 'Tallinn', 'Riga', 'Vologda'];
-  const randomIndex = getRandomInteger(0, city.length - 1);
-  return city[randomIndex];
+  const randomIndex = getRandomInteger(0, CITIES.length - 1);
+  return CITIES[randomIndex];
 };
 
 const generateDescription = (name) => {
@@ -15,6 +14,7 @@ const generateDescription = (name) => {
     `${name} id orci ut lectus varius viverra.`,
     `${name} nunc ex, convallis sed finibus eget, sollicitudin eget ante. Phasellus eros mauris, condimentum sed nibh vitae, sodales efficitur ipsum. Sed blandit, eros vel aliquam faucibus, purus ex euismod diam, eu luctus nunc ante ut dui. Sed sed nisi sed augue convallis suscipit in sed felis.`,
     `${name} erat volutpat. Nunc fermentum tortor ac porta dapibus. In rutrum ac purus sit amet tempus.`,
+    '',
   ];
   const randomIndex = getRandomInteger(0, descriptions.length - 1);
   return descriptions[randomIndex];
@@ -22,14 +22,16 @@ const generateDescription = (name) => {
 
 
 const generatePictures = () => {
+
   const getSrc = () => {
+    const isShow = generateRandomBoolean(0.5);
     const number = getRandomInteger(0, 100);
-    return `http://picsum.photos/248/152?r=${number}`;
+    return isShow ? `http://picsum.photos/248/152?r=${number}` : '';
   };
 
   const getImageDescription = () => {
     const descriptions = [
-      'Chamonix parliament building', 'description 2', 'description 3', 'description 4', 'description 5',
+      'Chamonix parliament building', 'description 2', 'description 3', 'description 4', 'description 5', '',
     ];
     const randomIndex = getRandomInteger(0, descriptions.length - 1);
     return descriptions[randomIndex];

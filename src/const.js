@@ -9,3 +9,5 @@ export const OFFER_TITTLES = {
 export const POINTS_TYPE = [
   'taxi', 'bus', 'train', 'ship', 'drive', 'flight', 'check-in', 'sightseeing', 'restaurant',
 ];
+
+export const CITIES = ['Geneva', 'Berlin', 'Athens', 'Tallinn', 'Riga', 'Vologda'];

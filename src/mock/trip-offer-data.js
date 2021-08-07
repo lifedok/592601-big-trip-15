@@ -15,11 +15,10 @@ const getOfferType = () => {
 
 
 export const generateTripOfferData = () => {
-  const COUNT_OFFERS = 5;
-
   const type = getOfferType();
 
-  const offers = new Array(COUNT_OFFERS).fill().map(() => generateOffers());
+  const countOffers = getRandomInteger(0, 5);
+  const offers = new Array(countOffers).fill().map(() => generateOffers());
 
   return {
     type: type,

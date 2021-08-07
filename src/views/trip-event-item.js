@@ -1,14 +1,25 @@
-
-
 export const createTripEventItemTemplate = (item) => {
-  const {type, destination, isFavorite} = item;
+  const {type, destination, offers, isFavorite} = item;
+
+  const createOffersTemplate = () => (
+    offers.length ?
+      offers.map((offer) =>
+        `<li class="event__offer">
+          <span class="event__offer-title">${offer.title}</span>
+          &plus;&euro;&nbsp;
+          <span class="event__offer-price">${offer.price}</span>
+        </li>
+      `).join('') : ''
+  );
+
+  console.log('OFFERS', offers);
 
   return `
    <li class="trip-events__item">
       <div class="event">
         <time class="event__date" datetime="2019-03-18">MAR 18</time>
         <div class="event__type">
-          <img class="event__type-icon" width="42" height="42" src="img/icons/taxi.png" alt="Event type icon">
+          <img class="event__type-icon" width="42" height="42" src="img/icons/${type.toLowerCase()}.png" alt="Event type icon">
         </div>
 
         <h3 class="event__title">${type} ${destination.name}</h3>
@@ -25,13 +36,13 @@ export const createTripEventItemTemplate = (item) => {
           &euro;&nbsp;<span class="event__price-value">20</span>
         </p>
         <h4 class="visually-hidden">Offers:</h4>
-        <ul class="event__selected-offers">
-          <li class="event__offer">
-            <span class="event__offer-title">Order Uber</span>
-            &plus;&euro;&nbsp;
-            <span class="event__offer-price">20</span>
-          </li>
-        </ul>
+        
+         ${!offers.length ? '' :
+    `<ul class="event__selected-offers">
+          ${createOffersTemplate()}
+        </ul>`}
+        
+    
         <button class="event__favorite-btn ${isFavorite ? 'event__favorite-btn--active' : ''}" type="button">
           <span class="visually-hidden">Add to favorite</span>
           <svg class="event__favorite-icon" width="28" height="28" viewBox="0 0 28 28">
@@ -45,3 +56,4 @@ export const createTripEventItemTemplate = (item) => {
     </li>
   `;
 };
+
