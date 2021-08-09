@@ -8,8 +8,6 @@ export const getRandomInteger = (a = 0, b = 1) => {
   return Math.floor(lower + Math.random() * (upper - lower + 1));
 };
 
-export const customDate = (date) => dayjs(date).format('MMM D');
-
 export const getRandomInObj = (obj) => {
   const renderKeyIndex = Math.floor(Math.random() * Object.keys(obj).length);
   return Object.keys(obj)[renderKeyIndex];

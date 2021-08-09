@@ -52,8 +52,8 @@ export const generateTripDestinationData = () => {
   const pictures = new Array(COUNT_IMAGES).fill().map(() => generatePictures());
 
   return {
-    description: description,
-    name: city,
+    description,
+    city,
     pictures,
   };
 };

@@ -18,14 +18,14 @@ const render = (container, template, place) => {
   container.insertAdjacentHTML(place, template);
 };
 
-const tripEventList = generateTripEventListData();
+const COUNT_ITEMS = 9;
+const tripEventList = generateTripEventListData(COUNT_ITEMS);
 const pageBodyElement = document.querySelector('.page-body');
 
-const listEvent = tripEventList.slice(1);
 
 // create header
 const tripMainHeader = pageBodyElement.querySelector('.trip-main');
-render(tripMainHeader, createTripInfoHeaderTemplate(listEvent), 'beforeend');
+render(tripMainHeader, createTripInfoHeaderTemplate(tripEventList), 'beforeend');
 render(tripMainHeader, createTripControlsWrapperTemplate(), 'beforeend');
 
 const tripMainControls = pageBodyElement.querySelector('.trip-main__trip-controls');
@@ -42,7 +42,7 @@ const eventList = pageBodyElement.querySelector('.trip-events__list');
 
 if (tripEventList.length) {
   render(eventList, createTripModifyItemTemplate(tripEventList[0], true), 'beforeend');
-  listEvent.map((item) =>
+  tripEventList.map((item) =>
     render(eventList, createTripEventItemTemplate(item), 'beforeend'),
   );
 } else {

@@ -21,7 +21,7 @@ export const generateTripOfferData = () => {
   const offers = new Array(countOffers).fill().map(() => generateOffers());
 
   return {
-    type: type,
+    type,
     offers,
   };
 };

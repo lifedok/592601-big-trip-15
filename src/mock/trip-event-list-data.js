@@ -1,7 +1,7 @@
 import dayjs from 'dayjs';
-import {generateTripOfferData} from '../mock/trip-offer-data.js';
-import {generateTripDestinationData} from '../mock/trip-destination-data.js';
 import {generateRandomString, getRandomInteger, generateRandomBoolean} from '../utils';
+import {generateTripDestinationData} from './trip-destination-data';
+import {generateTripOfferData} from './trip-offer-data';
 
 
 const generateDateFrom = () => {
@@ -18,8 +18,7 @@ const generateDateTo = () => {
     .add(getRandomInteger(30, 60), 'minute');
 };
 
-export const generateTripEventListData = () => {
-  const COUNT_ITEMS = 9;
+export const generateTripEventListData = (quantity) => {
 
   const item = () => ({
     basePrice: getRandomInteger(30, 600),
@@ -32,5 +31,5 @@ export const generateTripEventListData = () => {
   });
 
 
-  return new Array(COUNT_ITEMS).fill().map(() => item());
+  return new Array(quantity).fill().map(() => item());
 };

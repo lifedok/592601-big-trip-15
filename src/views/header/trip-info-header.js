@@ -1,13 +1,6 @@
 export const createTripInfoHeaderTemplate = (listEvent) => {
 
-
-  const total = () => {
-    let sum = 0;
-    for (const item of listEvent) {
-      sum += item.basePrice;
-    }
-    return sum;
-  };
+  const total = () => listEvent.reduce((prev, curr) => prev + curr.basePrice, 0);
 
   return (
     `<section class="trip-main__trip-info  trip-info">
