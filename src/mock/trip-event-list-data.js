@@ -3,7 +3,6 @@ import {generateRandomString, getRandomInteger, generateRandomBoolean} from '../
 import {generateTripDestinationData} from './trip-destination-data';
 import {generateTripOfferData} from './trip-offer-data';
 
-
 const generateDateFrom = () => {
   const fromDaysGap = -1;
   return dayjs().add(fromDaysGap, 'day')
