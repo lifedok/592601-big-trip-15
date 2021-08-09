@@ -12,9 +12,12 @@ export const createTripEventItemTemplate = (item) => {
       `).join('') : ''
   );
 
-  const getDuration = () => (
-    `${item.dateTo.format('H') - item.dateFrom.format('H')}H ${item.dateTo.format('mm') - item.dateFrom.format('mm')}M`
-  );
+
+  const getDuration = () => {
+    const hours = ((item.dateTo.diff(item.dateFrom, 'hour')) % 24).toString().replace(/^0+/, '');
+    const minutes = (item.dateTo.diff(item.dateFrom, 'm')) % 60;
+    return `${hours ? `${hours}H ` : ''}${minutes}M`;
+  };
 
   return `
    <li class="trip-events__item">
@@ -24,11 +27,11 @@ export const createTripEventItemTemplate = (item) => {
           <img class="event__type-icon" width="42" height="42" src="img/icons/${type.toLowerCase()}.png" alt="Event type icon">
         </div>
 
-        <h3 class="event__title">${type} ${destination.name}</h3>
+        <h3 class="event__title">${type} ${destination.city}</h3>
 
         <div class="event__schedule">
           <p class="event__time">
-            <time class="event__start-time" datetime="2019-03-18T10:30">${item.dateFrom.format('HH:mm')}</time>
+            <time class="event__start-time" datetime="2019-03-18T10:30">${item.dateFrom.format('HH:mm').toString().replace(/^0+/, '')}</time>
             &mdash;
             <time class="event__end-time" datetime="2019-03-18T11:00">${item.dateTo.format('HH:mm')}</time>
           </p>
