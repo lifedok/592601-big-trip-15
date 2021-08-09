@@ -20,6 +20,8 @@ const render = (container, template, place) => {
 
 const COUNT_ITEMS = 9;
 const tripEventList = generateTripEventListData(COUNT_ITEMS);
+tripEventList.sort((a, b) => a.dateFrom - b.dateFrom);
+
 const pageBodyElement = document.querySelector('.page-body');
 
 
