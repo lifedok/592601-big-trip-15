@@ -12,7 +12,7 @@ const createTripTabsHeaderTemplate = () => (
 );
 
 
-export default class TripTabsHeaderView {
+export default class TripTabsHeader {
 
   constructor() {
     this._element = null;

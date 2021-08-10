@@ -1,6 +1,6 @@
 import {createElement} from '../utils.js';
 
-export const createTripEventItemTemplate = (item) => {
+const createTripEventItemTemplate = (item) => {
   const {type, destination, offers, isFavorite} = item;
 
   const createOffersTemplate = () => (
@@ -64,28 +64,28 @@ export const createTripEventItemTemplate = (item) => {
   `;
 };
 
-//
-// export default class TripEventItem {
-//
-//   constructor(item) {
-//     this._item = item;
-//     this._element = null;
-//   }
-//
-//   getTemplate() {
-//     return createTripEventItemTemplate(this._item);
-//   }
-//
-//   getElement() {
-//     if (!this._element) {
-//       this._element = createElement(this.getTemplate());
-//     }
-//
-//     return this._element;
-//   }
-//
-//   removeElement() {
-//     this._element = null;
-//   }
-// }
+
+export default class TripEventItem {
+
+  constructor(item) {
+    this._item = item;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createTripEventItemTemplate(this._item);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
 

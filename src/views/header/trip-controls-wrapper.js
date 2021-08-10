@@ -1,7 +1,7 @@
 import {createElement} from '../../utils';
 
 
-export default class TripControlsWrapperView {
+export default class TripControlsWrapper {
 
   constructor() {
     this._element = null;

@@ -21,7 +21,7 @@ const createTripInfoHeaderTemplate = (listEvent) => {
 };
 
 
-export default class TripInfoHeaderView {
+export default class TripInfoHeader {
 
   constructor(listEvent) {
     this._listEvent = listEvent;
