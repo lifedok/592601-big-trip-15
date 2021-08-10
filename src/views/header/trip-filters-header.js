@@ -1,3 +1,5 @@
+// import {createElement} from '../../utils';
+
 export const createTripFilterHeaderTemplate = () => {
 
   const filters = ['Everything', 'Future', 'Past'];
@@ -23,3 +25,26 @@ export const createTripFilterHeaderTemplate = () => {
   </div>
   `);
 };
+
+// export default class TripFilterHeaderView {
+//
+//   constructor() {
+//     this._element = null;
+//   }
+//
+//   getTemplate() {
+//     return createTripFilterHeaderTemplate();
+//   }
+//
+//   getElement() {
+//     if (!this._element) {
+//       this._element = createElement(this.getTemplate());
+//     }
+//
+//     return this._element;
+//   }
+//
+//   removeElement() {
+//     this._element = null;
+//   }
+// }
