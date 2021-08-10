@@ -1,4 +1,3 @@
-
 // header
 import {createTripInfoHeaderTemplate} from './views/header/trip-info-header.js';
 import {createTripControlsWrapperTemplate} from './views/header/trip-controls-wrapper.js';
@@ -12,19 +11,23 @@ import {createTripEventListWrapperTemplate} from './views/trip-events-list-wrapp
 import {createTripModifyItemTemplate} from './views/trip-event-modify-item.js';
 import {createTripEventItemTemplate} from './views/trip-event-item.js';
 
+// generate mock data
+import {generateTripEventListData} from './mock/trip-event-list-data.js';
 
 const render = (container, template, place) => {
   container.insertAdjacentHTML(place, template);
 };
 
-const NUMBER_OF_TRIPS = 3;
-
+const COUNT_ITEMS = 9;
+const tripEventList = generateTripEventListData(COUNT_ITEMS);
+tripEventList.sort((a, b) => a.dateFrom - b.dateFrom);
 
 const pageBodyElement = document.querySelector('.page-body');
 
+
 // create header
 const tripMainHeader = pageBodyElement.querySelector('.trip-main');
-render(tripMainHeader, createTripInfoHeaderTemplate(), 'beforeend');
+render(tripMainHeader, createTripInfoHeaderTemplate(tripEventList), 'beforeend');
 render(tripMainHeader, createTripControlsWrapperTemplate(), 'beforeend');
 
 const tripMainControls = pageBodyElement.querySelector('.trip-main__trip-controls');
@@ -38,9 +41,14 @@ render(pageMainElement, createTripEventsSortTemplate(), 'beforeend');
 render(pageMainElement, createTripEventListWrapperTemplate(), 'beforeend');
 
 const eventList = pageBodyElement.querySelector('.trip-events__list');
-render(eventList, createTripModifyItemTemplate(), 'beforeend');
 
-
-for (let i = 0; i < NUMBER_OF_TRIPS; i++) {
-  render(eventList, createTripEventItemTemplate(), 'beforeend');
+if (tripEventList.length) {
+  render(eventList, createTripModifyItemTemplate(tripEventList[0], true), 'beforeend');
+  tripEventList.map((item) =>
+    render(eventList, createTripEventItemTemplate(item), 'beforeend'),
+  );
+} else {
+  pageBodyElement.querySelector('.trip-events__msg').textContent('Click New Event to create your first point');
 }
+
+
