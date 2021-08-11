@@ -1,44 +1,33 @@
 import {createElement} from '../utils';
 
-const createTripEventsSortTemplate = () => (
-  `
-  <form class="trip-events__trip-sort  trip-sort" action="#" method="get">
-    <div class="trip-sort__item  trip-sort__item--day">
-      <input id="sort-day" class="trip-sort__input  visually-hidden" type="radio" name="trip-sort" value="sort-day">
-      <label class="trip-sort__btn" for="sort-day">Day</label>
-    </div>
+const createTripEventsSortTemplate = (sorts) => {
 
-    <div class="trip-sort__item  trip-sort__item--event">
-      <input id="sort-event" class="trip-sort__input  visually-hidden" type="radio" name="trip-sort" value="sort-event" disabled>
-      <label class="trip-sort__btn" for="sort-event">Event</label>
-    </div>
+  const createSortsTemplate = () =>
+    sorts.map((sort) => `
+    <div class="trip-sort__item  trip-sort__item--${sort.toLowerCase()}">
+      <input id="sort-day" class="trip-sort__input  visually-hidden" 
+             type="radio" name="trip-sort" value="sort-${sort.toLowerCase()}">
+      <label class="trip-sort__btn" for="sort-${sort.toLowerCase()}">${sort}</label>
+    </div>`).join('');
 
-    <div class="trip-sort__item  trip-sort__item--time">
-      <input id="sort-time" class="trip-sort__input  visually-hidden" type="radio" name="trip-sort" value="sort-time">
-      <label class="trip-sort__btn" for="sort-time">Time</label>
-    </div>
+  return (
+    `<form class="trip-events__trip-sort  trip-sort" action="#" method="get">
 
-    <div class="trip-sort__item  trip-sort__item--price">
-      <input id="sort-price" class="trip-sort__input  visually-hidden" type="radio" name="trip-sort" value="sort-price" checked>
-      <label class="trip-sort__btn" for="sort-price">Price</label>
-    </div>
+        ${createSortsTemplate()}
 
-    <div class="trip-sort__item  trip-sort__item--offer">
-      <input id="sort-offer" class="trip-sort__input  visually-hidden" type="radio" name="trip-sort" value="sort-offer" disabled>
-      <label class="trip-sort__btn" for="sort-offer">Offers</label>
-    </div>
-  </form> 
-  `
-);
+    </form>
+    `);
+};
 
 export default class TripEventsSort {
 
   constructor() {
+    this._sorts = ['Day', 'Event', 'Time', 'Price', 'Offers'];
     this._element = null;
   }
 
   getTemplate() {
-    return createTripEventsSortTemplate();
+    return createTripEventsSortTemplate(this._sorts);
   }
 
   getElement() {
