@@ -39,11 +39,44 @@ render(pageMainElement, new TripEventsSortView().getElement());
 const listWrapper = new TripEventListWrapperView();
 render(pageMainElement, listWrapper.getElement());
 
+const renderTripEvent = (tripEventListElement, tripEvent) => {
+  const tripEventComponent = new TripEventItemView(tripEvent);
+  const tripEventEditComponent = new TripModifyItemView(tripEvent, true);
+
+  const replaceTripToEditForm = () => {
+    tripEventListElement.replaceChild(tripEventEditComponent.getElement(), tripEventComponent.getElement());
+  };
+
+  const replaceFormToItem = () => {
+    tripEventListElement.replaceChild(tripEventComponent.getElement(), tripEventEditComponent.getElement());
+  };
+
+  const onEscKeyDown = (evt) => {
+    if (evt.key === 'Escape' || evt.key === 'Esc') {
+      evt.preventDefault();
+      replaceFormToItem();
+      document.removeEventListener('keydown', onEscKeyDown);
+    }
+  };
+
+  tripEventComponent.getElement().querySelector('.event__rollup-btn').addEventListener('click', () => {
+    replaceTripToEditForm();
+    document.addEventListener('keydown', onEscKeyDown);
+  });
+
+  tripEventEditComponent.getElement().querySelector('form').addEventListener('submit', (evt) => {
+    evt.preventDefault();
+    replaceFormToItem();
+    document.removeEventListener('keydown', onEscKeyDown);
+  });
+
+  render(tripEventListElement, tripEventComponent.getElement());
+};
 
 if (tripEventList.length) {
-  render(listWrapper.getElement(), new TripModifyItemView(tripEventList[0], true).getElement());
+  // render(listWrapper.getElement(), new TripModifyItemView(tripEventList[0], true).getElement());
   tripEventList.map((item) =>
-    render(listWrapper.getElement(), new TripEventItemView(item).getElement()),
+    renderTripEvent(listWrapper.getElement(), item),
   );
 } else {
   pageBodyElement.querySelector('.trip-events__msg').textContent('Click New Event to create your first point');
