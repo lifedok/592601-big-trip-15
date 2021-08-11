@@ -26,31 +26,28 @@ const pageBodyElement = document.querySelector('.page-body');
 // create header
 const tripMainHeader = pageBodyElement.querySelector('.trip-main');
 render(tripMainHeader, new TripInfoHeaderView(tripEventList).getElement());
+
 const ControlsWrapper = new TripControlsWrapperView();
 render(tripMainHeader, ControlsWrapper.getElement());
-
-
-// const tripMainControls = pageBodyElement.querySelector('.trip-main__trip-controls');
 render(ControlsWrapper.getElement(), new TripTabsHeaderView().getElement());
-// renderTemplate(tripMainControls, createTripFilterHeaderTemplate(), 'beforeend');
-render(ControlsWrapper.getElement(), new TripFilterHeaderView().getElement()); //TODO: check it, TripFilterHeaderView doesn't show
+render(ControlsWrapper.getElement(), new TripFilterHeaderView().getElement());
 render(tripMainHeader, new NewEventButtonView().getElement());
 
-// create main content
-const pageMainElement = pageBodyElement.querySelector('.trip-events');
-render(pageMainElement, new TripEventsSort().getElement()); //TODO: check it, TripEventsSort doesn't show
-const listWrapper = new TripEventListWrapper();
-render(pageMainElement, listWrapper.getElement());
-// const eventList = pageBodyElement.querySelector('.trip-events__list');
-
-
-if (tripEventList.length) {
-  render(listWrapper.getElement(), new TripModifyItem(tripEventList[0], true).getElement());
-  tripEventList.map((item) =>
-    render(listWrapper.getElement(), new TripEventItemView(item).getElement()),
-  );
-} else {
-  pageBodyElement.querySelector('.trip-events__msg').textContent('Click New Event to create your first point');
-}
+// // create main content
+// const pageMainElement = pageBodyElement.querySelector('.trip-events');
+// render(pageMainElement, new TripEventsSort().getElement()); //TODO: check it, TripEventsSort doesn't show
+// const listWrapper = new TripEventListWrapper();
+// render(pageMainElement, listWrapper.getElement());
+// // const eventList = pageBodyElement.querySelector('.trip-events__list');
+//
+//
+// if (tripEventList.length) {
+//   render(listWrapper.getElement(), new TripModifyItem(tripEventList[0], true).getElement());
+//   tripEventList.map((item) =>
+//     render(listWrapper.getElement(), new TripEventItemView(item).getElement()),
+//   );
+// } else {
+//   pageBodyElement.querySelector('.trip-events__msg').textContent('Click New Event to create your first point');
+// }
 
 
