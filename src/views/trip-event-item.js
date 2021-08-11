@@ -21,8 +21,7 @@ const createTripEventItemTemplate = (item) => {
     return `${hours ? `${hours}H ` : ''}${minutes}M`;
   };
 
-  return `
-   <li class="trip-events__item">
+  return `<li class="trip-events__item">
       <div class="event">
         <time class="event__date" datetime="2019-03-18">${item.dateFrom.format('MMM D')}</time>
         <div class="event__type">
@@ -88,4 +87,3 @@ export default class TripEventItem {
     this._element = null;
   }
 }
-

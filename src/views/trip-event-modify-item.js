@@ -39,8 +39,6 @@ const createTripModifyItemTemplate = (tripEvent, isEdit) => {
   const createPicturesSrcTemplate = () => (
     destination.pictures.map((picture) => !picture.src ? '' : `<img class="event__photo" src=${picture.src} alt=${picture.description}>`).join('')
   );
-  const picturesSrc = createPicturesSrcTemplate();
-
 
   const createPointsSelectTemplate = () => (
     POINTS_TYPE.map((point) =>
@@ -54,8 +52,7 @@ const createTripModifyItemTemplate = (tripEvent, isEdit) => {
     CITIES.map((city) => `<option value="${city}"></option>`).join('')
   );
 
-  return `
-  <li class="trip-events__item">
+  return `<li class="trip-events__item">
     <form class="event event--edit" action="#" method="post">
       <header class="event__header">
         <div class="event__type-wrapper">
@@ -134,7 +131,7 @@ const createTripModifyItemTemplate = (tripEvent, isEdit) => {
             ${!destination.pictures.length ? '' : `
               <div class="event__photos-container">
                 <div class="event__photos-tape">
-                 ${picturesSrc}
+                 ${createPicturesSrcTemplate()}
                 </div>
               </div>
               `}
