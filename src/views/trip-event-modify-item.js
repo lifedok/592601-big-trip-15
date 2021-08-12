@@ -2,7 +2,7 @@ import {OFFER_TITTLES, POINTS_TYPE, CITIES} from '../const.js';
 import {capitalizeFirstLetter, getRandomInteger} from '../utils.js';
 import {createElement, generateRandomBoolean} from '../utils';
 
-const createTripModifyItemTemplate = (tripEvent, isEdit) => {
+const createTripEventModifyItemTemplate = (tripEvent, isEdit) => {
   const {type, offers, destination} = tripEvent;
 
   const createOffersTemplate = () => (
@@ -144,7 +144,7 @@ const createTripModifyItemTemplate = (tripEvent, isEdit) => {
   `;
 };
 
-export default class TripModifyItem {
+export default class TripEventModifyItem {
 
   constructor(tripEvent, isEdit) {
     this._tripEvent = tripEvent;
@@ -153,7 +153,7 @@ export default class TripModifyItem {
   }
 
   getTemplate() {
-    return createTripModifyItemTemplate(this._tripEvent, this._isEdit);
+    return createTripEventModifyItemTemplate(this._tripEvent, this._isEdit);
   }
 
   getElement() {

@@ -2,13 +2,13 @@
 import TripInfoHeaderView from './views/header/trip-info-header.js';
 import TripControlsWrapperView from './views/header/trip-controls-wrapper.js';
 import TripTabsHeaderView from './views/header/trip-tabs-header.js';
-import TripFilterHeaderView from './views/header/trip-filters-header';
-import NewEventButtonView from './views/header/btn-new-event.js';
+import TripFiltersHeaderView from './views/header/trip-filters-header';
+import NewEventButtonView from './views/header/new-event-button.js';
 
 // main
-import TripEventsSortView from './views/trip-events-sort.js';
-import TripEventListWrapperView from './views/trip-events-list-wrapper.js';
-import TripModifyItemView from './views/trip-event-modify-item.js';
+import TripEventSortView from './views/trip-event-sort.js';
+import TripEventListWrapperView from './views/trip-event-list-wrapper.js';
+import TripEventModifyItemView from './views/trip-event-modify-item.js';
 import TripEventItemView from './views/trip-event-item.js';
 
 // generate mock data
@@ -30,18 +30,18 @@ render(tripMainHeader, new TripInfoHeaderView(tripEventList).getElement());
 const ControlsWrapper = new TripControlsWrapperView();
 render(tripMainHeader, ControlsWrapper.getElement());
 render(ControlsWrapper.getElement(), new TripTabsHeaderView().getElement());
-render(ControlsWrapper.getElement(), new TripFilterHeaderView().getElement());
+render(ControlsWrapper.getElement(), new TripFiltersHeaderView().getElement());
 render(tripMainHeader, new NewEventButtonView().getElement());
 
 // // create main content
 const pageMainElement = pageBodyElement.querySelector('.trip-events');
-render(pageMainElement, new TripEventsSortView().getElement());
+render(pageMainElement, new TripEventSortView().getElement());
 const listWrapper = new TripEventListWrapperView();
 render(pageMainElement, listWrapper.getElement());
 
 const renderTripEvent = (tripEventListElement, tripEvent) => {
   const tripEventComponent = new TripEventItemView(tripEvent);
-  const tripEventEditComponent = new TripModifyItemView(tripEvent, true);
+  const tripEventEditComponent = new TripEventModifyItemView(tripEvent, true);
 
   const replaceTripToEditForm = () => {
     tripEventListElement.replaceChild(tripEventEditComponent.getElement(), tripEventComponent.getElement());
@@ -74,7 +74,6 @@ const renderTripEvent = (tripEventListElement, tripEvent) => {
 };
 
 if (tripEventList.length) {
-  // render(listWrapper.getElement(), new TripModifyItemView(tripEventList[0], true).getElement());
   tripEventList.map((item) =>
     renderTripEvent(listWrapper.getElement(), item),
   );

@@ -6,7 +6,7 @@ const createNewEventButtonTemplate = () => (
 );
 
 
-export default class NewEventButtonView {
+export default class NewEventButton {
 
   constructor() {
     this._element = null;

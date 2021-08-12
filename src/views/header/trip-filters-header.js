@@ -1,6 +1,6 @@
 import {createElement} from '../../utils';
 
-const createTripFilterHeaderTemplate = (filters) => {
+const createTripFiltersHeaderTemplate = (filters) => {
 
   const createFiltersTemplate = () =>
     filters.map((filter) => `<div class="trip-filters__filter">
@@ -22,7 +22,7 @@ const createTripFilterHeaderTemplate = (filters) => {
   `);
 };
 
-export default class TripFilterHeader {
+export default class TripFiltersHeader {
 
   constructor() {
     this._filters = ['Everything', 'Future', 'Past'];
@@ -30,7 +30,7 @@ export default class TripFilterHeader {
   }
 
   getTemplate() {
-    return createTripFilterHeaderTemplate(this._filters);
+    return createTripFiltersHeaderTemplate(this._filters);
   }
 
   getElement() {

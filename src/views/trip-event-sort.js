@@ -1,8 +1,8 @@
 import {createElement} from '../utils';
 
-const createTripEventsSortTemplate = (sorts) => {
+const createTripEventSortTemplate = (sorts) => {
 
-  const createSortsTemplate = () =>
+  const createSortTemplate = () =>
     sorts.map((sort) => `
     <div class="trip-sort__item  trip-sort__item--${sort.toLowerCase()}">
       <input id="sort-day" class="trip-sort__input  visually-hidden" 
@@ -13,13 +13,13 @@ const createTripEventsSortTemplate = (sorts) => {
   return (
     `<form class="trip-events__trip-sort  trip-sort" action="#" method="get">
 
-        ${createSortsTemplate()}
+        ${createSortTemplate()}
 
     </form>
     `);
 };
 
-export default class TripEventsSort {
+export default class TripEventSort {
 
   constructor() {
     this._sorts = ['Day', 'Event', 'Time', 'Price', 'Offers'];
@@ -27,7 +27,7 @@ export default class TripEventsSort {
   }
 
   getTemplate() {
-    return createTripEventsSortTemplate(this._sorts);
+    return createTripEventSortTemplate(this._sorts);
   }
 
   getElement() {
