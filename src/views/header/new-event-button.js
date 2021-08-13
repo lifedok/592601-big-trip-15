@@ -1,14 +1,19 @@
 import {createElement} from '../../utils';
 
+const createNewEventButtonTemplate = () => (
+  `<button class="trip-main__event-add-btn  btn  btn--big  btn--yellow" type="button">New event</button>
+`
+);
 
-export default class TripControlsWrapper {
+
+export default class NewEventButton {
 
   constructor() {
     this._element = null;
   }
 
   getTemplate() {
-    return '<div class="trip-main__trip-controls  trip-controls"/>';
+    return createNewEventButtonTemplate();
   }
 
   getElement() {

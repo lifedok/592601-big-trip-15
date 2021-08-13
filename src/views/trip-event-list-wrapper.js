@@ -1,14 +1,14 @@
-import {createElement} from '../../utils';
+import {createElement} from '../utils';
 
 
-export default class TripControlsWrapper {
+export default class TripEventListWrapper {
 
   constructor() {
     this._element = null;
   }
 
   getTemplate() {
-    return '<div class="trip-main__trip-controls  trip-controls"/>';
+    return '<ul class="trip-events__list"/>';
   }
 
   getElement() {

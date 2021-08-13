@@ -1,4 +1,7 @@
-export const createTripInfoHeaderTemplate = (listEvent) => {
+import {createElement} from '../../utils';
+
+
+const createTripInfoHeaderTemplate = (listEvent) => {
 
   const total = () => listEvent.reduce((prev, curr) => prev + curr.basePrice, 0);
 
@@ -16,3 +19,28 @@ export const createTripInfoHeaderTemplate = (listEvent) => {
   </section>
   `);
 };
+
+
+export default class TripInfoHeader {
+
+  constructor(listEvent) {
+    this._listEvent = listEvent;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createTripInfoHeaderTemplate(this._listEvent);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

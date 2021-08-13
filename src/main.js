@@ -1,22 +1,20 @@
 // header
-import {createTripInfoHeaderTemplate} from './views/header/trip-info-header.js';
-import {createTripControlsWrapperTemplate} from './views/header/trip-controls-wrapper.js';
-import {createTripTabsHeaderTemplate} from './views/header/trip-tabs-header.js';
-import {createTripFilterHeaderTemplate} from './views/header/trip-filters-header.js';
-import {createNewEventButtonTemplate} from './views/header/btn-new-event.js';
+import TripInfoHeaderView from './views/header/trip-info-header.js';
+import TripControlsWrapperView from './views/header/trip-controls-wrapper.js';
+import TripTabsHeaderView from './views/header/trip-tabs-header.js';
+import TripFiltersHeaderView from './views/header/trip-filters-header';
+import NewEventButtonView from './views/header/new-event-button.js';
 
 // main
-import {createTripEventsSortTemplate} from './views/trip-events-sort.js';
-import {createTripEventListWrapperTemplate} from './views/trip-events-list-wrapper.js';
-import {createTripModifyItemTemplate} from './views/trip-event-modify-item.js';
-import {createTripEventItemTemplate} from './views/trip-event-item.js';
+import TripEventSortView from './views/trip-event-sort.js';
+import TripEventListWrapperView from './views/trip-event-list-wrapper.js';
+import TripEventModifyItemView from './views/trip-event-modify-item.js';
+import TripEventItemView from './views/trip-event-item.js';
 
 // generate mock data
 import {generateTripEventListData} from './mock/trip-event-list-data.js';
+import {render} from './utils';
 
-const render = (container, template, place) => {
-  container.insertAdjacentHTML(place, template);
-};
 
 const COUNT_ITEMS = 9;
 const tripEventList = generateTripEventListData(COUNT_ITEMS);
@@ -27,25 +25,57 @@ const pageBodyElement = document.querySelector('.page-body');
 
 // create header
 const tripMainHeader = pageBodyElement.querySelector('.trip-main');
-render(tripMainHeader, createTripInfoHeaderTemplate(tripEventList), 'beforeend');
-render(tripMainHeader, createTripControlsWrapperTemplate(), 'beforeend');
+render(tripMainHeader, new TripInfoHeaderView(tripEventList).getElement());
 
-const tripMainControls = pageBodyElement.querySelector('.trip-main__trip-controls');
-render(tripMainControls, createTripTabsHeaderTemplate(), 'beforeend');
-render(tripMainControls, createTripFilterHeaderTemplate(), 'beforeend');
-render(tripMainHeader, createNewEventButtonTemplate(), 'beforeend');
+const ControlsWrapper = new TripControlsWrapperView();
+render(tripMainHeader, ControlsWrapper.getElement());
+render(ControlsWrapper.getElement(), new TripTabsHeaderView().getElement());
+render(ControlsWrapper.getElement(), new TripFiltersHeaderView().getElement());
+render(tripMainHeader, new NewEventButtonView().getElement());
 
-// create main content
+// // create main content
 const pageMainElement = pageBodyElement.querySelector('.trip-events');
-render(pageMainElement, createTripEventsSortTemplate(), 'beforeend');
-render(pageMainElement, createTripEventListWrapperTemplate(), 'beforeend');
+render(pageMainElement, new TripEventSortView().getElement());
+const listWrapper = new TripEventListWrapperView();
+render(pageMainElement, listWrapper.getElement());
 
-const eventList = pageBodyElement.querySelector('.trip-events__list');
+const renderTripEvent = (tripEventListElement, tripEvent) => {
+  const tripEventComponent = new TripEventItemView(tripEvent);
+  const tripEventEditComponent = new TripEventModifyItemView(tripEvent, true);
+
+  const replaceTripToEditForm = () => {
+    tripEventListElement.replaceChild(tripEventEditComponent.getElement(), tripEventComponent.getElement());
+  };
+
+  const replaceFormToItem = () => {
+    tripEventListElement.replaceChild(tripEventComponent.getElement(), tripEventEditComponent.getElement());
+  };
+
+  const onEscKeyDown = (evt) => {
+    if (evt.key === 'Escape' || evt.key === 'Esc') {
+      evt.preventDefault();
+      replaceFormToItem();
+      document.removeEventListener('keydown', onEscKeyDown);
+    }
+  };
+
+  tripEventComponent.getElement().querySelector('.event__rollup-btn').addEventListener('click', () => {
+    replaceTripToEditForm();
+    document.addEventListener('keydown', onEscKeyDown);
+  });
+
+  tripEventEditComponent.getElement().querySelector('form').addEventListener('submit', (evt) => {
+    evt.preventDefault();
+    replaceFormToItem();
+    document.removeEventListener('keydown', onEscKeyDown);
+  });
+
+  render(tripEventListElement, tripEventComponent.getElement());
+};
 
 if (tripEventList.length) {
-  render(eventList, createTripModifyItemTemplate(tripEventList[0], true), 'beforeend');
   tripEventList.map((item) =>
-    render(eventList, createTripEventItemTemplate(item), 'beforeend'),
+    renderTripEvent(listWrapper.getElement(), item),
   );
 } else {
   pageBodyElement.querySelector('.trip-events__msg').textContent('Click New Event to create your first point');

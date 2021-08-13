@@ -1,8 +1,8 @@
 import {OFFER_TITTLES, POINTS_TYPE, CITIES} from '../const.js';
 import {capitalizeFirstLetter, getRandomInteger} from '../utils.js';
-import {generateRandomBoolean} from '../utils';
+import {createElement, generateRandomBoolean} from '../utils';
 
-export const createTripModifyItemTemplate = (tripEvent, isEdit) => {
+const createTripEventModifyItemTemplate = (tripEvent, isEdit) => {
   const {type, offers, destination} = tripEvent;
 
   const createOffersTemplate = () => (
@@ -39,8 +39,6 @@ export const createTripModifyItemTemplate = (tripEvent, isEdit) => {
   const createPicturesSrcTemplate = () => (
     destination.pictures.map((picture) => !picture.src ? '' : `<img class="event__photo" src=${picture.src} alt=${picture.description}>`).join('')
   );
-  const picturesSrc = createPicturesSrcTemplate();
-
 
   const createPointsSelectTemplate = () => (
     POINTS_TYPE.map((point) =>
@@ -54,8 +52,7 @@ export const createTripModifyItemTemplate = (tripEvent, isEdit) => {
     CITIES.map((city) => `<option value="${city}"></option>`).join('')
   );
 
-  return `
-  <li class="trip-events__item">
+  return `<li class="trip-events__item">
     <form class="event event--edit" action="#" method="post">
       <header class="event__header">
         <div class="event__type-wrapper">
@@ -134,7 +131,7 @@ export const createTripModifyItemTemplate = (tripEvent, isEdit) => {
             ${!destination.pictures.length ? '' : `
               <div class="event__photos-container">
                 <div class="event__photos-tape">
-                 ${picturesSrc}
+                 ${createPicturesSrcTemplate()}
                 </div>
               </div>
               `}
@@ -147,3 +144,27 @@ export const createTripModifyItemTemplate = (tripEvent, isEdit) => {
   `;
 };
 
+export default class TripEventModifyItem {
+
+  constructor(tripEvent, isEdit) {
+    this._tripEvent = tripEvent;
+    this._isEdit = isEdit;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createTripEventModifyItemTemplate(this._tripEvent, this._isEdit);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

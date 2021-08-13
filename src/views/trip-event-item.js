@@ -1,4 +1,6 @@
-export const createTripEventItemTemplate = (item) => {
+import {createElement} from '../utils.js';
+
+const createTripEventItemTemplate = (item) => {
   const {type, destination, offers, isFavorite} = item;
 
   const createOffersTemplate = () => (
@@ -19,8 +21,7 @@ export const createTripEventItemTemplate = (item) => {
     return `${hours ? `${hours}H ` : ''}${minutes}M`;
   };
 
-  return `
-   <li class="trip-events__item">
+  return `<li class="trip-events__item">
       <div class="event">
         <time class="event__date" datetime="2019-03-18">${item.dateFrom.format('MMM D')}</time>
         <div class="event__type">
@@ -62,3 +63,27 @@ export const createTripEventItemTemplate = (item) => {
   `;
 };
 
+
+export default class TripEventItem {
+
+  constructor(item) {
+    this._item = item;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createTripEventItemTemplate(this._item);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
