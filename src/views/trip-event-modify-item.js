@@ -151,9 +151,64 @@ export default class TripEventModifyItem extends Abstract {
     super();
     this._tripEvent = tripEvent;
     this._isEdit = isEdit;
+
+    this._formSubmitHandler = this._formSubmitHandler.bind(this);
+    this._saveClickHandler = this._saveClickHandler.bind(this);
+    this._resetClickHandler = this._resetClickHandler.bind(this);
+    this._closeClickHandler = this._closeClickHandler.bind(this);
   }
 
   getTemplate() {
     return createTripEventModifyItemTemplate(this._tripEvent, this._isEdit);
+  }
+
+  // form submit
+  _formSubmitHandler(evt) {
+    evt.preventDefault();
+    this._callback.formSubmit();
+  }
+
+  setFormSubmitHandler(callback) {
+    this._callback.formSubmit = callback;
+    // this.onTripEventClick('form', 'submit', this._formSubmitHandler);
+    this.getElement().querySelector('form').addEventListener('submit', this._formSubmitHandler);
+  }
+
+  // save click
+  _saveClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.saveClick();
+  }
+
+  setSaveClickHandler(callback) {
+    this._callback.saveClick = callback;
+    // this.onTripEventClick('.event__save-btn', 'click', this._saveClickHandler);
+    this.getElement().querySelector('.event__save-btn').addEventListener('click', this._saveClickHandler);
+  }
+
+  // reset click
+  _resetClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.resetClick();
+  }
+
+  setResetClickHandler(callback) {
+    this._callback.resetClick = callback;
+    this.getElement().querySelector('.event__reset-btn').addEventListener('click', this._resetClickHandler);
+  }
+
+  // close click
+  _closeClickHandler(evt) {
+    if(this._isEdit) {
+      evt.preventDefault();
+      this._callback.closeClick();
+    } else {
+      throw new Error('The open closeClickHandler event is only found in the TripEventModifyItem with the isEdit = true flag');
+    }
+  }
+
+  setCloseClickHandler(callback) {
+    this._callback.closeClick = callback;
+    this.getElement().querySelector('.event__rollup-btn').addEventListener('click', this._closeClickHandler);
   }
 }
