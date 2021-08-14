@@ -11,6 +11,10 @@ import TripEventListWrapperView from './views/trip-event-list-wrapper.js';
 import TripEventModifyItemView from './views/trip-event-modify-item.js';
 import TripEventItemView from './views/trip-event-item.js';
 
+// warning message
+import TripEventMsgView from './views/trip-event-msg.js';
+
+
 // generate mock data
 import {generateTripEventListData} from './mock/trip-event-list-data.js';
 import {render} from './utils';
@@ -34,10 +38,10 @@ render(ControlsWrapper.getElement(), new TripFiltersHeaderView().getElement());
 render(tripMainHeader, new NewEventButtonView().getElement());
 
 // // create main content
-const pageMainElement = pageBodyElement.querySelector('.trip-events');
-render(pageMainElement, new TripEventSortView().getElement());
+const tripEvents = pageBodyElement.querySelector('.trip-events');
+render(tripEvents, new TripEventSortView().getElement());
 const listWrapper = new TripEventListWrapperView();
-render(pageMainElement, listWrapper.getElement());
+render(tripEvents, listWrapper.getElement());
 
 const renderTripEvent = (tripEventListElement, tripEvent) => {
   const tripEventComponent = new TripEventItemView(tripEvent);
@@ -83,7 +87,7 @@ if (tripEventList.length) {
     renderTripEvent(listWrapper.getElement(), item),
   );
 } else {
-  pageBodyElement.querySelector('.trip-events__msg').textContent('Click New Event to create your first point');
+  render(tripEvents, new TripEventMsgView('Click New Event to create your first point').getElement());
 }
 
 
