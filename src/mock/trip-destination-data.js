@@ -1,5 +1,5 @@
-import {getRandomInteger, generateRandomBoolean} from '../utils.js';
 import {CITIES} from '../const';
+import {generateRandomBoolean, getRandomInteger} from '../utils/common';
 
 const generateCity = () => {
   const randomIndex = getRandomInteger(0, CITIES.length - 1);

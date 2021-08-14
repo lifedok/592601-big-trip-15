@@ -1,6 +1,5 @@
-import {getRandomInteger} from '../utils.js';
-import {getRandomInObj} from '../utils.js';
 import {OFFER_TITTLES, POINTS_TYPE} from '../const.js';
+import {getRandomInObj, getRandomInteger} from '../utils/common';
 
 
 const generateOffers = () => ({

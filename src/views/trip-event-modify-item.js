@@ -1,7 +1,7 @@
 import {OFFER_TITTLES, POINTS_TYPE, CITIES} from '../const.js';
-import {capitalizeFirstLetter, getRandomInteger} from '../utils.js';
-import {createElement, generateRandomBoolean} from '../utils';
 import Abstract from './abstract';
+import {capitalizeFirstLetter, generateRandomBoolean, getRandomInteger} from '../utils/common';
+
 
 const createTripEventModifyItemTemplate = (tripEvent, isEdit) => {
   const {type, offers, destination} = tripEvent;
@@ -170,7 +170,6 @@ export default class TripEventModifyItem extends Abstract {
 
   setFormSubmitHandler(callback) {
     this._callback.formSubmit = callback;
-    // this.onTripEventClick('form', 'submit', this._formSubmitHandler);
     this.getElement().querySelector('form').addEventListener('submit', this._formSubmitHandler);
   }
 
@@ -182,7 +181,6 @@ export default class TripEventModifyItem extends Abstract {
 
   setSaveClickHandler(callback) {
     this._callback.saveClick = callback;
-    // this.onTripEventClick('.event__save-btn', 'click', this._saveClickHandler);
     this.getElement().querySelector('.event__save-btn').addEventListener('click', this._saveClickHandler);
   }
 

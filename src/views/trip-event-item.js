@@ -1,4 +1,3 @@
-import {createElement} from '../utils.js';
 import Abstract from './abstract';
 
 const createTripEventItemTemplate = (item) => {
