@@ -1,6 +1,7 @@
 import {OFFER_TITTLES, POINTS_TYPE, CITIES} from '../const.js';
 import {capitalizeFirstLetter, getRandomInteger} from '../utils.js';
 import {createElement, generateRandomBoolean} from '../utils';
+import Abstract from './abstract';
 
 const createTripEventModifyItemTemplate = (tripEvent, isEdit) => {
   const {type, offers, destination} = tripEvent;
@@ -144,27 +145,15 @@ const createTripEventModifyItemTemplate = (tripEvent, isEdit) => {
   `;
 };
 
-export default class TripEventModifyItem {
+export default class TripEventModifyItem extends Abstract {
 
   constructor(tripEvent, isEdit) {
+    super();
     this._tripEvent = tripEvent;
     this._isEdit = isEdit;
-    this._element = null;
   }
 
   getTemplate() {
     return createTripEventModifyItemTemplate(this._tripEvent, this._isEdit);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }
