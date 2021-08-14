@@ -17,7 +17,7 @@ import TripEventMsgView from './views/trip-event-msg.js';
 
 // generate mock data
 import {generateTripEventListData} from './mock/trip-event-list-data.js';
-import {render} from './utils/render';
+import {render, replace} from './utils/render';
 
 
 const COUNT_ITEMS = 9;
@@ -48,11 +48,11 @@ const renderTripEvent = (tripEventListElement, tripEvent) => {
   const tripEventEditComponent = new TripEventModifyItemView(tripEvent, true);
 
   const replaceTripToEditForm = () => {
-    tripEventListElement.replaceChild(tripEventEditComponent, tripEventComponent);
+    replace(tripEventEditComponent, tripEventComponent);
   };
 
   const replaceFormToItem = () => {
-    tripEventListElement.replaceChild(tripEventComponent, tripEventEditComponent);
+    replace(tripEventComponent, tripEventEditComponent);
   };
 
   const onEscKeyDown = (evt) => {
