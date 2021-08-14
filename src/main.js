@@ -22,7 +22,7 @@ import {render} from './utils';
 
 const COUNT_ITEMS = 9;
 const tripEventList = generateTripEventListData(COUNT_ITEMS);
-tripEventList.sort((a, b) => a.dateFrom - b.dateFrom);
+tripEventList.length && tripEventList.sort((a, b) => a.dateFrom - b.dateFrom);
 
 const pageBodyElement = document.querySelector('.page-body');
 
@@ -68,16 +68,16 @@ const renderTripEvent = (tripEventListElement, tripEvent) => {
     document.addEventListener('keydown', onEscKeyDown);
   });
 
-  const onTripEventEditClick = (querySelector, typeEvent) =>
-    tripEventEditComponent.getElement().querySelector(querySelector).addEventListener(typeEvent, (evt) => {
-      evt.preventDefault();
-      replaceFormToItem();
-      document.removeEventListener('keydown', onEscKeyDown);
-    });
 
-  onTripEventEditClick('.event__rollup-btn', 'click');
-  onTripEventEditClick('.event__reset-btn', 'click');
-  onTripEventEditClick('form', 'submit');
+  const onTripEventEditViewClose = (evt) => {
+    evt.preventDefault();
+    replaceFormToItem();
+    document.removeEventListener('keydown', onEscKeyDown);
+  };
+  tripEventEditComponent.getElement().querySelector('.event__rollup-btn').addEventListener('click', onTripEventEditViewClose);
+  tripEventEditComponent.getElement().querySelector('.event__reset-btn').addEventListener('click', onTripEventEditViewClose);
+  tripEventEditComponent.getElement().querySelector('form').addEventListener('submit', onTripEventEditViewClose);
+
 
   render(tripEventListElement, tripEventComponent.getElement());
 };
