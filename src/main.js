@@ -68,16 +68,16 @@ const renderTripEvent = (tripEventListElement, tripEvent) => {
     document.addEventListener('keydown', onEscKeyDown);
   });
 
-  const onTripEventEditClickEvent = (querySelector, typeEvent) =>
+  const onTripEventEditClick = (querySelector, typeEvent) =>
     tripEventEditComponent.getElement().querySelector(querySelector).addEventListener(typeEvent, (evt) => {
       evt.preventDefault();
       replaceFormToItem();
       document.removeEventListener('keydown', onEscKeyDown);
     });
 
-  onTripEventEditClickEvent('.event__rollup-btn', 'click');
-  onTripEventEditClickEvent('.event__reset-btn', 'click');
-  onTripEventEditClickEvent('form', 'submit');
+  onTripEventEditClick('.event__rollup-btn', 'click');
+  onTripEventEditClick('.event__reset-btn', 'click');
+  onTripEventEditClick('form', 'submit');
 
   render(tripEventListElement, tripEventComponent.getElement());
 };
