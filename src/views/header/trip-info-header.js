@@ -1,4 +1,4 @@
-import {createElement} from '../../utils';
+import Abstract from '../abstract';
 
 
 const createTripInfoHeaderTemplate = (listEvent) => {
@@ -22,26 +22,14 @@ const createTripInfoHeaderTemplate = (listEvent) => {
 };
 
 
-export default class TripInfoHeader {
+export default class TripInfoHeader extends Abstract {
 
   constructor(listEvent) {
+    super();
     this._listEvent = listEvent;
-    this._element = null;
   }
 
   getTemplate() {
     return createTripInfoHeaderTemplate(this._listEvent);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }

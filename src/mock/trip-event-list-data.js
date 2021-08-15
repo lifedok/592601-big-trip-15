@@ -1,7 +1,7 @@
 import dayjs from 'dayjs';
-import {generateRandomString, getRandomInteger, generateRandomBoolean} from '../utils';
 import {generateTripDestinationData} from './trip-destination-data';
 import {generateTripOfferData} from './trip-offer-data';
+import {generateRandomBoolean, generateRandomString, getRandomInteger} from '../utils/common';
 
 const generateDateFrom = () => {
   const fromDaysGap = -1;

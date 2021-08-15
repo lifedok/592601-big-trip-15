@@ -1,4 +1,4 @@
-import {createElement} from '../../utils';
+import Abstract from '../abstract';
 
 const createTripTabsHeaderTemplate = () => (
   `<div class="trip-controls__navigation">
@@ -12,25 +12,9 @@ const createTripTabsHeaderTemplate = () => (
 );
 
 
-export default class TripTabsHeader {
-
-  constructor() {
-    this._element = null;
-  }
+export default class TripTabsHeader extends Abstract {
 
   getTemplate() {
     return createTripTabsHeaderTemplate();
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }
