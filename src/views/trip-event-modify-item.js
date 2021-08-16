@@ -1,6 +1,6 @@
 import {OFFER_TITTLES, POINTS_TYPE, CITIES} from '../const.js';
-import {capitalizeFirstLetter, getRandomInteger} from '../utils.js';
-import {createElement, generateRandomBoolean} from '../utils';
+import Abstract from './abstract';
+import {capitalizeFirstLetter, generateRandomBoolean, getRandomInteger} from '../utils/common';
 
 const createTripEventModifyItemTemplate = (tripEvent, isEdit) => {
   const {type, offers, destination} = tripEvent;
@@ -144,27 +144,68 @@ const createTripEventModifyItemTemplate = (tripEvent, isEdit) => {
   `;
 };
 
-export default class TripEventModifyItem {
+export default class TripEventModifyItem extends Abstract {
 
   constructor(tripEvent, isEdit) {
+    super();
     this._tripEvent = tripEvent;
     this._isEdit = isEdit;
-    this._element = null;
+
+    this._formSubmitHandler = this._formSubmitHandler.bind(this);
+    this._saveClickHandler = this._saveClickHandler.bind(this);
+    this._resetClickHandler = this._resetClickHandler.bind(this);
+    this._closeClickHandler = this._closeClickHandler.bind(this);
   }
 
   getTemplate() {
     return createTripEventModifyItemTemplate(this._tripEvent, this._isEdit);
   }
 
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
+  // form submit
+  _formSubmitHandler(evt) {
+    evt.preventDefault();
+    this._callback.formSubmit();
   }
 
-  removeElement() {
-    this._element = null;
+  setFormSubmitHandler(callback) {
+    this._callback.formSubmit = callback;
+    this.getElement().querySelector('form').addEventListener('submit', this._formSubmitHandler);
+  }
+
+  // save click
+  _saveClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.saveClick();
+  }
+
+  setSaveClickHandler(callback) {
+    this._callback.saveClick = callback;
+    this.getElement().querySelector('.event__save-btn').addEventListener('click', this._saveClickHandler);
+  }
+
+  // reset click
+  _resetClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.resetClick();
+  }
+
+  setResetClickHandler(callback) {
+    this._callback.resetClick = callback;
+    this.getElement().querySelector('.event__reset-btn').addEventListener('click', this._resetClickHandler);
+  }
+
+  // close click
+  _closeClickHandler(evt) {
+    if(this._isEdit) {
+      evt.preventDefault();
+      this._callback.closeClick();
+    } else {
+      throw new Error('The open closeClickHandler event is only found in the TripEventModifyItem with the isEdit = true flag');
+    }
+  }
+
+  setCloseClickHandler(callback) {
+    this._callback.closeClick = callback;
+    this.getElement().querySelector('.event__rollup-btn').addEventListener('click', this._closeClickHandler);
   }
 }

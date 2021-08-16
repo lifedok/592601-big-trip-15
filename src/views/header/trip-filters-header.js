@@ -1,4 +1,4 @@
-import {createElement} from '../../utils';
+import Abstract from '../abstract';
 
 const createTripFiltersHeaderTemplate = (filters) => {
 
@@ -22,26 +22,14 @@ const createTripFiltersHeaderTemplate = (filters) => {
   `);
 };
 
-export default class TripFiltersHeader {
+export default class TripFiltersHeader extends Abstract {
 
   constructor() {
+    super();
     this._filters = ['Everything', 'Future', 'Past'];
-    this._element = null;
   }
 
   getTemplate() {
     return createTripFiltersHeaderTemplate(this._filters);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }

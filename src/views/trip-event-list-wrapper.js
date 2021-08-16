@@ -1,25 +1,9 @@
-import {createElement} from '../utils';
+import Abstract from './abstract';
 
 
-export default class TripEventListWrapper {
-
-  constructor() {
-    this._element = null;
-  }
+export default class TripEventListWrapper extends Abstract {
 
   getTemplate() {
     return '<ul class="trip-events__list"/>';
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }

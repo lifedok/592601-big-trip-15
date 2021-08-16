@@ -17,42 +17,42 @@ import TripEventMsgView from './views/trip-event-msg.js';
 
 // generate mock data
 import {generateTripEventListData} from './mock/trip-event-list-data.js';
-import {render} from './utils';
+import {render, replace} from './utils/render';
 
 
 const COUNT_ITEMS = 9;
 const tripEventList = generateTripEventListData(COUNT_ITEMS);
-tripEventList.length && tripEventList.sort((a, b) => a.dateFrom - b.dateFrom);
+tripEventList.sort((a, b) => a.dateFrom - b.dateFrom);
 
 const pageBodyElement = document.querySelector('.page-body');
 
 
 // create header
 const tripMainHeader = pageBodyElement.querySelector('.trip-main');
-render(tripMainHeader, new TripInfoHeaderView(tripEventList).getElement());
+render(tripMainHeader, new TripInfoHeaderView(tripEventList));
 
 const ControlsWrapper = new TripControlsWrapperView();
-render(tripMainHeader, ControlsWrapper.getElement());
-render(ControlsWrapper.getElement(), new TripTabsHeaderView().getElement());
-render(ControlsWrapper.getElement(), new TripFiltersHeaderView().getElement());
-render(tripMainHeader, new NewEventButtonView().getElement());
+render(tripMainHeader, ControlsWrapper);
+render(ControlsWrapper, new TripTabsHeaderView());
+render(ControlsWrapper, new TripFiltersHeaderView());
+render(tripMainHeader, new NewEventButtonView());
 
 // // create main content
 const tripEvents = pageBodyElement.querySelector('.trip-events');
-render(tripEvents, new TripEventSortView().getElement());
+render(tripEvents, new TripEventSortView());
 const listWrapper = new TripEventListWrapperView();
-render(tripEvents, listWrapper.getElement());
+render(tripEvents, listWrapper);
 
 const renderTripEvent = (tripEventListElement, tripEvent) => {
   const tripEventComponent = new TripEventItemView(tripEvent);
   const tripEventEditComponent = new TripEventModifyItemView(tripEvent, true);
 
   const replaceTripToEditForm = () => {
-    tripEventListElement.replaceChild(tripEventEditComponent.getElement(), tripEventComponent.getElement());
+    replace(tripEventEditComponent, tripEventComponent);
   };
 
   const replaceFormToItem = () => {
-    tripEventListElement.replaceChild(tripEventComponent.getElement(), tripEventEditComponent.getElement());
+    replace(tripEventComponent, tripEventEditComponent);
   };
 
   const onEscKeyDown = (evt) => {
@@ -63,31 +63,29 @@ const renderTripEvent = (tripEventListElement, tripEvent) => {
     }
   };
 
-  tripEventComponent.getElement().querySelector('.event__rollup-btn').addEventListener('click', () => {
+  const closeTripEventEditView = () => {
+    replaceFormToItem();
+    document.removeEventListener('keydown', onEscKeyDown);
+  };
+
+  tripEventComponent.setOpenClickHandler(() => {
     replaceTripToEditForm();
     document.addEventListener('keydown', onEscKeyDown);
   });
 
+  tripEventEditComponent.setCloseClickHandler(() => closeTripEventEditView());
+  tripEventEditComponent.setResetClickHandler(() => closeTripEventEditView());
+  tripEventEditComponent.setFormSubmitHandler(() => closeTripEventEditView());
+  tripEventEditComponent.setSaveClickHandler(() => closeTripEventEditView());
 
-  const onTripEventEditViewClose = (evt) => {
-    evt.preventDefault();
-    replaceFormToItem();
-    document.removeEventListener('keydown', onEscKeyDown);
-  };
-  tripEventEditComponent.getElement().querySelector('.event__rollup-btn').addEventListener('click', onTripEventEditViewClose);
-  tripEventEditComponent.getElement().querySelector('.event__reset-btn').addEventListener('click', onTripEventEditViewClose);
-  tripEventEditComponent.getElement().querySelector('form').addEventListener('submit', onTripEventEditViewClose);
-
-
-  render(tripEventListElement, tripEventComponent.getElement());
+  render(tripEventListElement, tripEventComponent);
 };
+
 
 if (tripEventList.length) {
   tripEventList.map((item) =>
-    renderTripEvent(listWrapper.getElement(), item),
+    renderTripEvent(listWrapper, item),
   );
 } else {
-  render(tripEvents, new TripEventMsgView('Click New Event to create your first point').getElement());
+  render(tripEvents, new TripEventMsgView('Click New Event to create your first point'));
 }
-
-
