@@ -13,13 +13,16 @@ import PointPresenter from './point';
 // service message
 import ServiceMessage from '../views/service-message';
 import {render} from '../utils/render';
+import {updatePoint} from '../utils/common';
 
 
 export default class Trip {
   constructor(tripHeaderView, tripMainView) {
     this._tripHeaderView = tripHeaderView;
     this._tripMainView = tripMainView;
+    this._pointPresenter = new Map();
 
+    this._handlePointChange = this._handlePointChange.bind(this);
     this._pointListWrapper = new PointListWrapperView();
   }
 
@@ -34,6 +37,11 @@ export default class Trip {
     this._renderTrip();
   }
 
+  _handlePointChange(updatedPoint) {
+    this._points = updatePoint(this._points, updatedPoint);
+    this._pointPresenter.get(updatedPoint.id).init(updatedPoint);
+  }
+
   _renderSort() {
     render(this._tripMainView, new PointSortView());
   }
@@ -42,13 +50,22 @@ export default class Trip {
     render(this._controlsWrapperView, new TripFiltersHeaderView());
   }
 
-  _renderPoints() {
+  _renderPointList() {
     this._points.map((point) => this._renderPoint(point));
   }
 
   _renderPoint(point) {
-    const pointPresenter = new PointPresenter(this._pointListWrapper);
+    //TODO: Как в _handlePointChange попадают данные, если нет вызова фунции и туда не передаётся данные.
+    const pointPresenter = new PointPresenter(this._pointListWrapper, this._handlePointChange);
     pointPresenter.init(point);
+    this._pointPresenter.set(point.id, pointPresenter);
+  }
+
+  _clearPointList() {
+    this._pointPresenter.forEach((presenter) => presenter.destroy());
+    this._pointPresenter.clear();
+    // this._renderedTaskCount = TASK_COUNT_PER_STEP;
+    // remove(this._loadMoreButtonComponent);
   }
 
   _renderNoPointInTrip() {
@@ -73,7 +90,7 @@ export default class Trip {
     if (!this._points.length) {
       this._renderNoPointInTrip();
     } else {
-      this._renderPoints();
+      this._renderPointList();
     }
   }
 }

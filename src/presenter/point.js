@@ -1,41 +1,82 @@
-import {render, replace} from '../utils/render';
+import {remove, render, replace} from '../utils/render';
 import PointItemModifyView from '../views/point-item-modify';
 import PointItemView from '../views/point-item';
 
 export default class Point {
 
-  constructor(pointListWrapper) {
+  constructor(pointListWrapper, changeData) {
     this._pointListWrapper = pointListWrapper;
+    this._changeData = changeData;
 
+    this._pointItemComponent = null;
     this._pointEditComponent = null;
-    this._pointItemView = null;
     this._onEscKeyDown = this._onEscKeyDown.bind(this);
     this._openPointItemClick = this._openPointItemClick.bind(this);
+    this._handleFavoriteClick = this._handleFavoriteClick.bind(this);
   }
 
   init(pointItem) {
     this._pointItem = pointItem;
+
+    const prevPointItemComponent = this._pointItemComponent;
+    const prevPointEditComponent = this._pointEditComponent;
+    this._pointItemComponent = new PointItemView(this._pointItem);
     this._pointEditComponent = new PointItemModifyView(this._pointItem, true);
-    this._pointItemView = new PointItemView(this._pointItem);
 
 
-    this._pointItemView.setOpenClickHandler(this._openPointItemClick);
+    this._pointItemComponent.setOpenClickHandler(this._openPointItemClick);
+    this._pointItemComponent.setIsFavoriteClickHandler(this._handleFavoriteClick);
     // edit item click
     this._pointEditComponent.setCloseClickHandler(() => this._closePointEditView());
     this._pointEditComponent.setResetClickHandler(() => this._closePointEditView());
     this._pointEditComponent.setFormSubmitHandler(() => this._closePointEditView());
     this._pointEditComponent.setSaveClickHandler(() => this._closePointEditView());
 
-    render(this._pointListWrapper, this._pointItemView);
+    if (prevPointEditComponent === null || prevPointItemComponent === null) {
+      render(this._pointListWrapper, this._pointItemComponent);
+      return;
+    }
+
+    if (this._pointListWrapper.getElement().contains(prevPointItemComponent.getElement())) {
+      replace(this._pointItemComponent, prevPointItemComponent);
+    }
+
+    if (this._pointListWrapper.getElement().contains(prevPointEditComponent.getElement())) {
+      replace(this._pointEditComponent, prevPointEditComponent);
+    }
+
+    remove(prevPointItemComponent);
+    remove(prevPointEditComponent);
   }
 
+  destroy() {
+    remove(this._pointItemComponent);
+    remove(this._pointEditComponent);
+  }
+
+
+  // reInit() { //TODO: connect it and remove copy/paste
+  //   const prevPointItemComponent = this._pointItemComponent;
+  //   const prevPointEditComponent = this._pointEditComponent;
+  //
+  //   if (this._pointListWrapper.getElement().contains(prevPointItemComponent.getElement())) {
+  //     replace(this._pointItemComponent, prevPointItemComponent);
+  //   }
+  //
+  //   if (this._pointListWrapper.getElement().contains(prevPointEditComponent.getElement())) {
+  //     replace(this._pointEditComponent, prevPointEditComponent);
+  //   }
+  //   remove(prevPointItemComponent);
+  //   remove(prevPointEditComponent);
+  // }
+
   _replacePointToEditForm() {
-    replace(this._pointEditComponent, this._pointItemView);
+    replace(this._pointEditComponent, this._pointItemComponent);
     document.addEventListener('keydown', this._onEscKeyDown);
   }
 
   _replaceFormToPointItem() {
-    replace(this._pointItemView, this._pointEditComponent);
+    replace(this._pointItemComponent, this._pointEditComponent);
     document.removeEventListener('keydown', this._onEscKeyDown);
   }
 
@@ -55,8 +96,15 @@ export default class Point {
     this._replacePointToEditForm();
   }
 
-  // _setIsFavoriteClickHandler() {
-  //   this._pointItem.isFavorite = !this._pointItem.isFavorite;
-  //   return new PointItemView(...this._pointItem);
-  // }
+  _handleFavoriteClick() {
+    this._changeData(
+      Object.assign(
+        {},
+        this._pointItem,
+        {
+          isFavorite: !this._pointItem.isFavorite,
+        },
+      ),
+    );
+  }
 }
