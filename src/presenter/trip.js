@@ -23,6 +23,7 @@ export default class Trip {
     this._pointPresenter = new Map();
 
     this._handlePointChange = this._handlePointChange.bind(this);
+    this._handleModeChange = this._handleModeChange.bind(this);
     this._pointListWrapper = new PointListWrapperView();
   }
 
@@ -35,6 +36,10 @@ export default class Trip {
 
     render(this._tripMainView, this._pointListWrapper);
     this._renderTrip();
+  }
+
+  _handleModeChange() {
+    this._pointPresenter.forEach((presenter) => presenter.resetView());
   }
 
   _handlePointChange(updatedPoint) {
@@ -56,7 +61,7 @@ export default class Trip {
 
   _renderPoint(point) {
     //TODO: Как в _handlePointChange попадают данные, если нет вызова фунции и туда не передаётся данные.
-    const pointPresenter = new PointPresenter(this._pointListWrapper, this._handlePointChange);
+    const pointPresenter = new PointPresenter(this._pointListWrapper, this._handlePointChange, this._handleModeChange);
     pointPresenter.init(point);
     this._pointPresenter.set(point.id, pointPresenter);
   }
