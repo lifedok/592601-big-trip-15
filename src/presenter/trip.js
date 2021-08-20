@@ -60,7 +60,6 @@ export default class Trip {
   }
 
   _renderPoint(point) {
-    //TODO: Как в _handlePointChange попадают данные, если нет вызова фунции и туда не передаётся данные.
     const pointPresenter = new PointPresenter(this._pointListWrapper, this._handlePointChange, this._handleModeChange);
     pointPresenter.init(point);
     this._pointPresenter.set(point.id, pointPresenter);

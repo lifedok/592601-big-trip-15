@@ -3,7 +3,7 @@ import {getRandomInObj, getRandomInteger} from '../utils/common';
 
 
 const generateOffers = () => ({
-  title: getRandomInObj(OFFER_TITTLES),  //TODO: generate a unique array with non-repeating properties.
+  title: getRandomInObj(OFFER_TITTLES),
   price: getRandomInteger(1.5, 9) * 10,
 });
 
