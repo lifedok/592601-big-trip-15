@@ -1,6 +1,6 @@
 import Abstract from './abstract';
 
-export default class TripEventMsg extends Abstract {
+export default class ServiceMessage extends Abstract {
 
   constructor(message) {
     super();

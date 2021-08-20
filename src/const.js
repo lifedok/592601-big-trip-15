@@ -6,7 +6,7 @@ export const OFFER_TITTLES = {
   'Travel by train': 'train',
 };
 
-export const POINTS_TYPE = [
+export const POINT_TYPES = [
   'taxi', 'bus', 'train', 'ship', 'drive', 'flight', 'check-in', 'sightseeing', 'restaurant',
 ];
 

@@ -3,91 +3,104 @@ import TripInfoHeaderView from '../views/header/trip-info-header.js';
 import TripControlsWrapperView from '../views/header/trip-controls-wrapper.js';
 import TripTabsHeaderView from '../views/header/trip-tabs-header.js';
 import TripFiltersHeaderView from '../views/header/trip-filters-header';
-import NewEventButtonView from '../views/header/new-event-button.js';
+import NewPointButtonView from '../views/header/new-point-button.js';
 
 // main
-import TripEventSortView from '../views/trip-event-sort';
-import TripEventListWrapperView from '../views/trip-event-list-wrapper';
-import TripEventModifyItemView from '../views/trip-event-modify-item';
-import TripEventItemView from '../views/trip-event-item';
+import PointSortView from '../views/point-sort';
+import PointListWrapperView from '../views/point-list-wrapper';
+import PointItemModifyView from '../views/point-item-modify';
+import PointItemView from '../views/point-item';
+import PointPresenter from './point';
 
-// warning message
-import TripEventMsgView from '../views/trip-event-msg';
+// service message
+import ServiceMessage from '../views/service-message';
 import {render, replace} from '../utils/render';
 
 
 export default class Trip {
-  constructor(tripEventsHeaderView, tripEventsMainView) {
-    this._tripEventsHeaderView = tripEventsHeaderView;
-    this._tripEventsMainView = tripEventsMainView;
+  constructor(tripHeaderView, tripMainView) {
+    this._tripHeaderView = tripHeaderView;
+    this._tripMainView = tripMainView;
 
-    this._tripEventListWrapper = new TripEventListWrapperView();
+    this._pointListWrapper = new PointListWrapperView();
   }
 
-  init(tripEventList) {
-    this._tripEventList = tripEventList;
+  init(points) {
+    this._points = points;
 
 
     this._renderHeader();
     this._renderSort();
 
-    render(this._tripEventsMainView, this._tripEventListWrapper);
+    render(this._tripMainView, this._pointListWrapper);
     this._renderTrip();
   }
 
   _renderSort() {
-    render(this._tripEventsMainView, new TripEventSortView());
+    render(this._tripMainView, new PointSortView());
   }
 
   _renderFilter() {
     render(this._controlsWrapperView, new TripFiltersHeaderView());
   }
 
-  _renderEvents() {
-    this._tripEventList.map((event) => this._renderEvent(event));
+  _renderPoints() {
+    this._points.map((point) => this._renderPoint(point));
   }
 
-  _renderEvent(event) {
-    const tripEventEditComponent = new TripEventModifyItemView(event, true);
-    const tripEventItemView = new TripEventItemView(event);
+  _renderPoint(point) {
+    const pointEditComponent = new PointItemModifyView(point, true);
+    const pointItemView = new PointItemView(point);
 
-    const replaceTripToEditForm = () => {
-      replace(tripEventEditComponent, tripEventItemView);
+    const replacePointToEditForm = () => {
+      replace(pointEditComponent, pointItemView);
     };
 
-    const replaceFormToItem = () => {
-      replace(tripEventItemView, tripEventEditComponent);
+    const replaceFormToPointItem = () => {
+      replace(pointItemView, pointEditComponent);
     };
 
     const onEscKeyDown = (evt) => {
       if (evt.key === 'Escape' || evt.key === 'Esc') {
         evt.preventDefault();
-        replaceFormToItem();
+        replaceFormToPointItem();
         document.removeEventListener('keydown', onEscKeyDown);
       }
     };
 
-    const closeTripEventEditView = () => {
-      replaceFormToItem();
+    const closeTripPointEditView = () => {
+      replaceFormToPointItem();
       document.removeEventListener('keydown', onEscKeyDown);
     };
 
-    tripEventItemView.setOpenClickHandler(() => {
-      replaceTripToEditForm();
+    pointItemView.setOpenClickHandler(() => {
+      //  закрыть все евенты путешествий
+      this._renderPoints();
+
+      // и потом открыть одну нужную.
+      replacePointToEditForm();
       document.addEventListener('keydown', onEscKeyDown);
     });
 
-    tripEventEditComponent.setCloseClickHandler(() => closeTripEventEditView());
-    tripEventEditComponent.setResetClickHandler(() => closeTripEventEditView());
-    tripEventEditComponent.setFormSubmitHandler(() => closeTripEventEditView());
-    tripEventEditComponent.setSaveClickHandler(() => closeTripEventEditView());
+    pointItemView.setIsFavoriteClickHandler(() => {
+      point.isFavorite = !point.isFavorite;
+      return new PointItemView(...point);
+    });
 
-    render(this._tripEventListWrapper, tripEventItemView);
+    pointEditComponent.setCloseClickHandler(() => closeTripPointEditView());
+    pointEditComponent.setResetClickHandler(() => closeTripPointEditView());
+    pointEditComponent.setFormSubmitHandler(() => closeTripPointEditView());
+    pointEditComponent.setSaveClickHandler(() => closeTripPointEditView());
+
+    render(this._pointListWrapper, pointItemView);
+
+    // const pointPresenter = new PointPresenter(this._pointListWrapper);
+    // pointPresenter.init(point);
   }
 
-  _renderNoEventTrip() {
-    this._noEventComponent = new TripEventMsgView('Click New Event to create your first point');
-    render(this._tripEventListWrapper, this._noEventComponent);
+  _renderNoPointInTrip() {
+    this._noPointInTrip = new ServiceMessage('Click New Event to create your first point');
+    render(this._pointListWrapper, this._noPointInTrip);
   }
 
   _renderHeader() {
@@ -95,19 +108,19 @@ export default class Trip {
     this._tripTabsHeaderView = new TripTabsHeaderView();
 
 
-    render(this._tripEventsHeaderView, new TripInfoHeaderView(this._tripEventList));
-    render(this._tripEventsHeaderView, this._controlsWrapperView);
+    render(this._tripHeaderView, new TripInfoHeaderView(this._points));
+    render(this._tripHeaderView, this._controlsWrapperView);
     render(this._controlsWrapperView, this._tripTabsHeaderView);
     this._renderFilter();
-    render(this._tripEventsHeaderView, new NewEventButtonView());
+    render(this._tripHeaderView, new NewPointButtonView());
   }
 
   _renderTrip() {
 
-    if (!this._tripEventList.length) {
-      this._renderNoEventTrip();
+    if (!this._points.length) {
+      this._renderNoPointInTrip();
     } else {
-      this._renderEvents();
+      this._renderPoints();
     }
   }
 }

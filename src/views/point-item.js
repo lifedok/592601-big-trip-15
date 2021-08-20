@@ -1,7 +1,7 @@
 import Abstract from './abstract';
 
 
-const createTripEventItemTemplate = (item) => {
+const createPointItemTemplate = (item) => {
   const {type, destination, offers, isFavorite} = item;
 
   const createOffersTemplate = () => (
@@ -22,6 +22,7 @@ const createTripEventItemTemplate = (item) => {
     return `${hours ? `${hours}H ` : ''}${minutes}M`;
   };
 
+  console.log('test', isFavorite);
   return `<li class="trip-events__item">
       <div class="event">
         <time class="event__date" datetime="2019-03-18">${item.dateFrom.format('MMM D')}</time>
@@ -65,17 +66,18 @@ const createTripEventItemTemplate = (item) => {
 };
 
 
-export default class TripEventItem extends Abstract {
+export default class PointItem extends Abstract {
 
-  constructor(item) {
+  constructor(point) {
     super();
-    this._item = item;
+    this._point = point;
 
     this._openClickHandler = this._openClickHandler.bind(this);
+    this._favoriteClickHandler = this._favoriteClickHandler.bind(this);
   }
 
   getTemplate() {
-    return createTripEventItemTemplate(this._item);
+    return createPointItemTemplate(this._point);
   }
 
   _openClickHandler(evt) {
@@ -87,4 +89,16 @@ export default class TripEventItem extends Abstract {
     this._callback.openClick = callback;
     this.getElement().querySelector('.event__rollup-btn').addEventListener('click', this._openClickHandler);
   }
+
+  _favoriteClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.favoriteClick();
+  }
+
+  setIsFavoriteClickHandler(callback) {
+    this._callback.favoriteClick = callback;
+    this.getElement().querySelector('.event__favorite-btn').addEventListener('click', this._favoriteClickHandler);
+  }
+
+
 }

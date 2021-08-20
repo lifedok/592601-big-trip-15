@@ -1,4 +1,4 @@
-import {OFFER_TITTLES, POINTS_TYPE} from '../const.js';
+import {OFFER_TITTLES, POINT_TYPES} from '../const.js';
 import {getRandomInObj, getRandomInteger} from '../utils/common';
 
 
@@ -8,8 +8,8 @@ const generateOffers = () => ({
 });
 
 const getOfferType = () => {
-  const randomIndex = getRandomInteger(0, POINTS_TYPE.length - 1);
-  return POINTS_TYPE[randomIndex];
+  const randomIndex = getRandomInteger(0, POINT_TYPES.length - 1);
+  return POINT_TYPES[randomIndex];
 };
 
 
