@@ -22,7 +22,6 @@ const createPointItemTemplate = (item) => {
     return `${hours ? `${hours}H ` : ''}${minutes}M`;
   };
 
-  console.log('test', isFavorite);
   return `<li class="trip-events__item">
       <div class="event">
         <time class="event__date" datetime="2019-03-18">${item.dateFrom.format('MMM D')}</time>

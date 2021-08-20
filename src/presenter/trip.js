@@ -8,13 +8,11 @@ import NewPointButtonView from '../views/header/new-point-button.js';
 // main
 import PointSortView from '../views/point-sort';
 import PointListWrapperView from '../views/point-list-wrapper';
-import PointItemModifyView from '../views/point-item-modify';
-import PointItemView from '../views/point-item';
 import PointPresenter from './point';
 
 // service message
 import ServiceMessage from '../views/service-message';
-import {render, replace} from '../utils/render';
+import {render} from '../utils/render';
 
 
 export default class Trip {
@@ -49,53 +47,8 @@ export default class Trip {
   }
 
   _renderPoint(point) {
-    const pointEditComponent = new PointItemModifyView(point, true);
-    const pointItemView = new PointItemView(point);
-
-    const replacePointToEditForm = () => {
-      replace(pointEditComponent, pointItemView);
-    };
-
-    const replaceFormToPointItem = () => {
-      replace(pointItemView, pointEditComponent);
-    };
-
-    const onEscKeyDown = (evt) => {
-      if (evt.key === 'Escape' || evt.key === 'Esc') {
-        evt.preventDefault();
-        replaceFormToPointItem();
-        document.removeEventListener('keydown', onEscKeyDown);
-      }
-    };
-
-    const closeTripPointEditView = () => {
-      replaceFormToPointItem();
-      document.removeEventListener('keydown', onEscKeyDown);
-    };
-
-    pointItemView.setOpenClickHandler(() => {
-      //  закрыть все евенты путешествий
-      this._renderPoints();
-
-      // и потом открыть одну нужную.
-      replacePointToEditForm();
-      document.addEventListener('keydown', onEscKeyDown);
-    });
-
-    pointItemView.setIsFavoriteClickHandler(() => {
-      point.isFavorite = !point.isFavorite;
-      return new PointItemView(...point);
-    });
-
-    pointEditComponent.setCloseClickHandler(() => closeTripPointEditView());
-    pointEditComponent.setResetClickHandler(() => closeTripPointEditView());
-    pointEditComponent.setFormSubmitHandler(() => closeTripPointEditView());
-    pointEditComponent.setSaveClickHandler(() => closeTripPointEditView());
-
-    render(this._pointListWrapper, pointItemView);
-
-    // const pointPresenter = new PointPresenter(this._pointListWrapper);
-    // pointPresenter.init(point);
+    const pointPresenter = new PointPresenter(this._pointListWrapper);
+    pointPresenter.init(point);
   }
 
   _renderNoPointInTrip() {
