@@ -63,22 +63,6 @@ export default class Point {
     remove(this._pointEditComponent);
   }
 
-
-  // reInit() { //TODO: connect it and remove copy/paste
-  //   const prevPointItemComponent = this._pointItemComponent;
-  //   const prevPointEditComponent = this._pointEditComponent;
-  //
-  //   if (this._pointListWrapper.getElement().contains(prevPointItemComponent.getElement())) {
-  //     replace(this._pointItemComponent, prevPointItemComponent);
-  //   }
-  //
-  //   if (this._pointListWrapper.getElement().contains(prevPointEditComponent.getElement())) {
-  //     replace(this._pointEditComponent, prevPointEditComponent);
-  //   }
-  //   remove(prevPointItemComponent);
-  //   remove(prevPointEditComponent);
-  // }
-
   resetView() {
     if (this._mode !== Mode.DEFAULT) {
       this._replaceFormToPointItem();

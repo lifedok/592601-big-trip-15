@@ -69,8 +69,6 @@ export default class Trip {
   _clearPointList() {
     this._pointPresenter.forEach((presenter) => presenter.destroy());
     this._pointPresenter.clear();
-    // this._renderedTaskCount = TASK_COUNT_PER_STEP;
-    // remove(this._loadMoreButtonComponent);
   }
 
   _renderNoPointInTrip() {
