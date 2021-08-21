@@ -1,6 +1,6 @@
 import Abstract from './abstract';
 
-const createTripEventSortTemplate = (sorts) => {
+const createPointSortTemplate = (sorts) => {
 
   const createSortTemplate = () =>
     sorts.map((sort) => `
@@ -19,7 +19,7 @@ const createTripEventSortTemplate = (sorts) => {
     `);
 };
 
-export default class TripEventSort extends Abstract {
+export default class PointSort extends Abstract {
 
   constructor() {
     super();
@@ -27,6 +27,6 @@ export default class TripEventSort extends Abstract {
   }
 
   getTemplate() {
-    return createTripEventSortTemplate(this._sorts);
+    return createPointSortTemplate(this._sorts);
   }
 }

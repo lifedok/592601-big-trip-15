@@ -1,9 +1,9 @@
-import {OFFER_TITTLES, POINTS_TYPE, CITIES} from '../const.js';
+import {OFFER_TITTLES, POINT_TYPES, CITIES} from '../const.js';
 import Abstract from './abstract';
 import {capitalizeFirstLetter, generateRandomBoolean, getRandomInteger} from '../utils/common';
 
-const createTripEventModifyItemTemplate = (tripEvent, isEdit) => {
-  const {type, offers, destination} = tripEvent;
+const createPointItemModifyTemplate = (point, isEdit) => {
+  const {type, offers, destination} = point;
 
   const createOffersTemplate = () => (
     isEdit === true ?
@@ -40,11 +40,11 @@ const createTripEventModifyItemTemplate = (tripEvent, isEdit) => {
     destination.pictures.map((picture) => !picture.src ? '' : `<img class="event__photo" src=${picture.src} alt=${picture.description}>`).join('')
   );
 
-  const createPointsSelectTemplate = () => (
-    POINTS_TYPE.map((point) =>
+  const createPointTypesTemplate = () => (
+    POINT_TYPES.map((pointType) =>
       `<div class="event__type-item">
-        <input id="event-type-${point}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${point}">
-        <label class="event__type-label  event__type-label--${point}" for="event-type-${point}-1">${capitalizeFirstLetter(point)}</label>
+        <input id="event-type-${pointType}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${pointType}">
+        <label class="event__type-label  event__type-label--${pointType}" for="event-type-${pointType}-1">${capitalizeFirstLetter(pointType)}</label>
       </div>`).join('')
   );
 
@@ -65,7 +65,7 @@ const createTripEventModifyItemTemplate = (tripEvent, isEdit) => {
           <div class="event__type-list">
             <fieldset class="event__type-group">
               <legend class="visually-hidden">Event type</legend>
-              ${createPointsSelectTemplate()}
+              ${createPointTypesTemplate()}
             </fieldset>
           </div>
         </div>
@@ -84,11 +84,11 @@ const createTripEventModifyItemTemplate = (tripEvent, isEdit) => {
         <div class="event__field-group  event__field-group--time">
           <label class="visually-hidden" for="event-start-time-1">From</label>
           <input class="event__input  event__input--time" 
-          id="event-start-time-1" type="text" name="event-start-time" value="${tripEvent.dateFrom.format('DD/MM/YY HH:mm')}">
+          id="event-start-time-1" type="text" name="event-start-time" value="${point.dateFrom.format('DD/MM/YY HH:mm')}">
           &mdash;
           <label class="visually-hidden" for="event-end-time-1">To</label>
           <input class="event__input  event__input--time" 
-          id="event-end-time-1" type="text" name="event-end-time" value="${tripEvent.dateTo.format('DD/MM/YY HH:mm')}">
+          id="event-end-time-1" type="text" name="event-end-time" value="${point.dateTo.format('DD/MM/YY HH:mm')}">
         </div>
 
         <div class="event__field-group  event__field-group--price">
@@ -144,7 +144,7 @@ const createTripEventModifyItemTemplate = (tripEvent, isEdit) => {
   `;
 };
 
-export default class TripEventModifyItem extends Abstract {
+export default class PointItemModify extends Abstract {
 
   constructor(tripEvent, isEdit) {
     super();
@@ -158,7 +158,7 @@ export default class TripEventModifyItem extends Abstract {
   }
 
   getTemplate() {
-    return createTripEventModifyItemTemplate(this._tripEvent, this._isEdit);
+    return createPointItemModifyTemplate(this._tripEvent, this._isEdit);
   }
 
   // form submit
