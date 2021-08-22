@@ -45,10 +45,13 @@ export default class PointSort extends Abstract {
     if (evt.target.tagName !== 'LABEL') {
       return;
     }
+    if (evt.target.dataset.sortType === SORT_TYPES.OFFERS || evt.target.dataset.sortType === SORT_TYPES.EVENT) {
+      return;
+    }
 
     evt.preventDefault();
     const parent = evt.target.parentElement;
-    parent.getElementsByTagName('input').checked === true; //TODO: add checked status. Now not call, so does't work it
+    parent.querySelector('input').checked = true;
     this._callback.sortTypeChange(evt.target.dataset.sortType);
   }
 
