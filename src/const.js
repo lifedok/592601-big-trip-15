@@ -11,3 +11,17 @@ export const POINT_TYPES = [
 ];
 
 export const CITIES = ['Geneva', 'Berlin', 'Athens', 'Tallinn', 'Riga', 'Vologda'];
+
+export const FILTER_TYPES = {
+  EVERYTHING: 'everything',
+  FUTURE: 'future',
+  PAST: 'past',
+};
+
+export const SORT_TYPES = {
+  DAY: 'day',
+  EVENT: 'event',
+  TIME: 'time',
+  PRICE: 'price',
+  OFFERS: 'offers',
+};
