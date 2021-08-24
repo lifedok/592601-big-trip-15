@@ -4,7 +4,7 @@ import {capitalizeFirstLetter, generateRandomBoolean, getRandomInteger} from '..
 import {generateTripDestinationData} from '../mock/trip-destination-data';
 
 const createPointItemModifyTemplate = (data, isEdit) => {
-  const {type, offers, destination, isDescription, isPictures, pointType} = data;
+  const {type, offers, destination, isDescription, isPictures, pointType, destinationCity} = data;
 
   const createOffersTemplate = () => (
     isEdit === true ?
@@ -77,7 +77,7 @@ const createPointItemModifyTemplate = (data, isEdit) => {
             ${type}
           </label>
           <input class="event__input  event__input--destination" id="event-destination-1" 
-                 type="text" name="event-destination" value="${destination.city}" list="destination-list-1">
+                 type="text" name="event-destination" value="${destinationCity}" list="destination-list-1">
           <datalist id="destination-list-1">
             ${createDestinationListTemplate()}
           </datalist>
@@ -157,6 +157,7 @@ export default class PointItemModify extends SmartView {
     this._cancelClickHandler = this._cancelClickHandler.bind(this);
     this._closeClickHandler = this._closeClickHandler.bind(this);
     this._choosePointTypeClickHandler = this._choosePointTypeClickHandler.bind(this);
+    this._selectingDestinationInputHandler = this._selectingDestinationInputHandler.bind(this);
 
     this._setOuterHandlers();
     this._setInnerHandlers();
@@ -192,7 +193,7 @@ export default class PointItemModify extends SmartView {
   // form submit
   _formSubmitHandler(evt) {
     evt.preventDefault();
-    this._callback.formSubmit(PointItemModify.parsePointToDataState(this._data));
+    this._callback.formSubmit(PointItemModify.parseDataStateToPoint(this._data));
   }
 
   setFormSubmitHandler(callback) {
@@ -232,28 +233,25 @@ export default class PointItemModify extends SmartView {
     if (evt.target.tagName !== 'LABEL') {
       return;
     }
-
     const parent = evt.target.parentElement;
     parent.querySelector('input').checked = true;
+
     this.updateData({
       pointType: evt.target.innerText,
+      destinationCity: this._data.destinationCity,
     });
   }
 
   _selectingDestinationInputHandler(evt) {
     evt.preventDefault();
-    let isNewType = false;
     CITIES.map((city) => {
       if(evt.data === city) {
-        return isNewType = true;
+        this.updateData({
+          destination: generateTripDestinationData(), //TODO: не рендерит новые данные при изменении инпута
+          destinationCity: evt.target.value,
+        }, true);
       }
     });
-
-    if (isNewType) {
-      this.updateData({ // TODO: Uncaught TypeError: this.updateData is not a function не находится в этом this, по-этому ругается. Как сделать, чтобы сгенерировать новые данные на основе выбора в input.
-        destination: generateTripDestinationData(),
-      }, true);
-    }
   }
 
   static parsePointToDataState(point) {
@@ -264,6 +262,7 @@ export default class PointItemModify extends SmartView {
         pointType: point.type,
         isDescription: !!point.destination.description,
         isPictures: !!point.destination.pictures.length,
+        destinationCity: point.destination.city,
       },
     );
   }
@@ -280,10 +279,14 @@ export default class PointItemModify extends SmartView {
     if (!state.isPictures) {
       state.isPictures = null;
     }
+    if (!state.destinationCity) {
+      state.destinationCity = null;
+    }
 
     delete state.pointType;
     delete state.isDescription;
     delete state.isPictures;
+    delete state.destinationCity;
 
     return state;
   }
