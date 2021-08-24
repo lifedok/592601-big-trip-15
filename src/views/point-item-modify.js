@@ -158,6 +158,7 @@ export default class PointItemModify extends SmartView {
     this._closeClickHandler = this._closeClickHandler.bind(this);
     this._choosePointTypeClickHandler = this._choosePointTypeClickHandler.bind(this);
 
+    this._setOuterHandlers();
     this._setInnerHandlers();
   }
 
@@ -173,8 +174,14 @@ export default class PointItemModify extends SmartView {
   }
 
   restoreHandlers() {
+    this._setOuterHandlers();
     this._setInnerHandlers();
     this.setFormSubmitHandler(this._callback.formSubmit);
+  }
+
+  _setOuterHandlers() {
+    this.getElement().querySelector('.event__reset-btn').addEventListener('click', this._cancelClickHandler);
+    this.getElement().querySelector('.event__rollup-btn').addEventListener('click', this._closeClickHandler);
   }
 
   _setInnerHandlers() {
