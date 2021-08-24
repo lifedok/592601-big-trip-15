@@ -4,7 +4,7 @@ import {capitalizeFirstLetter, generateRandomBoolean, getRandomInteger} from '..
 import {generateTripDestinationData} from '../mock/trip-destination-data';
 
 const createPointItemModifyTemplate = (data, isEdit) => {
-  const {type, offers, destination, isDescription, isPictures} = data;
+  const {type, offers, destination, isDescription, isPictures, pointType} = data;
 
   const createOffersTemplate = () => (
     isEdit === true ?
@@ -42,10 +42,10 @@ const createPointItemModifyTemplate = (data, isEdit) => {
   );
 
   const createPointTypesTemplate = () => (
-    POINT_TYPES.map((pointType) =>
+    POINT_TYPES.map((_pointType) =>
       `<div class="event__type-item">
-        <input id="event-type-${pointType}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${pointType}">
-        <label class="event__type-label  event__type-label--${pointType}" for="event-type-${pointType}-1">${capitalizeFirstLetter(pointType)}</label>
+        <input id="event-type-${_pointType}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${_pointType}">
+        <label class="event__type-label  event__type-label--${_pointType}" for="event-type-${_pointType}-1">${capitalizeFirstLetter(_pointType)}</label>
       </div>`).join('')
   );
 
@@ -59,7 +59,7 @@ const createPointItemModifyTemplate = (data, isEdit) => {
         <div class="event__type-wrapper">
           <label class="event__type  event__type-btn" for="event-type-toggle-1">
             <span class="visually-hidden">Choose event type</span>
-            <img class="event__type-icon" width="17" height="17" src="img/icons/${type.toLowerCase()}.png" alt="Event type icon">
+            <img class="event__type-icon" width="17" height="17" src="img/icons/${pointType.toLowerCase()}.png" alt="Event type icon">
           </label>
           <input class="event__type-toggle visually-hidden" id="event-type-toggle-1" type="checkbox">
 
@@ -156,7 +156,7 @@ export default class PointItemModify extends SmartView {
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
     this._cancelClickHandler = this._cancelClickHandler.bind(this);
     this._closeClickHandler = this._closeClickHandler.bind(this);
-    this._togglePointTypesClickHandler = this._togglePointTypesClickHandler.bind(this);
+    this._choosePointTypeClickHandler = this._choosePointTypeClickHandler.bind(this);
 
     this._setInnerHandlers();
   }
@@ -178,7 +178,7 @@ export default class PointItemModify extends SmartView {
   }
 
   _setInnerHandlers() {
-    this.getElement().querySelector('.event__type-btn').addEventListener('click', this._togglePointTypesClickHandler);
+    this.getElement().querySelector('.event__type-group').addEventListener('click', this._choosePointTypeClickHandler);
     this.getElement().querySelector('.event__input--destination').addEventListener('input', this._selectingDestinationInputHandler);
   }
 
@@ -219,11 +219,17 @@ export default class PointItemModify extends SmartView {
     this.getElement().querySelector('.event__rollup-btn').addEventListener('click', this._closeClickHandler);
   }
 
-  //toggle PointTypes list
-  _togglePointTypesClickHandler(evt) {
+  //change Point Type
+  _choosePointTypeClickHandler(evt) {
     evt.preventDefault();
+    if (evt.target.tagName !== 'LABEL') {
+      return;
+    }
+
+    const parent = evt.target.parentElement;
+    parent.querySelector('input').checked = true;
     this.updateData({
-      // isOpenPointTypes: !this._data.isOpenPointTypes,
+      pointType: evt.target.innerText,
     });
   }
 
@@ -248,7 +254,7 @@ export default class PointItemModify extends SmartView {
       {},
       point,
       {
-        // isOpenPointTypes: point.isOpenPointTypes = false,
+        pointType: point.type,
         isDescription: !!point.destination.description,
         isPictures: !!point.destination.pictures.length,
       },
@@ -258,9 +264,9 @@ export default class PointItemModify extends SmartView {
   static parseDataStateToPoint(state) {
     state = Object.assign({}, state);
 
-    // if (!state.isOpenPointTypes) {
-    //   state.isOpenPointTypes = null;
-    // }
+    if (!state.pointType) {
+      state.pointType = null;
+    }
     if (!state.isDescription) {
       state.isDescription = null;
     }
@@ -268,7 +274,7 @@ export default class PointItemModify extends SmartView {
       state.isPictures = null;
     }
 
-    // delete state.isOpenPointTypes;
+    delete state.pointType;
     delete state.isDescription;
     delete state.isPictures;
 
