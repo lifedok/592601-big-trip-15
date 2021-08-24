@@ -37,9 +37,8 @@ export default class Point {
     this._pointItemComponent.setIsFavoriteClickHandler(this._handleFavoriteClick);
     // edit item click
     this._pointEditComponent.setCloseClickHandler(() => this._closePointEditView());
-    this._pointEditComponent.setResetClickHandler(() => this._closePointEditView());
+    this._pointEditComponent.setCancelClickHandler(() => this._closePointEditView());
     this._pointEditComponent.setFormSubmitHandler(() => this._closePointEditView());
-    this._pointEditComponent.setSaveClickHandler(() => this._closePointEditView());
 
     if (prevPointEditComponent === null || prevPointItemComponent === null) {
       render(this._pointListWrapper, this._pointItemComponent);

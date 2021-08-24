@@ -1,9 +1,10 @@
 import {OFFER_TITTLES, POINT_TYPES, CITIES} from '../const.js';
-import Abstract from './abstract';
+import SmartView from './smart.js';
 import {capitalizeFirstLetter, generateRandomBoolean, getRandomInteger} from '../utils/common';
+import {generateTripDestinationData} from '../mock/trip-destination-data';
 
-const createPointItemModifyTemplate = (point, isEdit) => {
-  const {type, offers, destination} = point;
+const createPointItemModifyTemplate = (data, isEdit) => {
+  const {type, offers, destination, isDescription, isPictures} = data;
 
   const createOffersTemplate = () => (
     isEdit === true ?
@@ -60,7 +61,7 @@ const createPointItemModifyTemplate = (point, isEdit) => {
             <span class="visually-hidden">Choose event type</span>
             <img class="event__type-icon" width="17" height="17" src="img/icons/${type.toLowerCase()}.png" alt="Event type icon">
           </label>
-          <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox">
+          <input class="event__type-toggle visually-hidden" id="event-type-toggle-1" type="checkbox">
 
           <div class="event__type-list">
             <fieldset class="event__type-group">
@@ -68,6 +69,7 @@ const createPointItemModifyTemplate = (point, isEdit) => {
               ${createPointTypesTemplate()}
             </fieldset>
           </div>
+          
         </div>
 
         <div class="event__field-group  event__field-group--destination">
@@ -84,11 +86,11 @@ const createPointItemModifyTemplate = (point, isEdit) => {
         <div class="event__field-group  event__field-group--time">
           <label class="visually-hidden" for="event-start-time-1">From</label>
           <input class="event__input  event__input--time" 
-          id="event-start-time-1" type="text" name="event-start-time" value="${point.dateFrom.format('DD/MM/YY HH:mm')}">
+          id="event-start-time-1" type="text" name="event-start-time" value="${data.dateFrom.format('DD/MM/YY HH:mm')}">
           &mdash;
           <label class="visually-hidden" for="event-end-time-1">To</label>
           <input class="event__input  event__input--time" 
-          id="event-end-time-1" type="text" name="event-end-time" value="${point.dateTo.format('DD/MM/YY HH:mm')}">
+          id="event-end-time-1" type="text" name="event-end-time" value="${data.dateTo.format('DD/MM/YY HH:mm')}">
         </div>
 
         <div class="event__field-group  event__field-group--price">
@@ -102,7 +104,7 @@ const createPointItemModifyTemplate = (point, isEdit) => {
         <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
         <button class="event__reset-btn" type="reset">Cancel</button>
         
-<!--        optional button according to the state of the event.-->
+<!--        optional button according to the state of the point (create or edit).-->
           ${isEdit === true ?
     `<button class="event__rollup-btn" type="button">
                     <span class="visually-hidden">Open event</span>
@@ -123,12 +125,12 @@ const createPointItemModifyTemplate = (point, isEdit) => {
         `}
 
 
-        ${!destination.description && !destination.pictures.length ? '' :
+        ${!isDescription && !isPictures ? '' :
     `<section class="event__section  event__section--destination">
             <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-            ${!destination.description ? '' : `<p class="event__destination-description">${destination.description}</p>`}
+            ${!isDescription ? '' : `<p class="event__destination-description">${destination.description}</p>`}
   
-            ${!destination.pictures.length ? '' : `
+            ${!isPictures ? '' : `
               <div class="event__photos-container">
                 <div class="event__photos-tape">
                  ${createPicturesSrcTemplate()}
@@ -144,27 +146,46 @@ const createPointItemModifyTemplate = (point, isEdit) => {
   `;
 };
 
-export default class PointItemModify extends Abstract {
+export default class PointItemModify extends SmartView {
 
-  constructor(tripEvent, isEdit) {
+  constructor(pointEvent, isEdit) {
     super();
-    this._tripEvent = tripEvent;
+    this._data = PointItemModify.parsePointToDataState(pointEvent);
     this._isEdit = isEdit;
 
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
-    this._saveClickHandler = this._saveClickHandler.bind(this);
-    this._resetClickHandler = this._resetClickHandler.bind(this);
+    this._cancelClickHandler = this._cancelClickHandler.bind(this);
     this._closeClickHandler = this._closeClickHandler.bind(this);
+    this._togglePointTypesClickHandler = this._togglePointTypesClickHandler.bind(this);
+
+    this._setInnerHandlers();
+  }
+
+
+  reset(point) {
+    this.updateData(
+      PointItemModify.parsePointToDataState(point),
+    );
   }
 
   getTemplate() {
-    return createPointItemModifyTemplate(this._tripEvent, this._isEdit);
+    return createPointItemModifyTemplate(this._data, this._isEdit);
+  }
+
+  restoreHandlers() {
+    this._setInnerHandlers();
+    this.setFormSubmitHandler(this._callback.formSubmit);
+  }
+
+  _setInnerHandlers() {
+    this.getElement().querySelector('.event__type-btn').addEventListener('click', this._togglePointTypesClickHandler);
+    this.getElement().querySelector('.event__input--destination').addEventListener('input', this._selectingDestinationInputHandler);
   }
 
   // form submit
   _formSubmitHandler(evt) {
     evt.preventDefault();
-    this._callback.formSubmit();
+    this._callback.formSubmit(PointItemModify.parsePointToDataState(this._data));
   }
 
   setFormSubmitHandler(callback) {
@@ -172,26 +193,15 @@ export default class PointItemModify extends Abstract {
     this.getElement().querySelector('form').addEventListener('submit', this._formSubmitHandler);
   }
 
-  // save click
-  _saveClickHandler(evt) {
-    evt.preventDefault();
-    this._callback.saveClick();
-  }
-
-  setSaveClickHandler(callback) {
-    this._callback.saveClick = callback;
-    this.getElement().querySelector('.event__save-btn').addEventListener('click', this._saveClickHandler);
-  }
-
   // reset click
-  _resetClickHandler(evt) {
+  _cancelClickHandler(evt) {
     evt.preventDefault();
     this._callback.resetClick();
   }
 
-  setResetClickHandler(callback) {
+  setCancelClickHandler(callback) {
     this._callback.resetClick = callback;
-    this.getElement().querySelector('.event__reset-btn').addEventListener('click', this._resetClickHandler);
+    this.getElement().querySelector('.event__reset-btn').addEventListener('click', this._cancelClickHandler);
   }
 
   // close click
@@ -207,5 +217,61 @@ export default class PointItemModify extends Abstract {
   setCloseClickHandler(callback) {
     this._callback.closeClick = callback;
     this.getElement().querySelector('.event__rollup-btn').addEventListener('click', this._closeClickHandler);
+  }
+
+  //toggle PointTypes list
+  _togglePointTypesClickHandler(evt) {
+    evt.preventDefault();
+    this.updateData({
+      // isOpenPointTypes: !this._data.isOpenPointTypes,
+    });
+  }
+
+  _selectingDestinationInputHandler(evt) {
+    evt.preventDefault();
+    let isNewType = false;
+    CITIES.map((city) => {
+      if(evt.data === city) {
+        return isNewType = true;
+      }
+    });
+
+    if (isNewType) {
+      this.updateData({ // TODO: Uncaught TypeError: this.updateData is not a function не находится в этом this, по-этому ругается. Как сделать, чтобы сгенерировать новые данные на основе выбора в input.
+        destination: generateTripDestinationData(),
+      }, true);
+    }
+  }
+
+  static parsePointToDataState(point) {
+    return Object.assign(
+      {},
+      point,
+      {
+        // isOpenPointTypes: point.isOpenPointTypes = false,
+        isDescription: !!point.destination.description,
+        isPictures: !!point.destination.pictures.length,
+      },
+    );
+  }
+
+  static parseDataStateToPoint(state) {
+    state = Object.assign({}, state);
+
+    // if (!state.isOpenPointTypes) {
+    //   state.isOpenPointTypes = null;
+    // }
+    if (!state.isDescription) {
+      state.isDescription = null;
+    }
+    if (!state.isPictures) {
+      state.isPictures = null;
+    }
+
+    // delete state.isOpenPointTypes;
+    delete state.isDescription;
+    delete state.isPictures;
+
+    return state;
   }
 }
