@@ -2,6 +2,7 @@ import {OFFER_TITTLES, POINT_TYPES, CITIES} from '../const.js';
 import SmartView from './smart.js';
 import {capitalizeFirstLetter, generateRandomBoolean, getRandomInteger} from '../utils/common';
 import {generateTripDestinationData} from '../mock/trip-destination-data';
+import {generateTripOfferData} from '../mock/trip-offer-data';
 
 const createPointItemModifyTemplate = (data, isEdit) => {
   const {type, offers, destination, isDescription, isPictures, pointType, destinationCity} = data;
@@ -239,9 +240,11 @@ export default class PointItemModify extends SmartView {
     this.updateData({
       pointType: evt.target.innerText,
       destinationCity: this._data.destinationCity,
+      offers: generateTripOfferData().offers,
     });
   }
 
+  //change input Destination
   _selectingDestinationInputHandler(evt) {
     evt.preventDefault();
     CITIES.map((city) => {

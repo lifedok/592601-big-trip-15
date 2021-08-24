@@ -22,6 +22,7 @@ export default class Point {
     this._onEscKeyDown = this._onEscKeyDown.bind(this);
     this._openPointItemClick = this._openPointItemClick.bind(this);
     this._handleFavoriteClick = this._handleFavoriteClick.bind(this);
+    this._handleFormSubmit = this._handleFormSubmit.bind(this);
   }
 
   init(pointItem) {
@@ -38,7 +39,7 @@ export default class Point {
     // edit item click
     this._pointEditComponent.setCloseClickHandler(() => this._closePointEditView());
     this._pointEditComponent.setCancelClickHandler(() => this._closePointEditView());
-    this._pointEditComponent.setFormSubmitHandler(() => this._closePointEditView());
+    this._pointEditComponent.setFormSubmitHandler(this._handleFormSubmit);
 
     if (prevPointEditComponent === null || prevPointItemComponent === null) {
       render(this._pointListWrapper, this._pointItemComponent);
@@ -84,6 +85,7 @@ export default class Point {
   _onEscKeyDown(evt) {
     if (evt.key === 'Escape' || evt.key === 'Esc') {
       evt.preventDefault();
+      this._pointEditComponent.reset(this._pointItem);
       this._replaceFormToPointItem();
     }
   }
@@ -107,5 +109,11 @@ export default class Point {
         },
       ),
     );
+  }
+
+  _handleFormSubmit(point) {
+    console.log('point', point.type); // TODO: не приходят обновлённые данные
+    this._changeData(point);
+    this._replaceFormToPointItem();
   }
 }
