@@ -264,7 +264,6 @@ export default class PointItemModify extends SmartView {
       {},
       point,
       {
-        // pointType: point.type,
         isDescription: !!point.destination.description,
         isPictures: !!point.destination.pictures.length,
       },
@@ -272,7 +271,6 @@ export default class PointItemModify extends SmartView {
   }
 
   static parseDataStateToPoint(state) {
-
     state = Object.assign({}, state);
     if (!state.isDescription) {
       state.isDescription = null;
