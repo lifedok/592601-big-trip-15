@@ -112,7 +112,6 @@ export default class Point {
   }
 
   _handleFormSubmit(point) {
-    console.log('point', point); // TODO: не приходят обновлённые данные
     this._changeData(point);
     this._replaceFormToPointItem();
   }

@@ -5,7 +5,7 @@ import {generateTripDestinationData} from '../mock/trip-destination-data';
 import {generateTripOfferData} from '../mock/trip-offer-data';
 
 const createPointItemModifyTemplate = (data, isEdit) => {
-  const {type, offers, destination, isDescription, isPictures, pointType} = data;
+  const {type, offers, destination, isDescription, isPictures} = data;
 
   const createOffersTemplate = () => (
     isEdit === true ?
@@ -43,10 +43,10 @@ const createPointItemModifyTemplate = (data, isEdit) => {
   );
 
   const createPointTypesTemplate = () => (
-    POINT_TYPES.map((_pointType) =>
+    POINT_TYPES.map((pointType) =>
       `<div class="event__type-item">
-        <input id="event-type-${_pointType}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${_pointType}">
-        <label class="event__type-label  event__type-label--${_pointType}" for="event-type-${_pointType}-1">${capitalizeFirstLetter(_pointType)}</label>
+        <input id="event-type-${pointType}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${pointType}">
+        <label class="event__type-label  event__type-label--${pointType}" for="event-type-${pointType}-1">${capitalizeFirstLetter(pointType)}</label>
       </div>`).join('')
   );
 
@@ -60,7 +60,7 @@ const createPointItemModifyTemplate = (data, isEdit) => {
         <div class="event__type-wrapper">
           <label class="event__type  event__type-btn" for="event-type-toggle-1">
             <span class="visually-hidden">Choose event type</span>
-            <img class="event__type-icon" width="17" height="17" src="img/icons/${pointType.toLowerCase()}.png" alt="Event type icon">
+            <img class="event__type-icon" width="17" height="17" src="img/icons/${type.toLowerCase()}.png" alt="Event type icon">
           </label>
           <input class="event__type-toggle visually-hidden" id="event-type-toggle-1" type="checkbox">
 
@@ -237,9 +237,8 @@ export default class PointItemModify extends SmartView {
     const parent = evt.target.parentElement;
     parent.querySelector('input').checked = true;
 
-
     this.updateData({
-      pointType: evt.target.innerText,
+      type: evt.target.innerText,
       offers: generateTripOfferData().offers,
     });
   }
@@ -261,12 +260,11 @@ export default class PointItemModify extends SmartView {
   }
 
   static parsePointToDataState(point) {
-    console.log('point', point);
     return Object.assign(
       {},
       point,
       {
-        pointType: point.type,
+        // pointType: point.type,
         isDescription: !!point.destination.description,
         isPictures: !!point.destination.pictures.length,
       },
@@ -275,12 +273,7 @@ export default class PointItemModify extends SmartView {
 
   static parseDataStateToPoint(state) {
 
-    console.log('TEST ==> state', state);
     state = Object.assign({}, state);
-
-    if (!state.pointType) {
-      state.pointType = null;
-    }
     if (!state.isDescription) {
       state.isDescription = null;
     }
@@ -288,7 +281,6 @@ export default class PointItemModify extends SmartView {
       state.isPictures = null;
     }
 
-    delete state.pointType;
     delete state.isDescription;
     delete state.isPictures;
 
