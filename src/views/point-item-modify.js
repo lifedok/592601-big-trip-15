@@ -5,7 +5,7 @@ import {generateTripDestinationData} from '../mock/trip-destination-data';
 import {generateTripOfferData} from '../mock/trip-offer-data';
 
 const createPointItemModifyTemplate = (data, isEdit) => {
-  const {type, offers, destination, isDescription, isPictures, pointType, destinationCity} = data;
+  const {type, offers, destination, isDescription, isPictures, pointType} = data;
 
   const createOffersTemplate = () => (
     isEdit === true ?
@@ -78,7 +78,7 @@ const createPointItemModifyTemplate = (data, isEdit) => {
             ${type}
           </label>
           <input class="event__input  event__input--destination" id="event-destination-1" 
-                 type="text" name="event-destination" value="${destinationCity}" list="destination-list-1">
+                 type="text" name="event-destination" value="${destination.city}" list="destination-list-1">
           <datalist id="destination-list-1">
             ${createDestinationListTemplate()}
           </datalist>
@@ -240,7 +240,6 @@ export default class PointItemModify extends SmartView {
 
     this.updateData({
       pointType: evt.target.innerText,
-      destinationCity: this._data.destinationCity,
       offers: generateTripOfferData().offers,
     });
   }
@@ -248,12 +247,9 @@ export default class PointItemModify extends SmartView {
   //change input Destination
   _selectingDestinationInputHandler(evt) {
     evt.preventDefault();
-
-    console.log('EST ==>', evt.data);
     CITIES.map((city) => {
       if(evt.data === city) {
         this.updateData({
-          // destination: generateTripDestinationData(), //TODO: не рендерит новые данные при изменении инпута
           destination: {
             city: evt.data,
             pictures: generateTripDestinationData().pictures,
@@ -265,6 +261,7 @@ export default class PointItemModify extends SmartView {
   }
 
   static parsePointToDataState(point) {
+    console.log('point', point);
     return Object.assign(
       {},
       point,
@@ -272,7 +269,6 @@ export default class PointItemModify extends SmartView {
         pointType: point.type,
         isDescription: !!point.destination.description,
         isPictures: !!point.destination.pictures.length,
-        destinationCity: !!point.destinationCity ? point.destinationCity : point.destination.city,
       },
     );
   }
@@ -291,14 +287,10 @@ export default class PointItemModify extends SmartView {
     if (!state.isPictures) {
       state.isPictures = null;
     }
-    if (!state.destinationCity) {
-      state.destinationCity = null;
-    }
 
     delete state.pointType;
     delete state.isDescription;
     delete state.isPictures;
-    delete state.destinationCity;
 
     return state;
   }
