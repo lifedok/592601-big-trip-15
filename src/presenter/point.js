@@ -38,7 +38,7 @@ export default class Point {
     this._pointItemComponent.setIsFavoriteClickHandler(this._handleFavoriteClick);
     // edit item click
     this._pointEditComponent.setCloseClickHandler(() => this._closePointEditView());
-    this._pointEditComponent.setCancelClickHandler(() => this._closePointEditView());
+    this._pointEditComponent.setCancelClickHandler(() => this._cancelPointEditView());
     this._pointEditComponent.setFormSubmitHandler(this._handleFormSubmit);
 
     if (prevPointEditComponent === null || prevPointItemComponent === null) {
@@ -82,12 +82,20 @@ export default class Point {
     this._mode = Mode.DEFAULT;
   }
 
+  _backToDefaultState() {
+    this._pointEditComponent.resetPoint(this._pointItem);
+    this._replaceFormToPointItem();
+  }
+
   _onEscKeyDown(evt) {
     if (evt.key === 'Escape' || evt.key === 'Esc') {
       evt.preventDefault();
-      this._pointEditComponent.reset(this._pointItem);
-      this._replaceFormToPointItem();
+      this._backToDefaultState();
     }
+  }
+
+  _cancelPointEditView() {
+    this._backToDefaultState();
   }
 
   _closePointEditView() {

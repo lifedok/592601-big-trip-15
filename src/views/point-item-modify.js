@@ -165,7 +165,7 @@ export default class PointItemModify extends SmartView {
   }
 
 
-  reset(point) {
+  resetPoint(point) {
     this.updateData(
       PointItemModify.parsePointToDataState(point),
     );
