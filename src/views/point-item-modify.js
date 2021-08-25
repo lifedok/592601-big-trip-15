@@ -237,6 +237,7 @@ export default class PointItemModify extends SmartView {
     const parent = evt.target.parentElement;
     parent.querySelector('input').checked = true;
 
+
     this.updateData({
       pointType: evt.target.innerText,
       destinationCity: this._data.destinationCity,
@@ -247,12 +248,18 @@ export default class PointItemModify extends SmartView {
   //change input Destination
   _selectingDestinationInputHandler(evt) {
     evt.preventDefault();
+
+    console.log('EST ==>', evt.data);
     CITIES.map((city) => {
       if(evt.data === city) {
         this.updateData({
-          destination: generateTripDestinationData(), //TODO: не рендерит новые данные при изменении инпута
-          destinationCity: evt.target.value,
-        }, true);
+          // destination: generateTripDestinationData(), //TODO: не рендерит новые данные при изменении инпута
+          destination: {
+            city: evt.data,
+            pictures: generateTripDestinationData().pictures,
+            description: generateTripDestinationData().description,
+          },
+        });
       }
     });
   }
@@ -265,12 +272,14 @@ export default class PointItemModify extends SmartView {
         pointType: point.type,
         isDescription: !!point.destination.description,
         isPictures: !!point.destination.pictures.length,
-        destinationCity: point.destination.city,
+        destinationCity: !!point.destinationCity ? point.destinationCity : point.destination.city,
       },
     );
   }
 
   static parseDataStateToPoint(state) {
+
+    console.log('TEST ==> state', state);
     state = Object.assign({}, state);
 
     if (!state.pointType) {
