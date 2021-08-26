@@ -1,6 +1,9 @@
 import {OFFER_TITTLES, POINT_TYPES, CITIES} from '../const.js';
 import SmartView from './smart.js';
-import {capitalizeFirstLetter, getRandomInteger} from '../utils/common';
+import {
+  capitalizeFirstLetter,
+  getRandomInteger
+} from '../utils/common';
 import {generateTripDestinationData} from '../mock/trip-destination-data';
 import {generateTripOfferData} from '../mock/trip-offer-data';
 
@@ -11,12 +14,12 @@ const createPointItemModifyTemplate = (data, isEdit) => {
     offers.map((offer) =>
       !offer ? '' :
         `<div class="event__offer-selector">
-        <input class="event__offer-checkbox  visually-hidden" id="event-offer-${offer.id}-1" 
-        type="checkbox" name="event-offer-${OFFER_TITTLES[offer.title]}" ${offer.isChecked}>
-        <label class="event__offer-label" for="event-offer-${offer.id}-1">
-          <span class="event__offer-title">${offer.title}</span>
-          &plus;&euro;&nbsp;
-          <span class="event__offer-price">${offer.price ? offer.price : getRandomInteger(20, 120)}</span>
+          <input class="event__offer-checkbox  visually-hidden" id="event-offer-${offer.id}-1" 
+                 type="checkbox" name="event-offer-${OFFER_TITTLES[offer.title]}" ${offer.isChecked}>
+          <label class="event__offer-label" for="event-offer-${offer.id}-1">
+            <span class="event__offer-title">${offer.title}</span>
+            &plus;&euro;&nbsp;
+            <span class="event__offer-price">${offer.price ? offer.price : getRandomInteger(20, 120)}</span>
       </label>
     </div>`).join('')
   );
@@ -99,16 +102,14 @@ const createPointItemModifyTemplate = (data, isEdit) => {
       </header>
       <section class="event__details">
       
-        ${!offers.length && isEdit === true ? '' :
-    `<section class="event__section  event__section--offers">
-          <h3 class="event__section-title  event__section-title--offers">Offers</h3>
+      <section class="event__section  event__section--offers">
+        <h3 class="event__section-title  event__section-title--offers">Offers</h3>
 
-          <div class="event__available-offers">
-            ${createOffersTemplate()}
-          </div>
-        </section>
-        `}
-
+        <div class="event__available-offers">
+          ${createOffersTemplate()}
+        </div>
+       </section>
+       
 
         ${!isDescription && !isPictures ? '' :
     `<section class="event__section  event__section--destination">
@@ -143,7 +144,6 @@ export default class PointItemModify extends SmartView {
     this._closeClickHandler = this._closeClickHandler.bind(this);
     this._choosePointTypeClickHandler = this._choosePointTypeClickHandler.bind(this);
     this._selectingDestinationInputHandler = this._selectingDestinationInputHandler.bind(this);
-    // this._chooseOfferSelectorClickHandler = this._chooseOfferSelectorClickHandler.bind(this);
 
     this._setOuterHandlers();
     this._setInnerHandlers();
@@ -174,7 +174,6 @@ export default class PointItemModify extends SmartView {
   _setInnerHandlers() {
     this.getElement().querySelector('.event__type-group').addEventListener('click', this._choosePointTypeClickHandler);
     this.getElement().querySelector('.event__input--destination').addEventListener('input', this._selectingDestinationInputHandler);
-    // this.getElement().querySelector('.event__available-offers').addEventListener('click', this._chooseOfferSelectorClickHandler);
   }
 
   // form submit

@@ -3,7 +3,7 @@ import {getRandomInObj, getRandomInteger, generateRandomBoolean, generateRandomS
 
 
 const generateOffers = () => ({
-  id: generateRandomString(8, 15),
+  id: generateRandomString(5, 9),
   isChecked: generateRandomBoolean(0.3) ? 'checked' : '',
   title: getRandomInObj(OFFER_TITTLES),
   price: getRandomInteger(1.5, 9) * 10,
