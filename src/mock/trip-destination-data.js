@@ -45,10 +45,10 @@ const generatePictures = () => {
 };
 
 
-export const generateTripDestinationData = () => {
+export const generateTripDestinationData = (_city) => {
   const COUNT_IMAGES = 7;
 
-  const city = generateCity();
+  const city = _city ? _city : generateCity();
   const description = generateDescription(city);
   const pictures = new Array(COUNT_IMAGES).fill().map(() => generatePictures());
 
