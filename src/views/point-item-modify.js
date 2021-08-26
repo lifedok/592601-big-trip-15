@@ -247,10 +247,10 @@ export default class PointItemModify extends SmartView {
   _selectingDestinationInputHandler(evt) {
     evt.preventDefault();
     CITIES.map((city) => {
-      if(evt.data === city) {
+      if(evt.target.value === city) {
         this.updateData({
           destination: {
-            city: evt.data,
+            city: evt.target.value,
             pictures: generateTripDestinationData().pictures,
             description: generateTripDestinationData().description,
           },
