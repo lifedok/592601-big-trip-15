@@ -14,6 +14,7 @@ export default class Point {
     this._pointListWrapper = pointListWrapper;
     this._changeData = changeData;
     this._changeMode = changeMode;
+    this._isEditCarrentPoint = true;
 
     this._pointItemComponent = null;
     this._pointEditComponent = null;
@@ -31,7 +32,7 @@ export default class Point {
     const prevPointItemComponent = this._pointItemComponent;
     const prevPointEditComponent = this._pointEditComponent;
     this._pointItemComponent = new PointItemView(this._pointItem);
-    this._pointEditComponent = new PointItemModifyView(this._pointItem, true);
+    this._pointEditComponent = new PointItemModifyView(this._pointItem, this._isEditCarrentPoint);
     this._pointCreateComponent = new PointItemModifyView(this._pointItem);
 
     // just point item
@@ -99,7 +100,9 @@ export default class Point {
 
   // for edit point item
   _deletePointItemClick() {
+    // TODO: Call render point list (After deleting all the points, it doesn't see service message.)
     remove(this._pointEditComponent);
+    this._changeData(this._pointItem);
   }
 
   // for create point item

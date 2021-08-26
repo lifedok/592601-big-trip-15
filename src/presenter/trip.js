@@ -133,7 +133,6 @@ export default class Trip {
   }
 
   _renderTrip() {
-
     if (!this._points.length) {
       this._renderNoPointInTrip();
     } else {
