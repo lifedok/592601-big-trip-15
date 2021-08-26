@@ -32,14 +32,17 @@ export default class Point {
     const prevPointEditComponent = this._pointEditComponent;
     this._pointItemComponent = new PointItemView(this._pointItem);
     this._pointEditComponent = new PointItemModifyView(this._pointItem, true);
+    this._pointCreateComponent = new PointItemModifyView(this._pointItem);
 
-
+    // just point item
     this._pointItemComponent.setOpenClickHandler(this._openPointItemClick);
     this._pointItemComponent.setIsFavoriteClickHandler(this._handleFavoriteClick);
     // edit item click
     this._pointEditComponent.setCloseClickHandler(() => this._closePointEditView());
-    this._pointEditComponent.setCancelClickHandler(() => this._cancelPointEditView());
+    this._pointEditComponent.setDeleteClickHandler(() => this._deletePointItemClick());
     this._pointEditComponent.setFormSubmitHandler(this._handleFormSubmit);
+    // create item click
+    this._pointCreateComponent.setCancelClickHandler(() => this._cancelPointEditView());
 
     if (prevPointEditComponent === null || prevPointItemComponent === null) {
       render(this._pointListWrapper, this._pointItemComponent);
@@ -94,18 +97,31 @@ export default class Point {
     }
   }
 
-  _cancelPointEditView() {
-    this._backToDefaultState();
+  // for edit point item
+  _deletePointItemClick() {
+    remove(this._pointEditComponent);
   }
 
-  _closePointEditView() {
-    this._backToDefaultState();
-  }
-
+  // for create point item
   _openPointItemClick() {
     this._replacePointToEditForm();
   }
 
+  _cancelPointEditView() {
+    this._backToDefaultState();
+  }
+
+  // for edit and create point item
+  _closePointEditView() {
+    this._backToDefaultState();
+  }
+
+  _handleFormSubmit(point) {
+    this._changeData(point);
+    this._replaceFormToPointItem();
+  }
+
+  // for just point event item
   _handleFavoriteClick() {
     this._changeData(
       Object.assign(
@@ -116,10 +132,5 @@ export default class Point {
         },
       ),
     );
-  }
-
-  _handleFormSubmit(point) {
-    this._changeData(point);
-    this._replaceFormToPointItem();
   }
 }

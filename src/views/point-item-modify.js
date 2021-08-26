@@ -90,7 +90,7 @@ const createPointItemModifyTemplate = (data, isEdit) => {
         </div>
 
         <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
-        <button class="event__reset-btn" type="reset">Cancel</button>
+        <button class="event__reset-btn" type="reset">${isEdit ? 'Delete' : 'Cancel'}</button>
         
 <!--        optional button according to the state of the point (create or edit).-->
           ${isEdit === true ?
@@ -141,6 +141,7 @@ export default class PointItemModify extends SmartView {
 
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
     this._cancelClickHandler = this._cancelClickHandler.bind(this);
+    this._deleteClickHandler = this._deleteClickHandler.bind(this);
     this._closeClickHandler = this._closeClickHandler.bind(this);
     this._choosePointTypeClickHandler = this._choosePointTypeClickHandler.bind(this);
     this._selectingDestinationInputHandler = this._selectingDestinationInputHandler.bind(this);
@@ -167,8 +168,8 @@ export default class PointItemModify extends SmartView {
   }
 
   _setOuterHandlers() {
-    this.getElement().querySelector('.event__reset-btn').addEventListener('click', this._cancelClickHandler);
-    this.getElement().querySelector('.event__rollup-btn').addEventListener('click', this._closeClickHandler);
+    this.getElement().querySelector('.event__reset-btn').addEventListener('click', this._isEdit ? this._deleteClickHandler : this._cancelClickHandler);
+    this._isEdit && this.getElement().querySelector('.event__rollup-btn').addEventListener('click', this._closeClickHandler);
   }
 
   _setInnerHandlers() {
@@ -187,15 +188,26 @@ export default class PointItemModify extends SmartView {
     this.getElement().querySelector('form').addEventListener('submit', this._formSubmitHandler);
   }
 
-  // reset click
+  // cancel point click
   _cancelClickHandler(evt) {
     evt.preventDefault();
-    this._callback.resetClick();
+    this._callback.cancelClick();
   }
 
   setCancelClickHandler(callback) {
-    this._callback.resetClick = callback;
+    this._callback.cancelClick = callback;
     this.getElement().querySelector('.event__reset-btn').addEventListener('click', this._cancelClickHandler);
+  }
+
+  // delete point click
+  _deleteClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.deleteClick();
+  }
+
+  setDeleteClickHandler(callback) {
+    this._callback.deleteClick = callback;
+    this.getElement().querySelector('.event__reset-btn').addEventListener('click', this._deleteClickHandler);
   }
 
   // close click
@@ -209,6 +221,9 @@ export default class PointItemModify extends SmartView {
   }
 
   setCloseClickHandler(callback) {
+    if(!this._isEdit) {
+      return;
+    }
     this._callback.closeClick = callback;
     this.getElement().querySelector('.event__rollup-btn').addEventListener('click', this._closeClickHandler);
   }

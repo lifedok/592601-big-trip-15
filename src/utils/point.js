@@ -5,3 +5,11 @@ export const sortPointsByDay = (pointA, pointB) => (
 );
 
 export const sortPointsByPrice = (pointA, pointB) => pointB.basePrice - pointA.basePrice;
+
+export const formatPointDate = (date) => {
+  if (!date) {
+    return '';
+  }
+
+  return dayjs(date).format('D MMMM');
+};
