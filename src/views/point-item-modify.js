@@ -1,6 +1,6 @@
 import {OFFER_TITTLES, POINT_TYPES, CITIES} from '../const.js';
 import SmartView from './smart.js';
-import {capitalizeFirstLetter, generateRandomBoolean, getRandomInteger} from '../utils/common';
+import {capitalizeFirstLetter, getRandomInteger} from '../utils/common';
 import {generateTripDestinationData} from '../mock/trip-destination-data';
 import {generateTripOfferData} from '../mock/trip-offer-data';
 
@@ -9,20 +9,17 @@ const createPointItemModifyTemplate = (data, isEdit) => {
 
   const createOffersTemplate = () => (
     isEdit === true ?
-      offers.map((offer) => {
-        const isChecked = generateRandomBoolean(0.3) ? 'checked' : '';
-        return (
-          !offer ? '' :
-            `<div class="event__offer-selector">
-                <input class="event__offer-checkbox  visually-hidden" id="event-offer-${OFFER_TITTLES[offer.title]}-1" 
-                type="checkbox" name="event-offer-${OFFER_TITTLES[offer.title]}" ${isChecked}>
-                <label class="event__offer-label" for="event-offer-${OFFER_TITTLES[offer.title]}-1">
-                  <span class="event__offer-title">${offer.title}</span>
-                  &plus;&euro;&nbsp;
-                  <span class="event__offer-price">${offer.price}</span>
-              </label>
-            </div>`);
-      },
+      offers.map((offer) => (
+        !offer ? '' :
+          `<div class="event__offer-selector">
+              <input class="event__offer-checkbox  visually-hidden" id="event-offer-${offer.id}-1" 
+              type="checkbox" name="event-offer-${OFFER_TITTLES[offer.title]}" ${offer.isChecked}>
+              <label class="event__offer-label" for="event-offer-${offer.id}-1">
+                <span class="event__offer-title">${offer.title}</span>
+                &plus;&euro;&nbsp;
+                <span class="event__offer-price">${offer.price}</span>
+            </label>
+          </div>`),
       ).join('')
       :
       Object.keys(OFFER_TITTLES).map((offer) =>
@@ -252,7 +249,7 @@ export default class PointItemModify extends SmartView {
           destination: {
             city: evt.target.value,
             pictures: generateTripDestinationData().pictures,
-            description: generateTripDestinationData().description,
+            description: generateTripDestinationData(evt.target.value).description,
           },
         });
       }
