@@ -99,8 +99,7 @@ export default class Point {
   }
 
   _closePointEditView() {
-    this._replaceFormToPointItem();
-    document.removeEventListener('keydown', this._onEscKeyDown);
+    this._backToDefaultState();
   }
 
   _openPointItemClick() {

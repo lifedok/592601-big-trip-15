@@ -8,30 +8,17 @@ const createPointItemModifyTemplate = (data, isEdit) => {
   const {type, offers, destination, isDescription, isPictures} = data;
 
   const createOffersTemplate = () => (
-    isEdit === true ?
-      offers.map((offer) => (
-        !offer ? '' :
-          `<div class="event__offer-selector">
-              <input class="event__offer-checkbox  visually-hidden" id="event-offer-${offer.id}-1" 
-              type="checkbox" name="event-offer-${OFFER_TITTLES[offer.title]}" ${offer.isChecked}>
-              <label class="event__offer-label" for="event-offer-${offer.id}-1">
-                <span class="event__offer-title">${offer.title}</span>
-                &plus;&euro;&nbsp;
-                <span class="event__offer-price">${offer.price}</span>
-            </label>
-          </div>`),
-      ).join('')
-      :
-      Object.keys(OFFER_TITTLES).map((offer) =>
+    offers.map((offer) =>
+      !offer ? '' :
         `<div class="event__offer-selector">
-                <input class="event__offer-checkbox  visually-hidden" id="event-offer-${OFFER_TITTLES[offer]}-1" 
-                type="checkbox" name="event-offer-${OFFER_TITTLES[offer]}">
-                <label class="event__offer-label" for="event-offer-${OFFER_TITTLES[offer]}-1">
-                  <span class="event__offer-title">${offer}</span>
-                  &plus;&euro;&nbsp;
-                  <span class="event__offer-price">${getRandomInteger(20, 120)}</span>
-              </label>
-            </div>`).join('')
+        <input class="event__offer-checkbox  visually-hidden" id="event-offer-${offer.id}-1" 
+        type="checkbox" name="event-offer-${OFFER_TITTLES[offer.title]}" ${offer.isChecked}>
+        <label class="event__offer-label" for="event-offer-${offer.id}-1">
+          <span class="event__offer-title">${offer.title}</span>
+          &plus;&euro;&nbsp;
+          <span class="event__offer-price">${offer.price ? offer.price : getRandomInteger(20, 120)}</span>
+      </label>
+    </div>`).join('')
   );
 
 
@@ -156,6 +143,7 @@ export default class PointItemModify extends SmartView {
     this._closeClickHandler = this._closeClickHandler.bind(this);
     this._choosePointTypeClickHandler = this._choosePointTypeClickHandler.bind(this);
     this._selectingDestinationInputHandler = this._selectingDestinationInputHandler.bind(this);
+    // this._chooseOfferSelectorClickHandler = this._chooseOfferSelectorClickHandler.bind(this);
 
     this._setOuterHandlers();
     this._setInnerHandlers();
@@ -186,6 +174,7 @@ export default class PointItemModify extends SmartView {
   _setInnerHandlers() {
     this.getElement().querySelector('.event__type-group').addEventListener('click', this._choosePointTypeClickHandler);
     this.getElement().querySelector('.event__input--destination').addEventListener('input', this._selectingDestinationInputHandler);
+    // this.getElement().querySelector('.event__available-offers').addEventListener('click', this._chooseOfferSelectorClickHandler);
   }
 
   // form submit
