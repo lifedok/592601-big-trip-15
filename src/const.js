@@ -4,6 +4,7 @@ export const OFFER_TITTLES = {
   'Add meal': 'meal',
   'Choose seats': 'seats',
   'Travel by train': 'train',
+  'Order Uber': 'uber',
 };
 
 export const POINT_TYPES = [

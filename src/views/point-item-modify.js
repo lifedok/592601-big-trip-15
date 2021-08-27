@@ -1,38 +1,27 @@
 import {OFFER_TITTLES, POINT_TYPES, CITIES} from '../const.js';
-import Abstract from './abstract';
-import {capitalizeFirstLetter, generateRandomBoolean, getRandomInteger} from '../utils/common';
+import SmartView from './smart.js';
+import {
+  capitalizeFirstLetter,
+  getRandomInteger
+} from '../utils/common';
+import {generateTripDestinationData} from '../mock/trip-destination-data';
+import {generateTripOfferData} from '../mock/trip-offer-data';
 
-const createPointItemModifyTemplate = (point, isEdit) => {
-  const {type, offers, destination} = point;
+const createPointItemModifyTemplate = (data, isEdit) => {
+  const {type, offers, destination, isDescription, isPictures} = data;
 
   const createOffersTemplate = () => (
-    isEdit === true ?
-      offers.map((offer) => {
-        const isChecked = generateRandomBoolean(0.3) ? 'checked' : '';
-        return (
-          !offer ? '' :
-            `<div class="event__offer-selector">
-                <input class="event__offer-checkbox  visually-hidden" id="event-offer-${OFFER_TITTLES[offer.title]}-1" 
-                type="checkbox" name="event-offer-${OFFER_TITTLES[offer.title]}" ${isChecked}>
-                <label class="event__offer-label" for="event-offer-${OFFER_TITTLES[offer.title]}-1">
-                  <span class="event__offer-title">${offer.title}</span>
-                  &plus;&euro;&nbsp;
-                  <span class="event__offer-price">${offer.price}</span>
-              </label>
-            </div>`);
-      },
-      ).join('')
-      :
-      Object.keys(OFFER_TITTLES).map((offer) =>
+    offers.map((offer) =>
+      !offer ? '' :
         `<div class="event__offer-selector">
-                <input class="event__offer-checkbox  visually-hidden" id="event-offer-${OFFER_TITTLES[offer]}-1" 
-                type="checkbox" name="event-offer-${OFFER_TITTLES[offer]}">
-                <label class="event__offer-label" for="event-offer-${OFFER_TITTLES[offer]}-1">
-                  <span class="event__offer-title">${offer}</span>
-                  &plus;&euro;&nbsp;
-                  <span class="event__offer-price">${getRandomInteger(20, 120)}</span>
-              </label>
-            </div>`).join('')
+          <input class="event__offer-checkbox  visually-hidden" id="event-offer-${offer.id}-1" 
+                 type="checkbox" name="event-offer-${OFFER_TITTLES[offer.title]}" ${offer.isChecked}>
+          <label class="event__offer-label" for="event-offer-${offer.id}-1">
+            <span class="event__offer-title">${offer.title}</span>
+            &plus;&euro;&nbsp;
+            <span class="event__offer-price">${offer.price ? offer.price : getRandomInteger(20, 120)}</span>
+      </label>
+    </div>`).join('')
   );
 
 
@@ -60,7 +49,7 @@ const createPointItemModifyTemplate = (point, isEdit) => {
             <span class="visually-hidden">Choose event type</span>
             <img class="event__type-icon" width="17" height="17" src="img/icons/${type.toLowerCase()}.png" alt="Event type icon">
           </label>
-          <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox">
+          <input class="event__type-toggle visually-hidden" id="event-type-toggle-1" type="checkbox">
 
           <div class="event__type-list">
             <fieldset class="event__type-group">
@@ -68,6 +57,7 @@ const createPointItemModifyTemplate = (point, isEdit) => {
               ${createPointTypesTemplate()}
             </fieldset>
           </div>
+          
         </div>
 
         <div class="event__field-group  event__field-group--destination">
@@ -84,11 +74,11 @@ const createPointItemModifyTemplate = (point, isEdit) => {
         <div class="event__field-group  event__field-group--time">
           <label class="visually-hidden" for="event-start-time-1">From</label>
           <input class="event__input  event__input--time" 
-          id="event-start-time-1" type="text" name="event-start-time" value="${point.dateFrom.format('DD/MM/YY HH:mm')}">
+          id="event-start-time-1" type="text" name="event-start-time" value="${data.dateFrom.format('DD/MM/YY HH:mm')}">
           &mdash;
           <label class="visually-hidden" for="event-end-time-1">To</label>
           <input class="event__input  event__input--time" 
-          id="event-end-time-1" type="text" name="event-end-time" value="${point.dateTo.format('DD/MM/YY HH:mm')}">
+          id="event-end-time-1" type="text" name="event-end-time" value="${data.dateTo.format('DD/MM/YY HH:mm')}">
         </div>
 
         <div class="event__field-group  event__field-group--price">
@@ -100,9 +90,9 @@ const createPointItemModifyTemplate = (point, isEdit) => {
         </div>
 
         <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
-        <button class="event__reset-btn" type="reset">Cancel</button>
+        <button class="event__reset-btn" type="reset">${isEdit ? 'Delete' : 'Cancel'}</button>
         
-<!--        optional button according to the state of the event.-->
+<!--        optional button according to the state of the point (create or edit).-->
           ${isEdit === true ?
     `<button class="event__rollup-btn" type="button">
                     <span class="visually-hidden">Open event</span>
@@ -112,23 +102,21 @@ const createPointItemModifyTemplate = (point, isEdit) => {
       </header>
       <section class="event__details">
       
-        ${!offers.length && isEdit === true ? '' :
-    `<section class="event__section  event__section--offers">
-          <h3 class="event__section-title  event__section-title--offers">Offers</h3>
+      <section class="event__section  event__section--offers">
+        <h3 class="event__section-title  event__section-title--offers">Offers</h3>
 
-          <div class="event__available-offers">
-            ${createOffersTemplate()}
-          </div>
-        </section>
-        `}
+        <div class="event__available-offers">
+          ${createOffersTemplate()}
+        </div>
+       </section>
+       
 
-
-        ${!destination.description && !destination.pictures.length ? '' :
+        ${!isDescription && !isPictures ? '' :
     `<section class="event__section  event__section--destination">
             <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-            ${!destination.description ? '' : `<p class="event__destination-description">${destination.description}</p>`}
+            ${!isDescription ? '' : `<p class="event__destination-description">${destination.description}</p>`}
   
-            ${!destination.pictures.length ? '' : `
+            ${!isPictures ? '' : `
               <div class="event__photos-container">
                 <div class="event__photos-tape">
                  ${createPicturesSrcTemplate()}
@@ -144,27 +132,55 @@ const createPointItemModifyTemplate = (point, isEdit) => {
   `;
 };
 
-export default class PointItemModify extends Abstract {
+export default class PointItemModify extends SmartView {
 
-  constructor(tripEvent, isEdit) {
+  constructor(pointEvent, isEdit) {
     super();
-    this._tripEvent = tripEvent;
+    this._data = PointItemModify.parsePointToDataState(pointEvent);
     this._isEdit = isEdit;
 
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
-    this._saveClickHandler = this._saveClickHandler.bind(this);
-    this._resetClickHandler = this._resetClickHandler.bind(this);
+    this._cancelClickHandler = this._cancelClickHandler.bind(this);
+    this._deleteClickHandler = this._deleteClickHandler.bind(this);
     this._closeClickHandler = this._closeClickHandler.bind(this);
+    this._choosePointTypeClickHandler = this._choosePointTypeClickHandler.bind(this);
+    this._selectingDestinationInputHandler = this._selectingDestinationInputHandler.bind(this);
+
+    this._setOuterHandlers();
+    this._setInnerHandlers();
+  }
+
+
+  resetPoint(point) {
+    this.updateData(
+      PointItemModify.parsePointToDataState(point),
+    );
   }
 
   getTemplate() {
-    return createPointItemModifyTemplate(this._tripEvent, this._isEdit);
+    return createPointItemModifyTemplate(this._data, this._isEdit);
+  }
+
+  restoreHandlers() {
+    this._setOuterHandlers();
+    this._setInnerHandlers();
+    this.setFormSubmitHandler(this._callback.formSubmit);
+  }
+
+  _setOuterHandlers() {
+    this.getElement().querySelector('.event__reset-btn').addEventListener('click', this._isEdit ? this._deleteClickHandler : this._cancelClickHandler);
+    this._isEdit && this.getElement().querySelector('.event__rollup-btn').addEventListener('click', this._closeClickHandler);
+  }
+
+  _setInnerHandlers() {
+    this.getElement().querySelector('.event__type-group').addEventListener('click', this._choosePointTypeClickHandler);
+    this.getElement().querySelector('.event__input--destination').addEventListener('input', this._selectingDestinationInputHandler);
   }
 
   // form submit
   _formSubmitHandler(evt) {
     evt.preventDefault();
-    this._callback.formSubmit();
+    this._callback.formSubmit(PointItemModify.parseDataStateToPoint(this._data));
   }
 
   setFormSubmitHandler(callback) {
@@ -172,26 +188,26 @@ export default class PointItemModify extends Abstract {
     this.getElement().querySelector('form').addEventListener('submit', this._formSubmitHandler);
   }
 
-  // save click
-  _saveClickHandler(evt) {
+  // cancel point click
+  _cancelClickHandler(evt) {
     evt.preventDefault();
-    this._callback.saveClick();
+    this._callback.cancelClick();
   }
 
-  setSaveClickHandler(callback) {
-    this._callback.saveClick = callback;
-    this.getElement().querySelector('.event__save-btn').addEventListener('click', this._saveClickHandler);
+  setCancelClickHandler(callback) {
+    this._callback.cancelClick = callback;
+    this.getElement().querySelector('.event__reset-btn').addEventListener('click', this._cancelClickHandler);
   }
 
-  // reset click
-  _resetClickHandler(evt) {
+  // delete point click
+  _deleteClickHandler(evt) {
     evt.preventDefault();
-    this._callback.resetClick();
+    this._callback.deleteClick();
   }
 
-  setResetClickHandler(callback) {
-    this._callback.resetClick = callback;
-    this.getElement().querySelector('.event__reset-btn').addEventListener('click', this._resetClickHandler);
+  setDeleteClickHandler(callback) {
+    this._callback.deleteClick = callback;
+    this.getElement().querySelector('.event__reset-btn').addEventListener('click', this._deleteClickHandler);
   }
 
   // close click
@@ -205,7 +221,67 @@ export default class PointItemModify extends Abstract {
   }
 
   setCloseClickHandler(callback) {
+    if(!this._isEdit) {
+      return;
+    }
     this._callback.closeClick = callback;
     this.getElement().querySelector('.event__rollup-btn').addEventListener('click', this._closeClickHandler);
+  }
+
+  //change Point Type
+  _choosePointTypeClickHandler(evt) {
+    evt.preventDefault();
+    if (evt.target.tagName !== 'LABEL') {
+      return;
+    }
+    const parent = evt.target.parentElement;
+    parent.querySelector('input').checked = true;
+
+    this.updateData({
+      type: evt.target.innerText,
+      offers: generateTripOfferData().offers,
+    });
+  }
+
+  //change input Destination
+  _selectingDestinationInputHandler(evt) {
+    evt.preventDefault();
+    CITIES.map((city) => {
+      if(evt.target.value === city) {
+        this.updateData({
+          destination: {
+            city: evt.target.value,
+            pictures: generateTripDestinationData().pictures,
+            description: generateTripDestinationData(evt.target.value).description,
+          },
+        });
+      }
+    });
+  }
+
+  static parsePointToDataState(point) {
+    return Object.assign(
+      {},
+      point,
+      {
+        isDescription: !!point.destination.description,
+        isPictures: !!point.destination.pictures.length,
+      },
+    );
+  }
+
+  static parseDataStateToPoint(state) {
+    state = Object.assign({}, state);
+    if (!state.isDescription) {
+      state.isDescription = null;
+    }
+    if (!state.isPictures) {
+      state.isPictures = null;
+    }
+
+    delete state.isDescription;
+    delete state.isPictures;
+
+    return state;
   }
 }

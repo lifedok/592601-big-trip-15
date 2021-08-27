@@ -14,6 +14,7 @@ export default class Point {
     this._pointListWrapper = pointListWrapper;
     this._changeData = changeData;
     this._changeMode = changeMode;
+    this._isEditCarrentPoint = true;
 
     this._pointItemComponent = null;
     this._pointEditComponent = null;
@@ -22,6 +23,7 @@ export default class Point {
     this._onEscKeyDown = this._onEscKeyDown.bind(this);
     this._openPointItemClick = this._openPointItemClick.bind(this);
     this._handleFavoriteClick = this._handleFavoriteClick.bind(this);
+    this._handleFormSubmit = this._handleFormSubmit.bind(this);
   }
 
   init(pointItem) {
@@ -30,16 +32,18 @@ export default class Point {
     const prevPointItemComponent = this._pointItemComponent;
     const prevPointEditComponent = this._pointEditComponent;
     this._pointItemComponent = new PointItemView(this._pointItem);
-    this._pointEditComponent = new PointItemModifyView(this._pointItem, true);
+    this._pointEditComponent = new PointItemModifyView(this._pointItem, this._isEditCarrentPoint);
+    this._pointCreateComponent = new PointItemModifyView(this._pointItem);
 
-
+    // just point item
     this._pointItemComponent.setOpenClickHandler(this._openPointItemClick);
     this._pointItemComponent.setIsFavoriteClickHandler(this._handleFavoriteClick);
     // edit item click
     this._pointEditComponent.setCloseClickHandler(() => this._closePointEditView());
-    this._pointEditComponent.setResetClickHandler(() => this._closePointEditView());
-    this._pointEditComponent.setFormSubmitHandler(() => this._closePointEditView());
-    this._pointEditComponent.setSaveClickHandler(() => this._closePointEditView());
+    this._pointEditComponent.setDeleteClickHandler(() => this._deletePointItemClick());
+    this._pointEditComponent.setFormSubmitHandler(this._handleFormSubmit);
+    // create item click
+    this._pointCreateComponent.setCancelClickHandler(() => this._cancelPointEditView());
 
     if (prevPointEditComponent === null || prevPointItemComponent === null) {
       render(this._pointListWrapper, this._pointItemComponent);
@@ -82,22 +86,45 @@ export default class Point {
     this._mode = Mode.DEFAULT;
   }
 
+  _backToDefaultState() {
+    this._pointEditComponent.resetPoint(this._pointItem);
+    this._replaceFormToPointItem();
+  }
+
   _onEscKeyDown(evt) {
     if (evt.key === 'Escape' || evt.key === 'Esc') {
       evt.preventDefault();
-      this._replaceFormToPointItem();
+      this._backToDefaultState();
     }
   }
 
-  _closePointEditView() {
-    this._replaceFormToPointItem();
-    document.removeEventListener('keydown', this._onEscKeyDown);
+  // for edit point item
+  _deletePointItemClick() {
+    // TODO: Call render point list (After deleting all the points, it doesn't see service message.)
+    remove(this._pointEditComponent);
+    this._changeData(this._pointItem);
   }
 
+  // for create point item
   _openPointItemClick() {
     this._replacePointToEditForm();
   }
 
+  _cancelPointEditView() {
+    this._backToDefaultState();
+  }
+
+  // for edit and create point item
+  _closePointEditView() {
+    this._backToDefaultState();
+  }
+
+  _handleFormSubmit(point) {
+    this._changeData(point);
+    this._replaceFormToPointItem();
+  }
+
+  // for just point event item
   _handleFavoriteClick() {
     this._changeData(
       Object.assign(

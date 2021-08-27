@@ -1,8 +1,10 @@
 import {OFFER_TITTLES, POINT_TYPES} from '../const.js';
-import {getRandomInObj, getRandomInteger} from '../utils/common';
+import {getRandomInObj, getRandomInteger, generateRandomBoolean, generateRandomString} from '../utils/common';
 
 
 const generateOffers = () => ({
+  id: generateRandomString(5, 9),
+  isChecked: generateRandomBoolean(0.3) ? 'checked' : '',
   title: getRandomInObj(OFFER_TITTLES),
   price: getRandomInteger(1.5, 9) * 10,
 });
