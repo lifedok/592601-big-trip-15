@@ -6,6 +6,9 @@ import {
 } from '../utils/common';
 import {generateTripDestinationData} from '../mock/trip-destination-data';
 import {generateTripOfferData} from '../mock/trip-offer-data';
+import flatpickr from 'flatpickr';
+
+import '../../node_modules/flatpickr/dist/flatpickr.min.css';
 
 const createPointItemModifyTemplate = (data, isEdit) => {
   const {type, offers, destination, isDescription, isPictures} = data;
@@ -74,11 +77,11 @@ const createPointItemModifyTemplate = (data, isEdit) => {
         <div class="event__field-group  event__field-group--time">
           <label class="visually-hidden" for="event-start-time-1">From</label>
           <input class="event__input  event__input--time" 
-          id="event-start-time-1" type="text" name="event-start-time" value="${data.dateFrom.format('DD/MM/YY HH:mm')}">
+          id="event-start-time-1" type="text" name="event-start-time" value="${data.dateFrom}">
           &mdash;
           <label class="visually-hidden" for="event-end-time-1">To</label>
           <input class="event__input  event__input--time" 
-          id="event-end-time-1" type="text" name="event-end-time" value="${data.dateTo.format('DD/MM/YY HH:mm')}">
+          id="event-end-time-1" type="text" name="event-end-time" value="${data.dateTo}">
         </div>
 
         <div class="event__field-group  event__field-group--price">
@@ -138,6 +141,7 @@ export default class PointItemModify extends SmartView {
     super();
     this._data = PointItemModify.parsePointToDataState(pointEvent);
     this._isEdit = isEdit;
+    this._datepicker = null;
 
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
     this._cancelClickHandler = this._cancelClickHandler.bind(this);
@@ -146,8 +150,13 @@ export default class PointItemModify extends SmartView {
     this._choosePointTypeClickHandler = this._choosePointTypeClickHandler.bind(this);
     this._selectingDestinationInputHandler = this._selectingDestinationInputHandler.bind(this);
 
+    // this._dateFromChangeHandler = this._dateFromChangeHandler.bind(this);
+    // this._dateToChangeHandler = this._dateToChangeHandler.bind(this);
+    this._dateChangeHandler = this._dateChangeHandler.bind(this);
+
     this._setOuterHandlers();
     this._setInnerHandlers();
+    this._setDatepicker();
   }
 
 
@@ -164,6 +173,7 @@ export default class PointItemModify extends SmartView {
   restoreHandlers() {
     this._setOuterHandlers();
     this._setInnerHandlers();
+    this._setDatepicker();
     this.setFormSubmitHandler(this._callback.formSubmit);
   }
 
@@ -258,6 +268,34 @@ export default class PointItemModify extends SmartView {
       }
     });
   }
+
+  // date from and to
+  _dateChangeHandler([userData]) {
+    console.log('TEST --> userData', userData);
+
+    this.updateData({
+      dateFrom: userData,
+      // dateTo: userData,
+    });
+  }
+
+  _setDatepicker() {
+    if (this._datepicker) {
+      this._datepicker.destroy();
+      this._datepicker = null;
+    }
+
+    this._datepicker = flatpickr(
+      this.getElement().querySelector('.event__field-group--time'),
+      {
+        mode: 'range',
+        dateFormat: 'j/m/y \\ H:i',
+        defaultDate: [this._data.dateFrom.format('DD/MM/YY HH:mm'), this._data.dateTo.format('DD/MM/YY HH:mm')],
+        onChange: this._dateChangeHandler,
+      },
+    );
+  }
+
 
   static parsePointToDataState(point) {
     return Object.assign(
