@@ -9,7 +9,7 @@ import {generateTripOfferData} from '../mock/trip-offer-data';
 import flatpickr from 'flatpickr';
 
 import '../../node_modules/flatpickr/dist/flatpickr.min.css';
-import {getFormatDate} from '../utils/point';
+import {getDate, getFormatDate} from '../utils/point';
 
 const createPointItemModifyTemplate = (data, isEdit) => {
   const {type, offers, destination, isDescription, isPictures} = data;
@@ -294,25 +294,29 @@ export default class PointItemModify extends SmartView {
       this._datepickerTo = null;
     }
 
+    const getFromData = (fromData) => getDate(fromData).diff(getDate(this._data.dateTo, 'm')); // -1
+    const getToData = (toData) => getDate(toData).diff(getDate(this._data.dateFrom), 'm'); // +1
+    const gerFullDataWithTime = (data) => getFormatDate(data, 'DD/MM/YY HH:mm');
+
     this._datepickerFrom = flatpickr(
       this.getElement().querySelector('[name = "event-start-time"]'),
       {
-        mode: 'range',
         dateFormat: 'j/m/y \\ H:i',
         enableTime: true,
         'time_24hr': true,
-        defaultDate: [getFormatDate(this._data.dateFrom, 'DD/MM/YY HH:mm'), getFormatDate(this._data.dateTo, 'DD/MM/YY HH:mm')],
+        defaultDate: gerFullDataWithTime(this._data.dateFrom),
+        formatDate: (date) => getFromData(date) < 0 ? gerFullDataWithTime(date) : gerFullDataWithTime(this._data.dateTo),
         onChange: this._dateFromChangeHandler,
       },
     );
     this._datepickerTo = flatpickr(
       this.getElement().querySelector('[name = "event-end-time"]'),
       {
-        mode: 'range',
         dateFormat: 'j/m/y \\ H:i',
         enableTime: true,
         'time_24hr': true,
-        defaultDate: [getFormatDate(this._data.dateFrom, 'DD/MM/YY HH:mm'), getFormatDate(this._data.dateTo, 'DD/MM/YY HH:mm')],
+        defaultDate: gerFullDataWithTime(this._data.dateTo),
+        formatDate: (date) => getToData(date) > 0 ? gerFullDataWithTime(date) : gerFullDataWithTime(this._data.dateFrom),
         onChange: this._dateToChangeHandler,
       },
     );
