@@ -18,7 +18,7 @@ const createPointItemTemplate = (item) => {
 
 
   const getDuration = () => {
-    const hours = ((getDate(item.dateTo).diff(getDate(item.dateFrom, 'hour'))) % 24).toString().replace(/^0+/, '');
+    const hours = ((getDate(item.dateTo).diff(getDate(item.dateFrom), 'h')) % 24).toString().replace(/^0+/, '');
     const minutes = (getDate(item.dateTo).diff(getDate(item.dateFrom), 'm')) % 60;
     return `${hours ? `${hours}H ` : ''}${minutes}M`;
   };
