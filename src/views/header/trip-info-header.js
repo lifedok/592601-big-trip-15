@@ -1,16 +1,19 @@
 import Abstract from '../abstract';
+import {getFormatDate} from '../../utils/point';
 
 
 const createTripInfoHeaderTemplate = (listEvent) => {
 
   const total = () => listEvent.length ? listEvent.reduce((prev, curr) => prev + curr.basePrice, 0) : '';
 
+  const dateFrom = getFormatDate(listEvent[0].dateFrom, 'MMM D');
+  const dateTo = getFormatDate(listEvent[listEvent.length-1].dateTo, 'D');
   return (
     `<section class="trip-main__trip-info  trip-info">
       <div class="trip-info__main">
       ${listEvent.length ?
       `<h1 class="trip-info__title">${listEvent[0].destination.city} &mdash; ${listEvent[Math.floor(listEvent.length / 2)].destination.city} &mdash; ${listEvent[listEvent.length-1].destination.city}</h1>
-         <p class="trip-info__dates">${listEvent[0].dateFrom.format('MMM D')}&nbsp;&mdash;&nbsp;${listEvent[listEvent.length-1].dateTo.format('D')}</p>
+         <p class="trip-info__dates">${dateFrom}&nbsp;&mdash;&nbsp;${dateTo}</p>
       ` : ''}
         </div>
 

@@ -1,4 +1,5 @@
 import Abstract from './abstract';
+import {getDate, getFormatDate} from '../utils/point';
 
 
 const createPointItemTemplate = (item) => {
@@ -17,14 +18,14 @@ const createPointItemTemplate = (item) => {
 
 
   const getDuration = () => {
-    const hours = ((item.dateTo.diff(item.dateFrom, 'hour')) % 24).toString().replace(/^0+/, '');
-    const minutes = (item.dateTo.diff(item.dateFrom, 'm')) % 60;
+    const hours = ((getDate(item.dateTo).diff(getDate(item.dateFrom, 'hour'))) % 24).toString().replace(/^0+/, '');
+    const minutes = (getDate(item.dateTo).diff(getDate(item.dateFrom), 'm')) % 60;
     return `${hours ? `${hours}H ` : ''}${minutes}M`;
   };
 
   return `<li class="trip-events__item">
       <div class="event">
-        <time class="event__date" datetime="2019-03-18">${item.dateFrom.format('MMM D')}</time>
+        <time class="event__date" datetime="2019-03-18">${getFormatDate(item.dateFrom, 'MMM D')}</time>
         <div class="event__type">
           <img class="event__type-icon" width="42" height="42" src="img/icons/${type.toLowerCase()}.png" alt="Event type icon">
         </div>
@@ -33,9 +34,9 @@ const createPointItemTemplate = (item) => {
 
         <div class="event__schedule">
           <p class="event__time">
-            <time class="event__start-time" datetime="2019-03-18T10:30">${item.dateFrom.format('HH:mm').toString().replace(/^0+/, '')}</time>
+            <time class="event__start-time" datetime="2019-03-18T10:30">${getFormatDate(item.dateFrom,'HH:mm').toString().replace(/^0+/, '')}</time>
             &mdash;
-            <time class="event__end-time" datetime="2019-03-18T11:00">${item.dateTo.format('HH:mm')}</time>
+            <time class="event__end-time" datetime="2019-03-18T11:00">${getFormatDate(item.dateTo, 'HH:mm')}</time>
           </p>
           <p class="event__duration">${getDuration()}</p>
         </div>

@@ -9,6 +9,7 @@ import {generateTripOfferData} from '../mock/trip-offer-data';
 import flatpickr from 'flatpickr';
 
 import '../../node_modules/flatpickr/dist/flatpickr.min.css';
+import {getFormatDate} from '../utils/point';
 
 const createPointItemModifyTemplate = (data, isEdit) => {
   const {type, offers, destination, isDescription, isPictures} = data;
@@ -77,11 +78,11 @@ const createPointItemModifyTemplate = (data, isEdit) => {
         <div class="event__field-group  event__field-group--time">
           <label class="visually-hidden" for="event-start-time-1">From</label>
           <input class="event__input  event__input--time" 
-          id="event-start-time-1" type="text" name="event-start-time" value="${data.dateFrom}">
+          id="event-start-time-1" type="text" name="event-start-time" value="${getFormatDate(data.dateFrom, 'DD/MM/YY HH:mm')}">
           &mdash;
           <label class="visually-hidden" for="event-end-time-1">To</label>
           <input class="event__input  event__input--time" 
-          id="event-end-time-1" type="text" name="event-end-time" value="${data.dateTo}">
+          id="event-end-time-1" type="text" name="event-end-time" value="${getFormatDate(data.dateTo, 'DD/MM/YY HH:mm')}">
         </div>
 
         <div class="event__field-group  event__field-group--price">
@@ -141,7 +142,9 @@ export default class PointItemModify extends SmartView {
     super();
     this._data = PointItemModify.parsePointToDataState(pointEvent);
     this._isEdit = isEdit;
-    this._datepicker = null;
+
+    this._datepickerFrom = null;
+    this._datepickerTo = null;
 
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
     this._cancelClickHandler = this._cancelClickHandler.bind(this);
@@ -150,9 +153,8 @@ export default class PointItemModify extends SmartView {
     this._choosePointTypeClickHandler = this._choosePointTypeClickHandler.bind(this);
     this._selectingDestinationInputHandler = this._selectingDestinationInputHandler.bind(this);
 
-    // this._dateFromChangeHandler = this._dateFromChangeHandler.bind(this);
-    // this._dateToChangeHandler = this._dateToChangeHandler.bind(this);
-    this._dateChangeHandler = this._dateChangeHandler.bind(this);
+    this._dateFromChangeHandler = this._dateFromChangeHandler.bind(this);
+    this._dateToChangeHandler = this._dateToChangeHandler.bind(this);
 
     this._setOuterHandlers();
     this._setInnerHandlers();
@@ -270,28 +272,48 @@ export default class PointItemModify extends SmartView {
   }
 
   // date from and to
-  _dateChangeHandler([userData]) {
-    console.log('TEST --> userData', userData);
-
+  _dateFromChangeHandler([userData]) {
     this.updateData({
       dateFrom: userData,
-      // dateTo: userData,
+    });
+  }
+
+  _dateToChangeHandler([userData]) {
+    this.updateData({
+      dateTo: userData,
     });
   }
 
   _setDatepicker() {
-    if (this._datepicker) {
-      this._datepicker.destroy();
-      this._datepicker = null;
+    if (this._datepickerFrom) {
+      this._datepickerFrom.destroy();
+      this._datepickerFrom = null;
+    }
+    if (this._datepickerTo) {
+      this._datepickerTo.destroy();
+      this._datepickerTo = null;
     }
 
-    this._datepicker = flatpickr(
-      this.getElement().querySelector('.event__field-group--time'),
+    this._datepickerFrom = flatpickr(
+      this.getElement().querySelector('[name = "event-start-time"]'),
       {
         mode: 'range',
         dateFormat: 'j/m/y \\ H:i',
-        defaultDate: [this._data.dateFrom.format('DD/MM/YY HH:mm'), this._data.dateTo.format('DD/MM/YY HH:mm')],
-        onChange: this._dateChangeHandler,
+        enableTime: true,
+        'time_24hr': true,
+        defaultDate: [getFormatDate(this._data.dateFrom, 'DD/MM/YY HH:mm'), getFormatDate(this._data.dateTo, 'DD/MM/YY HH:mm')],
+        onChange: this._dateFromChangeHandler,
+      },
+    );
+    this._datepickerTo = flatpickr(
+      this.getElement().querySelector('[name = "event-end-time"]'),
+      {
+        mode: 'range',
+        dateFormat: 'j/m/y \\ H:i',
+        enableTime: true,
+        'time_24hr': true,
+        defaultDate: [getFormatDate(this._data.dateFrom, 'DD/MM/YY HH:mm'), getFormatDate(this._data.dateTo, 'DD/MM/YY HH:mm')],
+        onChange: this._dateToChangeHandler,
       },
     );
   }

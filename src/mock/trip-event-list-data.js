@@ -1,20 +1,25 @@
-import dayjs from 'dayjs';
 import {generateTripDestinationData} from './trip-destination-data';
 import {generateTripOfferData} from './trip-offer-data';
 import {generateRandomBoolean, generateRandomString, getRandomInteger} from '../utils/common';
+import {getDate} from '../utils/point';
 
 const generateDateFrom = () => {
   const fromDaysGap = -1;
-  return dayjs().add(fromDaysGap, 'day')
+
+  const data = getDate().add(fromDaysGap, 'day')
     .add(getRandomInteger(5, 12), 'hour')
     .add(getRandomInteger(1, 30), 'minute');
+
+  return getDate(data).toDate();
 };
 
 const generateDateTo = () => {
   const toDaysGap = 1;
-  return dayjs().add(toDaysGap, 'day')
+  const data = getDate().add(toDaysGap, 'day')
     .add(getRandomInteger(12, 22), 'hour')
     .add(getRandomInteger(30, 60), 'minute');
+
+  return getDate(data).toDate();
 };
 
 export const generateTripEventListData = (quantity) => {
@@ -28,7 +33,6 @@ export const generateTripEventListData = (quantity) => {
     isFavorite: generateRandomBoolean(0.7),
     ...generateTripOfferData(),
   });
-
 
   return new Array(quantity).fill().map(() => item());
 };
