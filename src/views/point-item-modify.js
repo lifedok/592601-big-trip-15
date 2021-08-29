@@ -296,7 +296,6 @@ export default class PointItemModify extends SmartView {
 
     const getFromData = (fromData) => getDate(fromData).diff(getDate(this._data.dateTo, 'm')); // -1
     const getToData = (toData) => getDate(toData).diff(getDate(this._data.dateFrom), 'm'); // +1
-    const gerFullDataWithTime = (data) => getFormatDate(data, 'DD/MM/YY HH:mm');
 
     this._datepickerFrom = flatpickr(
       this.getElement().querySelector('[name = "event-start-time"]'),
@@ -304,8 +303,9 @@ export default class PointItemModify extends SmartView {
         dateFormat: 'j/m/y \\ H:i',
         enableTime: true,
         'time_24hr': true,
-        defaultDate: gerFullDataWithTime(this._data.dateFrom),
-        formatDate: (date) => getFromData(date) < 0 ? gerFullDataWithTime(date) : gerFullDataWithTime(this._data.dateTo),
+        weekNumbers: true,
+        defaultDate: this._data.dateFrom,
+        parseDate: (date) => getFromData(date) < 0 ? date : this._data.dateTo,
         onChange: this._dateFromChangeHandler,
       },
     );
@@ -315,8 +315,9 @@ export default class PointItemModify extends SmartView {
         dateFormat: 'j/m/y \\ H:i',
         enableTime: true,
         'time_24hr': true,
-        defaultDate: gerFullDataWithTime(this._data.dateTo),
-        formatDate: (date) => getToData(date) > 0 ? gerFullDataWithTime(date) : gerFullDataWithTime(this._data.dateFrom),
+        weekNumbers: true,
+        defaultDate: this._data.dateTo,
+        parseDate: (date) => getToData(date) > 0 ? date : this._data.dateFrom,
         onChange: this._dateToChangeHandler,
       },
     );

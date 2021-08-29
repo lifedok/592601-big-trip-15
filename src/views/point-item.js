@@ -18,9 +18,10 @@ const createPointItemTemplate = (item) => {
 
 
   const getDuration = () => {
-    const hours = ((getDate(item.dateTo).diff(getDate(item.dateFrom), 'h')) % 24).toString().replace(/^0+/, '');
+    const days = ((getDate(item.dateTo).diff(getDate(item.dateFrom), 'd')) % 24);
+    const hours = ((getDate(item.dateTo).diff(getDate(item.dateFrom), 'h')) % 24);
     const minutes = (getDate(item.dateTo).diff(getDate(item.dateFrom), 'm')) % 60;
-    return `${hours ? `${hours}H ` : ''}${minutes}M`;
+    return `${days ? `${days}D ` : ''}${hours ? `${hours}H ` : ''}${minutes}M`;
   };
 
   return `<li class="trip-events__item">
@@ -34,7 +35,7 @@ const createPointItemTemplate = (item) => {
 
         <div class="event__schedule">
           <p class="event__time">
-            <time class="event__start-time" datetime="2019-03-18T10:30">${getFormatDate(item.dateFrom,'HH:mm').toString().replace(/^0+/, '')}</time>
+            <time class="event__start-time" datetime="2019-03-18T10:30">${getFormatDate(item.dateFrom,'HH:mm')}</time>
             &mdash;
             <time class="event__end-time" datetime="2019-03-18T11:00">${getFormatDate(item.dateTo, 'HH:mm')}</time>
           </p>
