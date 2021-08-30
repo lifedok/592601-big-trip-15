@@ -22,9 +22,10 @@ import {
 
 
 export default class Trip {
-  constructor(tripHeaderView, tripMainView) {
+  constructor(tripHeaderView, tripMainView, pointsModel) {
     this._tripHeaderView = tripHeaderView;
     this._tripMainView = tripMainView;
+    this._pointsModel = pointsModel;
     this._pointPresenter = new Map();
 
     this._currentSortType = SORT_TYPES.TIME;
@@ -46,6 +47,10 @@ export default class Trip {
 
     render(this._tripMainView, this._pointListWrapper);
     this._renderTrip();
+  }
+
+  _getModalPoints() {
+    return this._pointsModel.getPoints();
   }
 
   _handleModeChange() {
