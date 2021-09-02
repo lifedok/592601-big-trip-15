@@ -28,9 +28,10 @@ export const SORT_TYPES = {
 };
 
 export const UpdateType = {
-  PATCH: 'PATCH',
-  MINOR: 'MINOR',
-  MAJOR: 'MAJOR',
+  PATCH: 'PATCH', // change type => update only point
+  MINOR: 'MINOR', // change favorite => update list points
+  MIDDLE: 'MIDDLE', // change date and city => update point and header // TODO: implement it
+  MAJOR: 'MAJOR', // change add or delete point => update all points & header
 };
 
 export const UserAction = {
@@ -38,3 +39,4 @@ export const UserAction = {
   ADD_POINT: 'ADD_POINT',
   DELETE_POINT: 'DELETE_POINT',
 };
+

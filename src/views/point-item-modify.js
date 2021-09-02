@@ -168,6 +168,19 @@ export default class PointItemModify extends SmartView {
     );
   }
 
+  removeElement() {
+    super.removeElement();
+
+    if (this._datepickerFrom) {
+      this._datepickerFrom.destroy();
+      this._datepickerFrom = null;
+    }
+    if (this._datepickerTo) {
+      this._datepickerTo.destroy();
+      this._datepickerTo = null;
+    }
+  }
+
   getTemplate() {
     return createPointItemModifyTemplate(this._data, this._isEdit);
   }
@@ -214,7 +227,7 @@ export default class PointItemModify extends SmartView {
   // delete point click
   _deleteClickHandler(evt) {
     evt.preventDefault();
-    this._callback.deleteClick();
+    this._callback.deleteClick(PointItemModify.parsePointToDataState(this._data));
   }
 
   setDeleteClickHandler(callback) {

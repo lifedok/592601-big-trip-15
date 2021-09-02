@@ -1,6 +1,7 @@
 import {remove, render, replace} from '../utils/render';
 import PointItemModifyView from '../views/point-item-modify';
 import PointItemView from '../views/point-item';
+import {UpdateType, UserAction} from '../const';
 
 
 const Mode = {
@@ -24,6 +25,7 @@ export default class Point {
     this._openPointItemClick = this._openPointItemClick.bind(this);
     this._handleFavoriteClick = this._handleFavoriteClick.bind(this);
     this._handleFormSubmit = this._handleFormSubmit.bind(this);
+    this._handleDeleteClick = this._handleDeleteClick.bind(this);
   }
 
   init(pointItem) {
@@ -44,6 +46,9 @@ export default class Point {
     this._pointEditComponent.setFormSubmitHandler(this._handleFormSubmit);
     // create item click
     this._pointCreateComponent.setCancelClickHandler(() => this._cancelPointEditView());
+
+    // delete item click
+    this._pointEditComponent.setDeleteClickHandler(this._handleDeleteClick);
 
     if (prevPointEditComponent === null || prevPointItemComponent === null) {
       render(this._pointListWrapper, this._pointItemComponent);
@@ -100,7 +105,6 @@ export default class Point {
 
   // for edit point item
   _deletePointItemClick() {
-    // TODO: Call render point list (After deleting all the points, it doesn't see service message.)
     remove(this._pointEditComponent);
     this._changeData(this._pointItem);
   }
@@ -120,13 +124,29 @@ export default class Point {
   }
 
   _handleFormSubmit(point) {
-    this._changeData(point);
+    const isPatchUpdate = this._pointItem.type !== point.type;
+
+    this._changeData(
+      UserAction.UPDATE_POINT,
+      isPatchUpdate ? UpdateType.PATCH : UpdateType.MAJOR,
+      point,
+    );
     this._replaceFormToPointItem();
+  }
+
+  _handleDeleteClick(task) {
+    this._changeData(
+      UserAction.DELETE_POINT,
+      UpdateType.MAJOR,
+      task,
+    );
   }
 
   // for just point event item
   _handleFavoriteClick() {
     this._changeData(
+      UserAction.UPDATE_POINT,
+      UpdateType.MINOR,
       Object.assign(
         {},
         this._pointItem,
