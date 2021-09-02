@@ -9,10 +9,7 @@ const points = generateTripEventListData(COUNT_ITEMS);
 points.sort((a, b) => a.dateFrom - b.dateFrom);
 
 const pointsModel = new PointsModel();
-console.log('pointsModel 1 ==>', pointsModel);
 pointsModel.setPoints(points);
-console.log('pointsModel 2 ==>', pointsModel);
-console.log('points 2 ==>', points);
 
 const pageBodyElement = document.querySelector('.page-body');
 const tripEventsHeader = pageBodyElement.querySelector('.trip-main');

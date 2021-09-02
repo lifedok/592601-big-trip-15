@@ -94,7 +94,6 @@ export default class Trip {
 
   // работа со вью
   _handleViewAction(actionType, updateType, updatePoint) {
-    console.log('_handleViewAction', actionType, updateType, updatePoint);
     // actionType - действие пользователя, чтобы понять, какой метод модели вызывать (нужно нам).
     // updateType - тип изменений, чтобы понять, что после нужно обновить (жучок) (нужно нам, чтобы доделать логику презентора)
     // updatePoint - обновлённые данные.
@@ -113,7 +112,6 @@ export default class Trip {
 
   // работа с моделью
   _handleModelEvent(updateType, data) {
-    console.log('_handleModelAction', updateType, data);
     switch (updateType) {
       case UpdateType.PATCH:
         this._pointPresenter.get(data.id).init(data);
@@ -196,7 +194,10 @@ export default class Trip {
 
     this._controlsWrapperView = new TripControlsWrapperView();
     this._tripTabsHeaderView = new TripTabsHeaderView();
-    this._tripInfoHeaderView = new TripInfoHeaderView(this._getPoints());
+    if(this._getPoints().length) {
+      this._tripInfoHeaderView = new TripInfoHeaderView(this._getPoints());
+    } else {this._tripInfoHeaderView = new TripInfoHeaderView();}
+
     this._newPointButtonView = new NewPointButtonView();
 
     render(this._tripHeaderView, this._tripInfoHeaderView);
