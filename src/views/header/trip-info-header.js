@@ -3,13 +3,13 @@ import {getFormatDate} from '../../utils/point';
 
 
 const createTripInfoHeaderTemplate = (listEvent) => {
-  const total = () => !listEvent || listEvent.length !== 0 ? '' : listEvent.reduce((prev, curr) => prev + curr.basePrice, 0);
+  const total = () => !listEvent || listEvent.length === 0 ? '' : listEvent.reduce((prev, curr) => prev + curr.basePrice, 0);
   const dateFrom = !listEvent ? '' :getFormatDate(listEvent[0].dateFrom, 'MMM D');
   const dateTo = !listEvent ? '' : getFormatDate(listEvent[listEvent.length-1].dateTo, 'D');
   return (
     `<section class="trip-main__trip-info  trip-info">
       <div class="trip-info__main">
-      ${!listEvent || listEvent.length !== 0 ? '' :
+      ${!listEvent || listEvent.length === 0 ? '' :
       `<h1 class="trip-info__title">${listEvent[0].destination.city} &mdash; ${listEvent[Math.floor(listEvent.length / 2)].destination.city} &mdash; ${listEvent[listEvent.length-1].destination.city}</h1>
          <p class="trip-info__dates">${dateFrom}&nbsp;&mdash;&nbsp;${dateTo}</p>
       `}
