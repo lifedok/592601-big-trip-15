@@ -30,7 +30,7 @@ export const SORT_TYPES = {
 export const UpdateType = {
   PATCH: 'PATCH', // change type => update only point
   MINOR: 'MINOR', // change favorite => update list points
-  MIDDLE: 'MIDDLE', // change date and city => update point and header // TODO: implement it
+  MIDDLE: 'MIDDLE', // change date and city => update point and header
   MAJOR: 'MAJOR', // change add or delete point => update all points & header
 };
 

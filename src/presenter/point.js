@@ -125,10 +125,18 @@ export default class Point {
 
   _handleFormSubmit(point) {
     const isPatchUpdate = this._pointItem.type !== point.type;
+    const isMiddleUpdate = this._pointItem.dateFrom !== point.dateFrom || this._pointItem.dateTo !== point.dateTo || this._pointItem.destination.city !== point.destination.city;
+
+    let type;
+    if (isMiddleUpdate) {
+      type = UpdateType.MIDDLE;
+    } else {
+      type = isPatchUpdate ? UpdateType.PATCH : UpdateType.MAJOR;
+    }
 
     this._changeData(
       UserAction.UPDATE_POINT,
-      isPatchUpdate ? UpdateType.PATCH : UpdateType.MAJOR,
+      type,
       point,
     );
     this._replaceFormToPointItem();

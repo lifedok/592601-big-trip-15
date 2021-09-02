@@ -122,8 +122,14 @@ export default class Trip {
         this._clearTrip();
         this._renderTrip();
         break;
+      case UpdateType.MIDDLE: // перерисовать весь список
+        this._pointPresenter.get(data.id).init(data);
+        this._resetInfoHeader();
+        this._renderHeader();
+        break;
       case UpdateType.MAJOR: // перерисовать вecь трип целиком
-        this._clearTrip({resetInfoHeader: true, resetSortType: true});
+        this._clearTrip({resetSortType: true});
+        this._resetInfoHeader();
         this._renderHeader();
         this._renderTrip();
         break;
@@ -200,20 +206,17 @@ export default class Trip {
     render(this._tripHeaderView, this._newPointButtonView);
   }
 
-  _clearTrip({resetInfoHeader = false, resetSortType = false} = {}) {
-    // const pointLength = this._getPoints().length;
+  _resetInfoHeader() {
+    remove(this._controlsWrapperView);
+    remove(this._tripFiltersHeaderView);
+    remove(this._tripInfoHeaderView);
+    remove(this._newPointButtonView);
+  }
 
+  _clearTrip({resetSortType = false} = {}) {
     this._pointNewPresenter.destroy();
     this._pointPresenter.forEach((presenter) => presenter.destroy());
     this._pointPresenter.clear();
-
-    if(resetInfoHeader) {
-      // remove(this._tripHeaderView);
-      remove(this._controlsWrapperView);
-      remove(this._tripFiltersHeaderView);
-      remove(this._tripInfoHeaderView);
-      remove(this._newPointButtonView);
-    }
 
     if (this._noPointInTrip) {
       remove(this._noPointInTrip);
