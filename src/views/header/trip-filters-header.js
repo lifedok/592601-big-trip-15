@@ -1,18 +1,19 @@
 import Abstract from '../abstract';
 import {FILTER_TYPES} from '../../const';
 
-const createTripFiltersHeaderTemplate = (filters) => {
+const createTripFiltersHeaderTemplate = (filters, currentFilterType) => {
 
   const createFiltersTemplate = () =>
-    filters.map((filter) =>
+    filters.map((filterType) =>
       `<div class="trip-filters__filter">
-        <input id="filter-${filter}" 
-               data-filter-type=${filter}
+        <input id="filter-${filterType}" 
+               data-filter-type=${filterType}
                class="trip-filters__filter-input  visually-hidden" 
                type="radio" 
+               ${filterType === currentFilterType ? 'checked' : ''}
                name="trip-filter" 
-               value="${filter}">
-        <label class="trip-filters__filter-label" for="filter-${filter}">${filter}</label>
+               value="${filterType}">
+        <label class="trip-filters__filter-label" for="filter-${filterType}">${filterType}</label>
       </div>`).join('');
 
   return (
@@ -36,6 +37,7 @@ export default class TripFiltersHeader extends Abstract {
   }
 
   getTemplate() {
-    return createTripFiltersHeaderTemplate(this._filters);
+    const currentFilterType = FILTER_TYPES.EVERYTHING;
+    return createTripFiltersHeaderTemplate(this._filters, currentFilterType);
   }
 }
