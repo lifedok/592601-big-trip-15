@@ -2,7 +2,7 @@
 import TripInfoHeaderView from '../views/header/trip-info-header.js';
 import TripControlsWrapperView from '../views/header/trip-controls-wrapper.js';
 import TripTabsHeaderView from '../views/header/trip-tabs-header.js';
-import TripFiltersHeaderView from '../views/header/trip-filters-header';
+// import TripFiltersHeaderView from '../views/header/trip-filters-header';
 import NewPointButtonView from '../views/header/new-point-button.js';
 
 // main
@@ -14,31 +14,33 @@ import PointNewPresenter from './point-new.js';
 // service message
 import ServiceMessage from '../views/service-message';
 import {render, remove} from '../utils/render';
-import {SORT_TYPES, UpdateType, UserAction} from '../const';
+import {FILTER_TYPES, SORT_TYPES, UpdateType, UserAction} from '../const';
 import {
   sortPointsByDay,
   sortPointsByPrice
 } from '../utils/point';
+import {filter} from '../utils/filter';
 
 
 export default class Trip {
 
-  constructor(tripHeaderView, tripMainView, pointsModel) {
+  constructor(tripHeaderView, tripMainView, pointsModel, filterModel) {
     this._tripHeaderView = tripHeaderView;
     this._tripMainView = tripMainView;
     this._pointsModel = pointsModel;
-    // this._filterModel = filterModel;
+    this._filterModel = filterModel;
 
     this._pointPresenter = new Map();
     this._pointListWrapper = new PointListWrapperView();
 
     this._currentSortType = SORT_TYPES.TIME;
+    this._filterType = FILTER_TYPES.EVERYTHING;
 
     this._pointSortView = null;
-    this._tripFiltersHeaderView = null;
+    // this._tripFiltersHeaderView = null;
     this._tripInfoHeaderView = null;
     this._noPointInTrip = null;
-    this._newPointButtonView = null;
+    // this._newPointButtonView = null;
 
     this._handleModelEvent = this._handleModelEvent.bind(this);
     this._handleModeChange = this._handleModeChange.bind(this);
@@ -52,8 +54,9 @@ export default class Trip {
     this._renderInfoHeader();
     this._renderSort();
     render(this._tripMainView, this._pointListWrapper);
+
     this._pointsModel.addObserver(this._handleModelEvent);
-    // this._filterModel.addObserver(this._handleModelEvent);
+    this._filterModel.addObserver(this._handleModelEvent);
 
     this._renderTrip();
   }
@@ -66,7 +69,7 @@ export default class Trip {
     remove(this._tripMainView);
 
     this._pointsModel.removeObserver(this._handleModelEvent);
-    // this._filterModel.removeObserver(this._handleModelEvent);
+    this._filterModel.removeObserver(this._handleModelEvent);
   }
 
   createPoint(callback) {
@@ -74,17 +77,21 @@ export default class Trip {
   }
 
   _getPoints() {
+    this._filterType = this._filterModel.getFilter();
+    const points = this._pointsModel.getPoints();
+    const filteredPoints = filter[this._filterType](points);
+
     switch (this._currentSortType) {
       case SORT_TYPES.DAY:
-        return this._pointsModel.getPoints().slice().sort(sortPointsByDay);
+        return filteredPoints.sort(sortPointsByDay);
       case SORT_TYPES.EVENT || SORT_TYPES.OFFERS:
         return;
       case SORT_TYPES.TIME: // by default
-        return this._pointsModel.getPoints().slice();
+        return filteredPoints;
       case SORT_TYPES.PRICE:
-        return this._pointsModel.getPoints().slice().sort(sortPointsByPrice);
+        return filteredPoints.sort(sortPointsByPrice);
     }
-    return this._pointsModel.getPoints();
+    return filteredPoints;
   }
 
   _handleModeChange() {
@@ -94,9 +101,6 @@ export default class Trip {
 
   // работа со вью
   _handleViewAction(actionType, updateType, updatePoint) {
-    // actionType - действие пользователя, чтобы понять, какой метод модели вызывать (нужно нам).
-    // updateType - тип изменений, чтобы понять, что после нужно обновить (жучок) (нужно нам, чтобы доделать логику презентора)
-    // updatePoint - обновлённые данные.
     switch (actionType) {
       case UserAction.UPDATE_POINT:
         this._pointsModel.updatePoint(updateType, updatePoint);
@@ -167,10 +171,17 @@ export default class Trip {
     this._newPointButtonView = new NewPointButtonView();
 
     render(this._tripHeaderView, this._tripInfoHeaderView);
+
+    // this._controlsWrapperView = new TripControlsWrapperView();
+    // render(tripHeaderMainView, controlsWrapperView);
+    // const tripTabsHeaderView = new TripTabsHeaderView();
+    // render(controlsWrapperView, tripTabsHeaderView);
+
+
     render(this._tripHeaderView, this._controlsWrapperView);
-    render(this._controlsWrapperView, this._tripTabsHeaderView);
-    this._renderFilter();
-    render(this._tripHeaderView, this._newPointButtonView);
+    // render(this._controlsWrapperView, this._tripTabsHeaderView);
+    // this._renderFilter();
+    // render(this._tripHeaderView, this._newPointButtonView);
   }
 
   _renderSort() {
@@ -214,22 +225,22 @@ export default class Trip {
     render(this._pointListWrapper, this._noPointInTrip);
   }
 
-  _renderFilter() {
-    if (this._tripFiltersHeaderView !== null) {
-      this._tripFiltersHeaderView = null;
-    }
-
-    this._tripFiltersHeaderView = new TripFiltersHeaderView();
-    render(this._controlsWrapperView, this._tripFiltersHeaderView);
-  }
+  // _renderFilter() {
+  //   if (this._tripFiltersHeaderView !== null) {
+  //     this._tripFiltersHeaderView = null;
+  //   }
+  //
+  //   this._tripFiltersHeaderView = new TripFiltersHeaderView();
+  //   render(this._controlsWrapperView, this._tripFiltersHeaderView);
+  // }
 
 
   // reset views
   _resetInfoHeader() {
-    remove(this._controlsWrapperView);
-    remove(this._tripFiltersHeaderView);
+    // remove(this._controlsWrapperView);
+    // remove(this._tripFiltersHeaderView);
     remove(this._tripInfoHeaderView);
-    remove(this._newPointButtonView);
+    // remove(this._newPointButtonView);
   }
 
   _resetSort() {
