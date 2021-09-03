@@ -49,7 +49,7 @@ export default class Trip {
   }
 
   init() {
-    this._renderHeader();
+    this._renderInfoHeader();
     this._renderSort();
     render(this._tripMainView, this._pointListWrapper);
     this._pointsModel.addObserver(this._handleModelEvent);
@@ -60,7 +60,7 @@ export default class Trip {
 
   destroy() {
     this._pointPresenter.forEach((presenter) => presenter.resetView());
-    this._clearTrip({resetInfoHeader: true, resetSortType: true});
+    this._resetTrip({resetInfoHeader: true, resetSortType: true});
 
     remove(this._pointListWrapper);
     remove(this._tripMainView);
@@ -117,18 +117,22 @@ export default class Trip {
         this._pointPresenter.get(data.id).init(data);
         break;
       case UpdateType.MINOR: // перерисовать весь список
-        this._clearTrip();
+        this._resetTrip();
         this._renderTrip();
         break;
       case UpdateType.MIDDLE: // перерисовать весь список
         this._pointPresenter.get(data.id).init(data);
         this._resetInfoHeader();
-        this._renderHeader();
+        this._renderInfoHeader();
         break;
       case UpdateType.MAJOR: // перерисовать вecь трип целиком
-        this._clearTrip({resetSortType: true});
+        this._resetTrip({resetSortType: true});
         this._resetInfoHeader();
-        this._renderHeader();
+        this._resetSort();
+
+        this._renderSort();
+        this._renderInfoHeader();
+        render(this._tripMainView, this._pointListWrapper);
         this._renderTrip();
         break;
     }
@@ -139,51 +143,13 @@ export default class Trip {
       return;
     }
     this._currentSortType = sortType;
-    this._clearPointList();
+    this._resetPointList();
     this._renderTrip();
   }
 
-  _renderSort() {
-    if (this._pointSortView !== null) {
-      this._pointSortView = null;
-    }
 
-    this._pointSortView = new PointSortView();
-
-    render(this._tripMainView, this._pointSortView);
-    this._pointSortView.setSortTypeChangeHandler(this._handleSortTypeChange);
-  }
-
-  _renderFilter() {
-    if (this._tripFiltersHeaderView !== null) {
-      this._tripFiltersHeaderView = null;
-    }
-
-    this._tripFiltersHeaderView = new TripFiltersHeaderView();
-    render(this._controlsWrapperView, this._tripFiltersHeaderView);
-  }
-
-  _renderPointList(pointList) {
-    pointList.map((point) => this._renderPoint(point));
-  }
-
-  _renderPoint(point) {
-    const pointPresenter = new PointPresenter(this._pointListWrapper, this._handleViewAction, this._handleModeChange);
-    pointPresenter.init(point);
-    this._pointPresenter.set(point.id, pointPresenter);
-  }
-
-  _clearPointList() {
-    this._pointPresenter.forEach((presenter) => presenter.destroy());
-    this._pointPresenter.clear();
-  }
-
-  _renderNoPointInTrip() {
-    this._noPointInTrip = new ServiceMessage('Click New Event to create your first point');
-    render(this._pointListWrapper, this._noPointInTrip);
-  }
-
-  _renderHeader() {
+  // render views
+  _renderInfoHeader() {
     if (this._tripInfoHeaderView !== null) {
       this._tripInfoHeaderView = null;
     }
@@ -207,6 +173,58 @@ export default class Trip {
     render(this._tripHeaderView, this._newPointButtonView);
   }
 
+  _renderSort() {
+    if (this._pointSortView !== null) {
+      this._pointSortView = null;
+    }
+
+    this._pointSortView = new PointSortView(this._getPoints());
+    render(this._tripMainView, this._pointSortView);
+    this._pointSortView.setSortTypeChangeHandler(this._handleSortTypeChange);
+  }
+
+  _renderTrip() {
+    const points = this._getPoints();
+    const pointsLength = points.length;
+
+    if (!pointsLength) {
+      this._renderNoPointInTrip();
+    } else {
+      this._renderPointList(points);
+    }
+  }
+
+  _renderPointList(pointList) {
+    pointList.map((point) => this._renderPoint(point));
+  }
+
+
+  _renderPoint(point) {
+    const pointPresenter = new PointPresenter(this._pointListWrapper, this._handleViewAction, this._handleModeChange);
+    pointPresenter.init(point);
+    this._pointPresenter.set(point.id, pointPresenter);
+  }
+
+  _renderNoPointInTrip() {
+    if (this._noPointInTrip !== null) {
+      this._noPointInTrip = null;
+    }
+
+    this._noPointInTrip = new ServiceMessage('Click New Event to create your first point');
+    render(this._pointListWrapper, this._noPointInTrip);
+  }
+
+  _renderFilter() {
+    if (this._tripFiltersHeaderView !== null) {
+      this._tripFiltersHeaderView = null;
+    }
+
+    this._tripFiltersHeaderView = new TripFiltersHeaderView();
+    render(this._controlsWrapperView, this._tripFiltersHeaderView);
+  }
+
+
+  // reset views
   _resetInfoHeader() {
     remove(this._controlsWrapperView);
     remove(this._tripFiltersHeaderView);
@@ -214,7 +232,11 @@ export default class Trip {
     remove(this._newPointButtonView);
   }
 
-  _clearTrip({resetSortType = false} = {}) {
+  _resetSort() {
+    remove(this._pointSortView);
+  }
+
+  _resetTrip({resetSortType = false} = {}) {
     this._pointNewPresenter.destroy();
     this._pointPresenter.forEach((presenter) => presenter.destroy());
     this._pointPresenter.clear();
@@ -228,14 +250,8 @@ export default class Trip {
     }
   }
 
-  _renderTrip() {
-    const points = this._getPoints();
-    const pointsLength = points.length;
-
-    if (!pointsLength) {
-      this._renderNoPointInTrip();
-    } else {
-      this._renderPointList(points);
-    }
+  _resetPointList() {
+    this._pointPresenter.forEach((presenter) => presenter.destroy());
+    this._pointPresenter.clear();
   }
 }

@@ -1,18 +1,19 @@
 import Abstract from './abstract';
 import {SORT_TYPES} from '../const';
 
-const createPointSortTemplate = (sorts) => {
+const createPointSortTemplate = (sorts, points) => {
 
   const createSortTemplate = () => {
 
-    const _getDisabled = (sort) => (sort === SORT_TYPES.EVENT || sort === SORT_TYPES.OFFERS) ? 'disabled' : '';
+    const _getDisabledBySort = (sort) => (sort === SORT_TYPES.EVENT || sort === SORT_TYPES.OFFERS) ? 'disabled' : '';
+    const _getDisabledByPointLength = () => (points.length <= 1) ? 'disabled' : '';
     return (
       sorts.map((sort) =>
         `<div class="trip-sort__item  trip-sort__item--${sort}">
           <input id="sort-${sort}" 
                  class="trip-sort__input  visually-hidden" 
                  type="radio" 
-                 ${_getDisabled(sort)}
+                 ${_getDisabledBySort(sort) || _getDisabledByPointLength()}
                  name="trip-sort" 
                  value="sort-${sort}">
           <label class="trip-sort__btn" for="sort-${sort}" data-sort-type=${sort}>${sort}</label>
@@ -31,14 +32,15 @@ const createPointSortTemplate = (sorts) => {
 
 export default class PointSort extends Abstract {
 
-  constructor() {
+  constructor(points) {
     super();
+    this._points = points;
     this._sorts = Object.values(SORT_TYPES);
     this._sortTypeChangeHandler = this._sortTypeChangeHandler.bind(this);
   }
 
   getTemplate() {
-    return createPointSortTemplate(this._sorts);
+    return createPointSortTemplate(this._sorts, this._points);
   }
 
   _sortTypeChangeHandler(evt) {
@@ -51,6 +53,12 @@ export default class PointSort extends Abstract {
 
     evt.preventDefault();
     const parent = evt.target.parentElement;
+
+    if(this._points.length <= 1) {
+      parent.querySelector('input').disabled = true;
+      return;
+    }
+
     parent.querySelector('input').checked = true;
     this._callback.sortTypeChange(evt.target.dataset.sortType);
   }
