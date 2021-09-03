@@ -285,15 +285,19 @@ export default class PointItemModify extends SmartView {
   }
 
   // date from and to
-  _dateFromChangeHandler([userData]) {
+  _dateFromChangeHandler([userDate]) {
+    const fromDate = getDate(userDate).diff(getDate(this._data.dateTo, 'm')); // -1
+    const newFromDate = fromDate < 0 ? userDate : this._data.dateTo;
     this.updateData({
-      dateFrom: userData,
+      dateFrom: newFromDate,
     });
   }
 
-  _dateToChangeHandler([userData]) {
+  _dateToChangeHandler([userDate]) {
+    const toDate = getDate(userDate).diff(getDate(this._data.dateFrom, 'm')); // +1
+    const newToDate = toDate > 0 ? userDate : this._data.dateFrom;
     this.updateData({
-      dateTo: userData,
+      dateTo: newToDate,
     });
   }
 
@@ -307,9 +311,6 @@ export default class PointItemModify extends SmartView {
       this._datepickerTo = null;
     }
 
-    const getFromData = (fromData) => getDate(fromData).diff(getDate(this._data.dateTo, 'm')); // -1
-    const getToData = (toData) => getDate(toData).diff(getDate(this._data.dateFrom), 'm'); // +1
-
     this._datepickerFrom = flatpickr(
       this.getElement().querySelector('[name = "event-start-time"]'),
       {
@@ -318,7 +319,6 @@ export default class PointItemModify extends SmartView {
         'time_24hr': true,
         weekNumbers: true,
         defaultDate: this._data.dateFrom,
-        parseDate: (date) => getFromData(date) < 0 ? date : this._data.dateTo,
         onChange: this._dateFromChangeHandler,
       },
     );
@@ -330,7 +330,6 @@ export default class PointItemModify extends SmartView {
         'time_24hr': true,
         weekNumbers: true,
         defaultDate: this._data.dateTo,
-        parseDate: (date) => getToData(date) > 0 ? date : this._data.dateFrom,
         onChange: this._dateToChangeHandler,
       },
     );
