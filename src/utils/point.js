@@ -11,8 +11,8 @@ export const sortPointsByDay = (pointA, pointB) => (
   getDate(pointA.dateFrom).diff(getDate(pointB.dateFrom))
 );
 
-export const isPointInFuture = (date) => date === null ? false : getDate().isAfter(date.dateTo, 'D');
-export const isPointInPast = (date) => date === null ? false : getDate().isBefore(date.dateFrom, 'D');
+export const isPointInPast = (date) => date === null ? false : getDate().isAfter(date.dateTo, 'D');
+export const isPointInFuture = (date) => date === null ? false : getDate().isBefore(date.dateFrom, 'D');
 
 export const getFormatDate = (date, template) => {
   if (!date) {
