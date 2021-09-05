@@ -38,7 +38,7 @@ export default class TripFiltersHeader extends Abstract {
 
   _filterTypeChangeHandler(evt) {
     evt.preventDefault();
-    this._callback.filterTypeChange(evt.target.value);
+    this._callback.filterTypeChange(evt.target.value.toLowerCase());
   }
 
   setFilterTypeChangeHandler(callback) {

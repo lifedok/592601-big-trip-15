@@ -3,8 +3,9 @@ import {getFormatDate} from '../../utils/point';
 
 
 const createTripInfoHeaderTemplate = (listEvent) => {
-  const dateFrom = !listEvent ? '' :getFormatDate(listEvent[0].dateFrom, 'MMM D');
-  const dateTo = !listEvent ? '' : getFormatDate(listEvent[listEvent.length-1].dateTo, 'D');
+  const dateFrom = !listEvent || listEvent.length === 0 ? '' :getFormatDate(listEvent[0].dateFrom, 'MMM D');
+  const dateTo = !listEvent || listEvent.length === 0 ? '' : getFormatDate(listEvent[listEvent.length-1].dateTo, 'D');
+
   return (
     `<div class="trip-info__main">
       ${!listEvent || listEvent.length === 0 ? '' :
