@@ -1,15 +1,14 @@
 import FilterView from '../views/header/trip-filters-header';
-import {render, RenderPosition, replace, remove} from '../utils/render.js';
+import {render, replace, remove} from '../utils/render.js';
 import {filter} from '../utils/filter.js';
 import {UpdateType} from '../const.js';
 import {FILTER_TYPES} from '../const';
-import TripTabsHeaderView from '../views/header/trip-tabs-header.js';
 
 
 export default class Filter {
 
-  constructor(filtersWrapperView, filterModel, pointsModel) {
-    this._filtersWrapperView = filtersWrapperView;
+  constructor(tripControlsWrapperView, filterModel, pointsModel) {
+    this._tripControlsWrapperView = tripControlsWrapperView;
     this._filterModel = filterModel;
     this._pointsModel = pointsModel;
 
@@ -30,19 +29,9 @@ export default class Filter {
     this._filtersView.setFilterTypeChangeHandler(this._handleFilterTypeChange);
 
     if (prevFilterView === null) {
-      console.log('TEST ===? _filtersView', this._filtersView);
-
-      console.log('TEST ===_filterWrapperView', this._filtersWrapperView);
-      // this._controlsWrapperView = new TripControlsWrapperView();
-
-
-      // render(this._tripHeaderView, this._controlsWrapperView);
-      // render(this._controlsWrapperView, this._tripTabsHeaderView, RenderPosition.AFTERBEGIN);
-      // render(this._filtersWrapperView, this._tripTabsHeaderView);
-      render(this._filtersWrapperView, this._filtersView);
+      render(this._tripControlsWrapperView, this._filtersView);  // create filters
       return;
     }
-
     replace(this._filtersView, prevFilterView);
     remove(prevFilterView);
   }

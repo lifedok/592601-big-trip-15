@@ -6,10 +6,11 @@ import TripPresenter from './presenter/trip';
 import FilterPresenter from './presenter/filter';
 import PointsModel from './model/points';
 import FilterModel from './model/filter';
-import TripControlsWrapperView from './views/header/trip-controls-wrapper';
-import {render} from './utils/render';
+
+import {render, RenderPosition} from './utils/render';
 import NewPointButtonView from './views/header/new-point-button';
-import TripTabsHeaderView from './views/header/trip-tabs-header';
+import TripTabsStatisticHeaderView from './views/header/trip-tab-statistic-header';
+import TripInfoWrapperHeader from './views/header/trip-wrapper-info-header';
 
 const COUNT_ITEMS = 9;
 const points = generateTripEventListData(COUNT_ITEMS);
@@ -21,21 +22,27 @@ pointsModel.setPoints(points);
 const filterModel = new FilterModel();
 
 const pageBodyElement = document.querySelector('.page-body');
-const tripHeaderMainView = pageBodyElement.querySelector('.trip-main');
+const tripMainHeaderView = pageBodyElement.querySelector('.trip-main');
+const tripStatisticsWrapperView = tripMainHeaderView.querySelector('.trip-controls__navigation');
+const tripFilteringWrapperView = tripMainHeaderView.querySelector('.trip-controls__filters');
 const tripEventsMainContainer = pageBodyElement.querySelector('.trip-events');
 
 
-const tripPresenter = new TripPresenter(tripHeaderMainView, tripEventsMainContainer, pointsModel, filterModel);
-tripPresenter.init();
+const tripTabsStatisticHeaderView = new TripTabsStatisticHeaderView();
+const tripInfoWrapperHeader = new TripInfoWrapperHeader();
 
-const controlsWrapperView = new TripControlsWrapperView();
-render(tripHeaderMainView, controlsWrapperView);
-const tripTabsHeaderView = new TripTabsHeaderView();
-render(controlsWrapperView, tripTabsHeaderView); //TODO: remove it and connect filter через init
 
-const filterPresenter = new FilterPresenter(controlsWrapperView, filterModel, pointsModel);
-filterPresenter.init();
+// create header view
+render(tripMainHeaderView, tripInfoWrapperHeader, RenderPosition.AFTERBEGIN); // create wrapper for trip info & cost
+
+const filterPresenter = new FilterPresenter(tripFilteringWrapperView, filterModel, pointsModel);
+filterPresenter.init();                                           // create filters
+render(tripStatisticsWrapperView, tripTabsStatisticHeaderView);   // create statistics
+
 
 const newPointButtonView = new NewPointButtonView();
-render(tripHeaderMainView, newPointButtonView);
+render(tripMainHeaderView, newPointButtonView);                  // create new add btn
 
+// create trip view & create trip info + cost
+const tripPresenter = new TripPresenter(tripInfoWrapperHeader, tripEventsMainContainer, pointsModel, filterModel);
+tripPresenter.init();

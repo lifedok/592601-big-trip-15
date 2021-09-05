@@ -1,9 +1,6 @@
 // header
 import TripInfoHeaderView from '../views/header/trip-info-header.js';
-import TripControlsWrapperView from '../views/header/trip-controls-wrapper.js';
-import TripTabsHeaderView from '../views/header/trip-tabs-header.js';
-// import TripFiltersHeaderView from '../views/header/trip-filters-header';
-import NewPointButtonView from '../views/header/new-point-button.js';
+import TripCostHeaderView from '../views/header/trip-cost-header.js';
 
 // main
 import PointSortView from '../views/point-sort';
@@ -15,17 +12,14 @@ import PointNewPresenter from './point-new.js';
 import ServiceMessage from '../views/service-message';
 import {render, remove} from '../utils/render';
 import {FILTER_TYPES, SORT_TYPES, UpdateType, UserAction} from '../const';
-import {
-  sortPointsByDay,
-  sortPointsByPrice
-} from '../utils/point';
+import {sortPointsByDay, sortPointsByPrice} from '../utils/point';
 import {filter} from '../utils/filter';
 
 
 export default class Trip {
 
-  constructor(tripHeaderView, tripMainView, pointsModel, filterModel) {
-    this._tripHeaderView = tripHeaderView;
+  constructor(tripControlsWrapperView, tripMainView, pointsModel, filterModel) {
+    this._tripControlsWrapperView = tripControlsWrapperView;
     this._tripMainView = tripMainView;
     this._pointsModel = pointsModel;
     this._filterModel = filterModel;
@@ -37,10 +31,9 @@ export default class Trip {
     this._filterType = FILTER_TYPES.EVERYTHING;
 
     this._pointSortView = null;
-    // this._tripFiltersHeaderView = null;
     this._tripInfoHeaderView = null;
+    this._tripCostHeaderView = null;
     this._noPointInTrip = null;
-    // this._newPointButtonView = null;
 
     this._handleModelEvent = this._handleModelEvent.bind(this);
     this._handleModeChange = this._handleModeChange.bind(this);
@@ -154,34 +147,11 @@ export default class Trip {
 
   // render views
   _renderInfoHeader() {
-    if (this._tripInfoHeaderView !== null) {
-      this._tripInfoHeaderView = null;
-    }
+    this._tripInfoHeaderView = new TripInfoHeaderView(this._getPoints());
+    this._tripCostHeaderView = new TripCostHeaderView(this._getPoints());
 
-    if (this._newPointButtonView !== null) {
-      this._newPointButtonView = null;
-    }
-
-    this._controlsWrapperView = new TripControlsWrapperView();
-    this._tripTabsHeaderView = new TripTabsHeaderView();
-    if(this._getPoints().length) {
-      this._tripInfoHeaderView = new TripInfoHeaderView(this._getPoints());
-    } else {this._tripInfoHeaderView = new TripInfoHeaderView();}
-
-    this._newPointButtonView = new NewPointButtonView();
-
-    render(this._tripHeaderView, this._tripInfoHeaderView);
-
-    // this._controlsWrapperView = new TripControlsWrapperView();
-    // render(tripHeaderMainView, controlsWrapperView);
-    // const tripTabsHeaderView = new TripTabsHeaderView();
-    // render(controlsWrapperView, tripTabsHeaderView);
-
-
-    render(this._tripHeaderView, this._controlsWrapperView);
-    // render(this._controlsWrapperView, this._tripTabsHeaderView);
-    // this._renderFilter();
-    // render(this._tripHeaderView, this._newPointButtonView);
+    render(this._tripControlsWrapperView, this._tripInfoHeaderView);
+    render(this._tripControlsWrapperView, this._tripCostHeaderView);
   }
 
   _renderSort() {
@@ -225,22 +195,10 @@ export default class Trip {
     render(this._pointListWrapper, this._noPointInTrip);
   }
 
-  // _renderFilter() {
-  //   if (this._tripFiltersHeaderView !== null) {
-  //     this._tripFiltersHeaderView = null;
-  //   }
-  //
-  //   this._tripFiltersHeaderView = new TripFiltersHeaderView();
-  //   render(this._controlsWrapperView, this._tripFiltersHeaderView);
-  // }
-
-
   // reset views
   _resetInfoHeader() {
-    // remove(this._controlsWrapperView);
-    // remove(this._tripFiltersHeaderView);
     remove(this._tripInfoHeaderView);
-    // remove(this._newPointButtonView);
+    remove(this._tripCostHeaderView);
   }
 
   _resetSort() {
