@@ -191,7 +191,7 @@ export default class Trip {
       this._noPointInTrip = null;
     }
 
-    this._noPointInTrip = new ServiceMessage('Click New Event to create your first point');
+    this._noPointInTrip = new ServiceMessage(this._filterType);
     render(this._pointListWrapper, this._noPointInTrip);
   }
 
