@@ -239,7 +239,6 @@ export default class PointItemModify extends SmartView {
   // cancel point click
   _cancelClickHandler(evt) {
     evt.preventDefault();
-    this._callback.cancelClick();
   }
 
   setCancelClickHandler(callback) {
