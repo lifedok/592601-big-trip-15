@@ -215,7 +215,7 @@ export default class PointItemModify extends SmartView {
   }
 
   _setOuterHandlers() {
-    this.getElement().querySelector('.event__reset-btn').addEventListener('click', this._isEdit ? this._formDeleteClickHandler : this._cancelClickHandler);
+    this.getElement().querySelector('.event__reset-btn').addEventListener('click', !this._isEdit ? this._cancelClickHandler : this._formDeleteClickHandler);
     this._isEdit && this.getElement().querySelector('.event__rollup-btn').addEventListener('click', this._closeClickHandler);
   }
 
