@@ -1,3 +1,4 @@
+import he from 'he';
 import {OFFER_TITTLES, POINT_TYPES, CITIES} from '../const.js';
 import SmartView from './smart.js';
 import {
@@ -93,7 +94,7 @@ const createPointItemModifyTemplate = (data, isEdit) => {
             ${type}
           </label>
           <input class="event__input  event__input--destination" id="event-destination-1" 
-                 type="text" name="event-destination" value="${destination.city}" list="destination-list-1">
+                 type="text" name="event-destination" value="${he.encode(destination.city)}" list="destination-list-1">
           <datalist id="destination-list-1">
             ${createDestinationListTemplate()}
           </datalist>
@@ -114,7 +115,7 @@ const createPointItemModifyTemplate = (data, isEdit) => {
             <span class="visually-hidden">Price</span>
             &euro;
           </label>
-          <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="">
+          <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${!data ? '' : data.basePrice}">
         </div>
 
         <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
