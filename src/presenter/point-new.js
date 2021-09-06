@@ -16,8 +16,8 @@ export default class PointNew {
     this._escKeyDownHandler = this._escKeyDownHandler.bind(this);
   }
 
-  init(callback) {
-    this._destroyCallback = callback;
+  init() {
+    // this._destroyCallback = callback;
 
     if (this._pointEditComponent !== null) {
       return;
@@ -37,9 +37,9 @@ export default class PointNew {
       return;
     }
 
-    if (this._destroyCallback !== null) {
-      this._destroyCallback();
-    }
+    // if (this._destroyCallback !== null) {
+    //   this._destroyCallback();
+    // }
 
     remove(this._pointEditComponent);
     this._pointEditComponent = null;
@@ -50,7 +50,7 @@ export default class PointNew {
   _handleFormSubmit(point) {
     this._changeData(
       UserAction.ADD_POINT,
-      UpdateType.MINOR,
+      UpdateType.MAJOR,
       // Пока у нас нет сервера, который бы после сохранения
       // выдывал честный id задачи, нам нужно позаботиться об этом самим
       Object.assign({id: generateRandomString(8, 15)}, point),

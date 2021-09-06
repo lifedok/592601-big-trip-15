@@ -66,6 +66,8 @@ export default class Trip {
   }
 
   createPoint(callback) {
+    this._currentSortType = SORT_TYPES.TIME;
+    this._filterModel.setFilter(UpdateType.MAJOR, FILTER_TYPES.EVERYTHING);
     this._pointNewPresenter.init(callback);
   }
 

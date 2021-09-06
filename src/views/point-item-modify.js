@@ -11,11 +11,35 @@ import flatpickr from 'flatpickr';
 import '../../node_modules/flatpickr/dist/flatpickr.min.css';
 import {getDate, getFormatDate} from '../utils/point';
 
-const createPointItemModifyTemplate = (data, isEdit) => {
-  const {type, offers, destination, isDescription, isPictures} = data;
 
+const BLANK_POINT = {
+  basePrice: 0,
+  dateFrom: null,
+  dateTo: null,
+  destination: {
+    city: 'Geneva',
+    description: 'Geneva ipsum dolor sit amet, consectetur adipiscing elit. Cras aliquet varius magna, non porta ligula feugiat eget. Fusce tristique felis at fermentum pharetra.',
+    pictures: [
+      {
+        src: 'http://picsum.photos/248/152?r=85',
+        description: '',
+      },
+    ],
+  },
+  isFavorite: false,
+  offers: [{
+    id: 'nmuxdo', title: 'Add meal', price: 90,
+  }],
+  type: POINT_TYPES[0],
+};
+
+const createPointItemModifyTemplate = (data, isEdit) => {
+  if (!data) {
+    return;
+  }
+  const {type, offers, destination, isDescription, isPictures} = data;
   const createOffersTemplate = () => (
-    offers.map((offer) =>
+    !offers ? '' : offers.map((offer) =>
       !offer ? '' :
         `<div class="event__offer-selector">
           <input class="event__offer-checkbox  visually-hidden" id="event-offer-${offer.id}-1" 
@@ -100,8 +124,7 @@ const createPointItemModifyTemplate = (data, isEdit) => {
           ${isEdit === true ?
     `<button class="event__rollup-btn" type="button">
                     <span class="visually-hidden">Open event</span>
-                  </button>
-            ` : ''}
+                  </button>` : ''}
         
       </header>
       <section class="event__details">
@@ -125,10 +148,8 @@ const createPointItemModifyTemplate = (data, isEdit) => {
                 <div class="event__photos-tape">
                  ${createPicturesSrcTemplate()}
                 </div>
-              </div>
-              `}
-          </section>
-        `}
+              </div>`}
+          </section>`}
         
       </section>
     </form>
@@ -138,17 +159,17 @@ const createPointItemModifyTemplate = (data, isEdit) => {
 
 export default class PointItemModify extends SmartView {
 
-  constructor(pointEvent, isEdit) {
+  constructor(pointEvent = BLANK_POINT, isEdit) {
     super();
-    this._data = PointItemModify.parsePointToDataState(pointEvent);
     this._isEdit = isEdit;
 
+    this._data = PointItemModify.parsePointToDataState(pointEvent);
     this._datepickerFrom = null;
     this._datepickerTo = null;
 
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
     this._cancelClickHandler = this._cancelClickHandler.bind(this);
-    this._deleteClickHandler = this._deleteClickHandler.bind(this);
+    this._formDeleteClickHandler = this._formDeleteClickHandler.bind(this);
     this._closeClickHandler = this._closeClickHandler.bind(this);
     this._choosePointTypeClickHandler = this._choosePointTypeClickHandler.bind(this);
     this._selectingDestinationInputHandler = this._selectingDestinationInputHandler.bind(this);
@@ -190,10 +211,11 @@ export default class PointItemModify extends SmartView {
     this._setInnerHandlers();
     this._setDatepicker();
     this.setFormSubmitHandler(this._callback.formSubmit);
+    this.setDeleteClickHandler(this._callback.deleteClick);
   }
 
   _setOuterHandlers() {
-    this.getElement().querySelector('.event__reset-btn').addEventListener('click', this._isEdit ? this._deleteClickHandler : this._cancelClickHandler);
+    this.getElement().querySelector('.event__reset-btn').addEventListener('click', this._isEdit ? this._formDeleteClickHandler : this._cancelClickHandler);
     this._isEdit && this.getElement().querySelector('.event__rollup-btn').addEventListener('click', this._closeClickHandler);
   }
 
@@ -225,19 +247,19 @@ export default class PointItemModify extends SmartView {
   }
 
   // delete point click
-  _deleteClickHandler(evt) {
+  _formDeleteClickHandler(evt) {
     evt.preventDefault();
     this._callback.deleteClick(PointItemModify.parsePointToDataState(this._data));
   }
 
   setDeleteClickHandler(callback) {
     this._callback.deleteClick = callback;
-    this.getElement().querySelector('.event__reset-btn').addEventListener('click', this._deleteClickHandler);
+    this.getElement().querySelector('.event__reset-btn').addEventListener('click', this._formDeleteClickHandler);
   }
 
   // close click
   _closeClickHandler(evt) {
-    if(this._isEdit) {
+    if (this._isEdit) {
       evt.preventDefault();
       this._callback.closeClick();
     } else {
@@ -246,7 +268,7 @@ export default class PointItemModify extends SmartView {
   }
 
   setCloseClickHandler(callback) {
-    if(!this._isEdit) {
+    if (!this._isEdit) {
       return;
     }
     this._callback.closeClick = callback;
@@ -272,7 +294,7 @@ export default class PointItemModify extends SmartView {
   _selectingDestinationInputHandler(evt) {
     evt.preventDefault();
     CITIES.map((city) => {
-      if(evt.target.value === city) {
+      if (evt.target.value === city) {
         this.updateData({
           destination: {
             city: evt.target.value,
@@ -337,6 +359,9 @@ export default class PointItemModify extends SmartView {
 
 
   static parsePointToDataState(point) {
+    if (!point || !point.destination) {
+      return;
+    }
     return Object.assign(
       {},
       point,
