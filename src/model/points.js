@@ -1,6 +1,6 @@
 import AbstractObserver from '../utils/abstract-observer.js';
 
-export default class PointsModel extends AbstractObserver {
+export default class Points extends AbstractObserver {
   constructor() {
     super();
     this._points = [];
