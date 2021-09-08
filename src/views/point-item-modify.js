@@ -173,6 +173,7 @@ export default class PointItemModify extends SmartView {
     this._formDeleteClickHandler = this._formDeleteClickHandler.bind(this);
     this._closeClickHandler = this._closeClickHandler.bind(this);
     this._choosePointTypeClickHandler = this._choosePointTypeClickHandler.bind(this);
+    this._setPriceInputHandler = this._setPriceInputHandler.bind(this);
     this._selectingDestinationInputHandler = this._selectingDestinationInputHandler.bind(this);
 
     this._dateFromChangeHandler = this._dateFromChangeHandler.bind(this);
@@ -223,6 +224,7 @@ export default class PointItemModify extends SmartView {
   _setInnerHandlers() {
     this.getElement().querySelector('.event__type-group').addEventListener('click', this._choosePointTypeClickHandler);
     this.getElement().querySelector('.event__input--destination').addEventListener('input', this._selectingDestinationInputHandler);
+    this.getElement().querySelector('.event__input--price').addEventListener('input', this._setPriceInputHandler);
   }
 
   // form submit
@@ -288,6 +290,15 @@ export default class PointItemModify extends SmartView {
       type: evt.target.innerText,
       offers: generateTripOfferData().offers,
     });
+  }
+
+  //change input price
+  _setPriceInputHandler(evt) {
+    evt.preventDefault();
+    this.updateData({
+      basePrice: evt.target.value,
+    });
+    this.getElement().querySelector('.event__input--price').focus();
   }
 
   //change input Destination
