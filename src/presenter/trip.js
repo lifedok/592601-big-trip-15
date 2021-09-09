@@ -173,7 +173,7 @@ export default class Trip {
     if (!pointsLength) {
       this._renderNoPointInTrip();
     } else {
-      this._renderPointList(points.sort(sortPointsByDay));
+      this._currentSortType === SORT_TYPES.DAY ? this._renderPointList(points.sort(sortPointsByDay)) : this._renderPointList(points);
     }
   }
 
@@ -217,7 +217,7 @@ export default class Trip {
     }
 
     if(resetSortType) {
-      this._currentSortType = SORT_TYPES.TIME;
+      this._currentSortType = SORT_TYPES.DAY;
     }
   }
 
