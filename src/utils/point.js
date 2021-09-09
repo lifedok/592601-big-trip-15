@@ -11,6 +11,12 @@ export const sortPointsByDay = (pointA, pointB) => (
   getDate(pointA.dateFrom).diff(getDate(pointB.dateFrom))
 );
 
+export const sortPointsByTime = (pointA, pointB) => {
+  const dateFrom = (getDate(pointA.dateTo).diff(getDate(pointA.dateFrom)));
+  const dateTo = (getDate(pointB.dateTo).diff(getDate(pointB.dateFrom)));
+  return dateFrom - dateTo;
+};
+
 export const sortPointsByMaxDate = (pointA, pointB) => (
   getDate(pointA.dateTo).diff(getDate(pointB.dateTo))
 );
@@ -25,4 +31,4 @@ export const getFormatDate = (date, template) => {
   return getDate(date).format(template); // as example DD/MM/YY HH:mm
 };
 
-export const sortPointsByPrice = (pointA, pointB) => pointB.basePrice - pointA.basePrice;
+export const sortPointsByPrice = (pointA, pointB) => pointA.basePrice - pointB.basePrice;

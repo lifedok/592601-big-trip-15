@@ -12,9 +12,8 @@ import PointNewPresenter from './point-new.js';
 import ServiceMessage from '../views/service-message';
 import {render, remove} from '../utils/render';
 import {FILTER_TYPES, SORT_TYPES, UpdateType, UserAction} from '../const';
-import {sortPointsByDay, sortPointsByPrice} from '../utils/point';
+import {sortPointsByDay, sortPointsByPrice, sortPointsByTime} from '../utils/point';
 import {filter} from '../utils/filter';
-
 
 export default class Trip {
 
@@ -76,17 +75,18 @@ export default class Trip {
     const points = this._pointsModel.getPoints();
     const filteredPoints = filter[this._filterType](points);
 
+    const filteredPointsByDay = filteredPoints.sort(sortPointsByDay);
     switch (this._currentSortType) {
       case SORT_TYPES.DAY:
-        return filteredPoints.sort(sortPointsByDay);
+        return filteredPointsByDay;
       case SORT_TYPES.EVENT || SORT_TYPES.OFFERS:
         return;
       case SORT_TYPES.TIME: // by default
-        return filteredPoints;
+        return filteredPoints.sort(sortPointsByTime);
       case SORT_TYPES.PRICE:
         return filteredPoints.sort(sortPointsByPrice);
     }
-    return filteredPoints;
+    return filteredPointsByDay;
   }
 
   _handleModeChange() {

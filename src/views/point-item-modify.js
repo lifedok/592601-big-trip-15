@@ -315,7 +315,7 @@ export default class PointItemModify extends SmartView {
       }
       return {
         id: offer.id,
-        isChecked: offer.isChecked === 'checked' ? offer.isChecked = '' : offer.isChecked = 'checked',
+        isChecked: offer.isChecked !== 'checked' ? offer.isChecked = 'checked' : offer.isChecked = '',
         title: offer.title,
         price: offer.price,
       };
