@@ -296,7 +296,7 @@ export default class PointItemModify extends SmartView {
   _setPriceInputHandler(evt) {
     evt.preventDefault();
     this.updateData({
-      basePrice: evt.target.value,
+      basePrice: Number(evt.target.value),
     });
     this.getElement().querySelector('.event__input--price').focus();
   }
