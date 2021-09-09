@@ -8,12 +8,11 @@ const createPointItemTemplate = (item) => {
   const createOffersTemplate = () => (
     offers.length ?
       offers.map((offer) =>
-        `<li class="event__offer">
-          <span class="event__offer-title">${offer.title}</span>
-          &plus;&euro;&nbsp;
-          <span class="event__offer-price">${offer.price}</span>
-        </li>
-      `).join('') : ''
+        offer.isChecked === 'checked' ?
+          `<li class="event__offer">
+            <span class="event__offer-title">${offer.title}</span>
+            &plus;&euro;&nbsp;<span class="event__offer-price">${offer.price}</span>
+          </li>` : '').join('') : ''
   );
 
 

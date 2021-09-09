@@ -39,13 +39,15 @@ const createPointItemModifyTemplate = (data, isEdit) => {
     return;
   }
   const {type, offers, destination, isDescription, isPictures} = data;
+
+
   const createOffersTemplate = () => (
-    !offers ? '' : offers.map((offer) =>
+    !offers || !offers.length ? '' : offers.map((offer) =>
       !offer ? '' :
         `<div class="event__offer-selector">
-          <input class="event__offer-checkbox  visually-hidden" id="event-offer-${offer.id}-1" 
+          <input class="event__offer-checkbox  visually-hidden" id="${offer.id}" 
                  type="checkbox" name="event-offer-${OFFER_TITTLES[offer.title]}" ${offer.isChecked}>
-          <label class="event__offer-label" for="event-offer-${offer.id}-1">
+          <label class="event__offer-label" for="${offer.id}">
             <span class="event__offer-title">${offer.title}</span>
             &plus;&euro;&nbsp;
             <span class="event__offer-price">${offer.price ? offer.price : getRandomInteger(20, 120)}</span>
@@ -174,6 +176,7 @@ export default class PointItemModify extends SmartView {
     this._closeClickHandler = this._closeClickHandler.bind(this);
     this._choosePointTypeClickHandler = this._choosePointTypeClickHandler.bind(this);
     this._setPriceInputHandler = this._setPriceInputHandler.bind(this);
+    this._setOffersHandler = this._setOffersHandler.bind(this);
     this._selectingDestinationInputHandler = this._selectingDestinationInputHandler.bind(this);
 
     this._dateFromChangeHandler = this._dateFromChangeHandler.bind(this);
@@ -225,6 +228,7 @@ export default class PointItemModify extends SmartView {
     this.getElement().querySelector('.event__type-group').addEventListener('click', this._choosePointTypeClickHandler);
     this.getElement().querySelector('.event__input--destination').addEventListener('input', this._selectingDestinationInputHandler);
     this.getElement().querySelector('.event__input--price').addEventListener('input', this._setPriceInputHandler);
+    this.getElement().querySelector('.event__available-offers').addEventListener('input', this._setOffersHandler);
   }
 
   // form submit
@@ -299,6 +303,29 @@ export default class PointItemModify extends SmartView {
       basePrice: Number(evt.target.value),
     });
     this.getElement().querySelector('.event__input--price').focus();
+  }
+
+  //change offers
+  _setOffersHandler(evt) {
+    evt.preventDefault();
+    const updateOffers =  this._data.offers.map((offer) => {
+      const offerId = offer.id === evt.target.id ? offer.id : null;
+      if (!offerId) {
+        return offer;
+      }
+      return {
+        id: offer.id,
+        isChecked: offer.isChecked === 'checked' ? offer.isChecked = '' : offer.isChecked = 'checked',
+        title: offer.title,
+        price: offer.price,
+      };
+    });
+
+    return (
+      this.updateData({
+        offers: updateOffers,
+      })
+    );
   }
 
   //change input Destination
