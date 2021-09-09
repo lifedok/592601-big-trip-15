@@ -119,13 +119,13 @@ export default class Trip {
         this._resetTrip();
         this._renderTrip();
         break;
-      case UpdateType.MIDDLE: // перерисовать весь список
+      case UpdateType.MIDDLE: // перерисовать info in header
         this._pointPresenter.get(data.id).init(data);
         this._resetInfoHeader();
         this._renderInfoHeader();
         break;
       case UpdateType.MAJOR: // перерисовать вecь трип целиком
-        this._resetTrip({resetSortType: true});
+        this._resetTrip({resetSortType: false});
         this._resetInfoHeader();
         this._resetSort();
 

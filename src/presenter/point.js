@@ -124,7 +124,7 @@ export default class Point {
 
   _handleFormSubmit(point) {
     const isPatchUpdate = this._pointItem.type !== point.type;
-    const isMiddleUpdate = this._pointItem.dateFrom !== point.dateFrom || this._pointItem.dateTo !== point.dateTo || this._pointItem.destination.city !== point.destination.city;
+    const isMiddleUpdate = this._pointItem.destination.city !== point.destination.city;
 
     let type;
     if (isMiddleUpdate) {
