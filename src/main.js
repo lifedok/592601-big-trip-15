@@ -11,13 +11,14 @@ import {render, RenderPosition} from './utils/render';
 import NewPointButtonView from './views/header/new-point-button';
 import TripTabsStatisticHeaderView from './views/header/trip-tab-statistic-header';
 import TripInfoWrapperHeader from './views/header/trip-wrapper-info-header';
+import {sortPointsByDay} from './utils/point';
 
 const COUNT_ITEMS = 9;
 const points = generateTripEventListData(COUNT_ITEMS);
-points.sort((a, b) => a.dateFrom - b.dateFrom);
+const sortPoint = points.sort(sortPointsByDay);
 
 const pointsModel = new PointsModel();
-pointsModel.setPoints(points);
+pointsModel.setPoints(sortPoint);
 
 const filterModel = new FilterModel();
 

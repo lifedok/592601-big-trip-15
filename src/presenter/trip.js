@@ -26,7 +26,7 @@ export default class Trip {
     this._pointPresenter = new Map();
     this._pointListWrapper = new PointListWrapperView();
 
-    this._currentSortType = SORT_TYPES.TIME;
+    this._currentSortType = SORT_TYPES.DAY;
     this._filterType = FILTER_TYPES.EVERYTHING;
 
     this._pointSortView = null;
@@ -65,7 +65,7 @@ export default class Trip {
   }
 
   createPoint(callback) {
-    this._currentSortType = SORT_TYPES.TIME;
+    this._currentSortType = SORT_TYPES.DAY;
     this._filterModel.setFilter(UpdateType.MAJOR, FILTER_TYPES.EVERYTHING);
     this._pointNewPresenter.init(callback);
   }
@@ -77,11 +77,11 @@ export default class Trip {
 
     const filteredPointsByDay = filteredPoints.sort(sortPointsByDay);
     switch (this._currentSortType) {
-      case SORT_TYPES.DAY:
+      case SORT_TYPES.DAY: // by default
         return filteredPointsByDay;
       case SORT_TYPES.EVENT || SORT_TYPES.OFFERS:
         return;
-      case SORT_TYPES.TIME: // by default
+      case SORT_TYPES.TIME:
         return filteredPoints.sort(sortPointsByTime);
       case SORT_TYPES.PRICE:
         return filteredPoints.sort(sortPointsByPrice);
@@ -173,7 +173,7 @@ export default class Trip {
     if (!pointsLength) {
       this._renderNoPointInTrip();
     } else {
-      this._renderPointList(points);
+      this._renderPointList(points.sort(sortPointsByDay));
     }
   }
 
