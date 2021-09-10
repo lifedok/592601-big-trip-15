@@ -1,6 +1,7 @@
 import {remove, render, replace} from '../utils/render';
 import PointItemModifyView from '../views/point-item-modify';
 import PointItemView from '../views/point-item';
+import {UpdateType, UserAction} from '../const';
 
 
 const Mode = {
@@ -14,7 +15,6 @@ export default class Point {
     this._pointListWrapper = pointListWrapper;
     this._changeData = changeData;
     this._changeMode = changeMode;
-    this._isEditCarrentPoint = true;
 
     this._pointItemComponent = null;
     this._pointEditComponent = null;
@@ -24,6 +24,7 @@ export default class Point {
     this._openPointItemClick = this._openPointItemClick.bind(this);
     this._handleFavoriteClick = this._handleFavoriteClick.bind(this);
     this._handleFormSubmit = this._handleFormSubmit.bind(this);
+    this._handleDeleteClick = this._handleDeleteClick.bind(this);
   }
 
   init(pointItem) {
@@ -32,8 +33,8 @@ export default class Point {
     const prevPointItemComponent = this._pointItemComponent;
     const prevPointEditComponent = this._pointEditComponent;
     this._pointItemComponent = new PointItemView(this._pointItem);
-    this._pointEditComponent = new PointItemModifyView(this._pointItem, this._isEditCarrentPoint);
-    this._pointCreateComponent = new PointItemModifyView(this._pointItem);
+    this._pointEditComponent = new PointItemModifyView(this._pointItem, true);
+    this._pointCreateComponent = new PointItemModifyView(this._pointItem, false);
 
     // just point item
     this._pointItemComponent.setOpenClickHandler(this._openPointItemClick);
@@ -42,8 +43,11 @@ export default class Point {
     this._pointEditComponent.setCloseClickHandler(() => this._closePointEditView());
     this._pointEditComponent.setDeleteClickHandler(() => this._deletePointItemClick());
     this._pointEditComponent.setFormSubmitHandler(this._handleFormSubmit);
-    // create item click
+    // cancel item click
     this._pointCreateComponent.setCancelClickHandler(() => this._cancelPointEditView());
+
+    // delete item click
+    this._pointEditComponent.setDeleteClickHandler(this._handleDeleteClick);
 
     if (prevPointEditComponent === null || prevPointItemComponent === null) {
       render(this._pointListWrapper, this._pointItemComponent);
@@ -100,7 +104,6 @@ export default class Point {
 
   // for edit point item
   _deletePointItemClick() {
-    // TODO: Call render point list (After deleting all the points, it doesn't see service message.)
     remove(this._pointEditComponent);
     this._changeData(this._pointItem);
   }
@@ -120,13 +123,37 @@ export default class Point {
   }
 
   _handleFormSubmit(point) {
-    this._changeData(point);
+    const isPatchUpdate = this._pointItem.type !== point.type;
+    const isMiddleUpdate = this._pointItem.destination.city !== point.destination.city;
+
+    let type;
+    if (isMiddleUpdate) {
+      type = UpdateType.MIDDLE;
+    } else {
+      type = isPatchUpdate ? UpdateType.PATCH : UpdateType.MAJOR;
+    }
+
+    this._changeData(
+      UserAction.UPDATE_POINT,
+      type,
+      point,
+    );
     this._replaceFormToPointItem();
+  }
+
+  _handleDeleteClick(task) {
+    this._changeData(
+      UserAction.DELETE_POINT,
+      UpdateType.MAJOR,
+      task,
+    );
   }
 
   // for just point event item
   _handleFavoriteClick() {
     this._changeData(
+      UserAction.UPDATE_POINT,
+      UpdateType.MINOR,
       Object.assign(
         {},
         this._pointItem,

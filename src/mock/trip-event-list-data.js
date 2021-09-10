@@ -4,21 +4,16 @@ import {generateRandomBoolean, generateRandomString, getRandomInteger} from '../
 import {getDate} from '../utils/point';
 
 const generateDateFrom = () => {
-  const fromDaysGap = -1;
-
-  const data = getDate().add(fromDaysGap, 'day')
-    .add(getRandomInteger(5, 12), 'hour')
-    .add(getRandomInteger(1, 30), 'minute');
-
+  const data = getDate().add(getRandomInteger(-1, -7), 'day')
+    .add(getRandomInteger(0, 24), 'hour')
+    .add(getRandomInteger(0, 60), 'minute');
   return getDate(data).toDate();
 };
 
 const generateDateTo = () => {
-  const toDaysGap = 1;
-  const data = getDate().add(toDaysGap, 'day')
-    .add(getRandomInteger(12, 22), 'hour')
-    .add(getRandomInteger(30, 60), 'minute');
-
+  const data = getDate().add(getRandomInteger(0, 7), 'day')
+    .add(getRandomInteger(0, 24), 'hour')
+    .add(getRandomInteger(0, 60), 'minute');
   return getDate(data).toDate();
 };
 

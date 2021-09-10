@@ -26,3 +26,17 @@ export const SORT_TYPES = {
   PRICE: 'price',
   OFFERS: 'offers',
 };
+
+export const UpdateType = {
+  PATCH: 'PATCH', // change type => update only point
+  MINOR: 'MINOR', // change favorite => update list points
+  MIDDLE: 'MIDDLE', // change date and city => update point and header
+  MAJOR: 'MAJOR', // change add or delete point => update all points & header
+};
+
+export const UserAction = {
+  UPDATE_POINT: 'UPDATE_POINT',
+  ADD_POINT: 'ADD_POINT',
+  DELETE_POINT: 'DELETE_POINT',
+};
+
