@@ -1,10 +1,5 @@
 import Abstract from '../abstract';
-import {MenuItem} from '../../const';
-
-const SortType = {
-  TABLE: 'Table',
-  STATS: 'Stats',
-};
+import {MenuItem, SortType} from '../../const';
 
 const createTripTabsStatisticTemplate = () =>
   `<nav class="trip-controls__trip-tabs  trip-tabs">
@@ -16,21 +11,10 @@ export default class TripTabStatisticHeader extends Abstract {
   constructor() {
     super();
     this._tabSortClickHandler = this._tabSortClickHandler.bind(this);
-
-    this._switchOnSelectTab(SortType.TABLE);
   }
 
   getTemplate() {
     return createTripTabsStatisticTemplate();
-  }
-
-  _switchOnSelectTab(selectedTabType) {
-    const values = this.getElement().querySelectorAll('a');
-
-    values.forEach((value) => {
-      value.innerText === selectedTabType && value.classList.add('trip-tabs__btn--active');
-      value.innerText !== selectedTabType && value.classList.remove('trip-tabs__btn--active');
-    });
   }
 
   _tabSortClickHandler(evt) {
@@ -40,10 +24,10 @@ export default class TripTabStatisticHeader extends Abstract {
 
     if(value === SortType.TABLE) {
       chosenValue = MenuItem.POINTS;
-      this._switchOnSelectTab(SortType.TABLE);
+      this.switchOnSelectTab(SortType.TABLE);
     } else {
       chosenValue = MenuItem.STATISTICS;
-      this._switchOnSelectTab(SortType.STATS);
+      this.switchOnSelectTab(SortType.STATS);
     }
     this._callback.menuClick(chosenValue);
   }
@@ -53,11 +37,12 @@ export default class TripTabStatisticHeader extends Abstract {
     this.getElement().addEventListener('click', this._tabSortClickHandler);
   }
 
-  setMenuItem(menuItem) {
-    const item = this.getElement().querySelector(`[value=${menuItem}]`);
+  switchOnSelectTab(selectedTabType) {
+    const values = this.getElement().querySelectorAll('a');
 
-    if (item !== null) {
-      item.checked = true;
-    }
+    values.forEach((value) => {
+      value.innerText === selectedTabType && value.classList.add('trip-tabs__btn--active');
+      value.innerText !== selectedTabType && value.classList.remove('trip-tabs__btn--active');
+    });
   }
 }

@@ -46,3 +46,8 @@ export const MenuItem = {
   POINTS: 'POINTS',
   STATISTICS: 'STATISTICS',
 };
+
+export const SortType = {
+  TABLE: 'Table',
+  STATS: 'Stats',
+};

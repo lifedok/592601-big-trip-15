@@ -13,6 +13,7 @@ import NewPointButtonView from './views/header/new-point-button';
 import TripTabsStatisticHeaderView from './views/header/trip-tab-statistic-header';
 import TripInfoWrapperHeader from './views/header/trip-wrapper-info-header';
 import {sortPointsByDay} from './utils/point';
+import {SortType} from './const';
 
 const COUNT_ITEMS = 9;
 const points = generateTripEventListData(COUNT_ITEMS);
@@ -67,6 +68,7 @@ const handleSiteMenuClick = (menuItem) => {
   }
 };
 
+tripTabsStatisticHeaderView.switchOnSelectTab(SortType.TABLE);
 tripTabsStatisticHeaderView.setTabSortClickHandler(handleSiteMenuClick);
 
 // create trip view & create trip info + cost
