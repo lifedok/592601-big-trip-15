@@ -6,6 +6,7 @@ import TripPresenter from './presenter/trip';
 import FilterPresenter from './presenter/filter';
 import PointsModel from './model/points';
 import FilterModel from './model/filter';
+import {MenuItem} from './const.js';
 
 import {render, RenderPosition} from './utils/render';
 import NewPointButtonView from './views/header/new-point-button';
@@ -43,6 +44,30 @@ render(tripStatisticsWrapperView, tripTabsStatisticHeaderView);   // create stat
 
 const newPointButtonView = new NewPointButtonView();
 render(tripMainHeaderView, newPointButtonView);                  // create new add btn
+
+
+const handleSiteMenuClick = (menuItem) => {
+  console.log('test ==> menuItem', menuItem);
+
+  switch (menuItem) {
+    case MenuItem.ADD_NEW_POINT:
+      // Скрыть статистику
+      // Показать доску
+      // Показать форму добавления новой задачи
+      // Убрать выделение с ADD NEW TASK после сохранения
+      break;
+    case MenuItem.POINTS:
+      // Показать доску
+      // Скрыть статистику
+      break;
+    case MenuItem.STATISTICS:
+      // Скрыть доску
+      // Показать статистику
+      break;
+  }
+};
+
+tripTabsStatisticHeaderView.setTabSortClickHandler(handleSiteMenuClick);
 
 // create trip view & create trip info + cost
 const tripPresenter = new TripPresenter(tripInfoWrapperHeader, tripEventsMainContainer, pointsModel, filterModel);
