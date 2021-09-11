@@ -16,15 +16,16 @@ export default class TripTabStatisticHeader extends Abstract {
   constructor() {
     super();
     this._tabSortClickHandler = this._tabSortClickHandler.bind(this);
+
+    this._switchOnSelectTab(SortType.TABLE);
   }
 
   getTemplate() {
     return createTripTabsStatisticTemplate();
   }
 
-  _switchOnSelectTab(evt, selectedTabType) {
-    const parent = evt.target.parentElement;
-    const values = parent.querySelectorAll('a');
+  _switchOnSelectTab(selectedTabType) {
+    const values = this.getElement().querySelectorAll('a');
 
     values.forEach((value) => {
       value.innerText === selectedTabType && value.classList.add('trip-tabs__btn--active');
@@ -39,10 +40,10 @@ export default class TripTabStatisticHeader extends Abstract {
 
     if(value === SortType.TABLE) {
       chosenValue = MenuItem.POINTS;
-      this._switchOnSelectTab(evt, SortType.TABLE);
+      this._switchOnSelectTab(SortType.TABLE);
     } else {
       chosenValue = MenuItem.STATISTICS;
-      this._switchOnSelectTab(evt, SortType.STATS);
+      this._switchOnSelectTab(SortType.STATS);
     }
     this._callback.menuClick(chosenValue);
   }
