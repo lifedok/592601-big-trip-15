@@ -1,5 +1,6 @@
 import Abstract from './abstract';
 import {SORT_TYPES} from '../const';
+import {remove} from '../utils/render';
 
 const createPointSortTemplate = (sorts, points) => {
 
@@ -67,4 +68,5 @@ export default class PointSort extends Abstract {
     this._callback.sortTypeChange = callback;
     this.getElement().addEventListener('click', this._sortTypeChangeHandler);
   }
+
 }

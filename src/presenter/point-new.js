@@ -9,13 +9,16 @@ export default class PointNew {
     this._changeData = changeData;
 
     this._pointEditComponent = null;
+    //this._destroyCallback = null;
 
     this._handleFormSubmit = this._handleFormSubmit.bind(this);
     this._handleDeleteClick = this._handleDeleteClick.bind(this);
     this._escKeyDownHandler = this._escKeyDownHandler.bind(this);
   }
 
-  init() {
+  init(callback) {
+    console.log('callback', callback);
+    // this._destroyCallback = callback;
     if (this._pointEditComponent !== null) {
       return;
     }
@@ -33,6 +36,10 @@ export default class PointNew {
     if (this._pointEditComponent === null) {
       return;
     }
+
+    // if (this._destroyCallback !== null) {
+    //   this._destroyCallback();
+    // }
 
     remove(this._pointEditComponent);
     this._pointEditComponent = null;

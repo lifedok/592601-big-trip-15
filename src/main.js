@@ -10,6 +10,7 @@ import {MenuItem} from './const.js';
 
 import {render, RenderPosition} from './utils/render';
 import NewPointButtonView from './views/header/new-point-button';
+import PointSortView from './views/point-sort';
 import TripTabsStatisticHeaderView from './views/header/trip-tab-statistic-header';
 import TripInfoWrapperHeader from './views/header/trip-wrapper-info-header';
 import {sortPointsByDay} from './utils/point';
@@ -41,10 +42,14 @@ render(tripMainHeaderView, tripInfoWrapperHeader, RenderPosition.AFTERBEGIN); //
 const filterPresenter = new FilterPresenter(tripFilteringWrapperView, filterModel, pointsModel);
 filterPresenter.init();                                           // create filters
 render(tripStatisticsWrapperView, tripTabsStatisticHeaderView);   // create statistics
-
+tripTabsStatisticHeaderView.switchOnSelectTab(SortType.TABLE); // by default sort = table
 
 const newPointButtonView = new NewPointButtonView();
 render(tripMainHeaderView, newPointButtonView);                  // create new add btn
+
+// create trip view & create trip info + cost
+const tripPresenter = new TripPresenter(tripInfoWrapperHeader, tripEventsMainContainer, pointsModel, filterModel);
+tripPresenter.init();
 
 
 const handleSiteMenuClick = (menuItem) => {
@@ -53,29 +58,31 @@ const handleSiteMenuClick = (menuItem) => {
   switch (menuItem) {
     case MenuItem.ADD_NEW_POINT:
       // Скрыть статистику
-      // Показать доску
-      // Показать форму добавления новой задачи
-      // Убрать выделение с ADD NEW TASK после сохранения
+
+      tripPresenter.removeTripContent(); // Скрыть доску
+      // tripPresenter.destroy(); // Показать доску
+      // filterModel.setFilter(UpdateType.MAJOR, FILTER_TYPES.EVERYTHING);
+      // tripPresenter.init();
+
+      tripPresenter.createPoint(); // Показать форму добавления новой задачи
+      tripTabsStatisticHeaderView.switchOnSelectTab(SortType.TABLE); // Убрать выделение с ADD NEW TASK после сохранения
       break;
     case MenuItem.POINTS:
-      // Показать доску
+      tripPresenter.createTripContent(); // Показать доску
       // Скрыть статистику
       break;
     case MenuItem.STATISTICS:
-      // Скрыть доску
+      // new PointSortView().removeElement();
+      tripPresenter.removeTripContent(); // Скрыть доску
+
       // Показать статистику
       break;
   }
 };
-
-tripTabsStatisticHeaderView.switchOnSelectTab(SortType.TABLE);
 tripTabsStatisticHeaderView.setTabSortClickHandler(handleSiteMenuClick);
 
-// create trip view & create trip info + cost
-const tripPresenter = new TripPresenter(tripInfoWrapperHeader, tripEventsMainContainer, pointsModel, filterModel);
-tripPresenter.init();
 
 document.querySelector('.trip-main__event-add-btn').addEventListener('click', (evt) => {
   evt.preventDefault();
-  tripPresenter.createPoint();
+  handleSiteMenuClick(MenuItem.ADD_NEW_POINT);
 });
