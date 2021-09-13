@@ -65,23 +65,23 @@ export default class Trip {
   }
 
   removeTripContent() {
-    // this._pointPresenter.forEach((presenter) => presenter.resetView());
-    remove(this._pointSortView);
-    remove(this._pointListWrapper);
+    this._resetTrip({resetSortType: false});
+    this._resetSort();
   }
 
   createTripContent() {
-    if (this._pointSortView === null) {
-      render(this._tripMainView, this._pointSortView);
-    }
-    render(this._tripMainView, this._pointListWrapper);
     this._renderSort();
+    render(this._tripMainView, this._pointListWrapper);
     this._renderTrip();
   }
 
-  createPoint(callback) {
+  setDefaultModeFilters() {
     this._currentSortType = SORT_TYPES.DAY;
     this._filterModel.setFilter(UpdateType.MAJOR, FILTER_TYPES.EVERYTHING);
+  }
+
+  createPoint(callback) {
+    this.setDefaultModeFilters();
     this._pointNewPresenter.init(callback);
   }
 

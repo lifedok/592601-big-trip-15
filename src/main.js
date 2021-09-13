@@ -10,7 +10,6 @@ import {MenuItem} from './const.js';
 
 import {render, RenderPosition} from './utils/render';
 import NewPointButtonView from './views/header/new-point-button';
-import PointSortView from './views/point-sort';
 import TripTabsStatisticHeaderView from './views/header/trip-tab-statistic-header';
 import TripInfoWrapperHeader from './views/header/trip-wrapper-info-header';
 import {sortPointsByDay} from './utils/point';
@@ -52,29 +51,32 @@ const tripPresenter = new TripPresenter(tripInfoWrapperHeader, tripEventsMainCon
 tripPresenter.init();
 
 
+let prevMenuItem = MenuItem.POINTS;
 const handleSiteMenuClick = (menuItem) => {
-  console.log('test ==> menuItem', menuItem);
-
   switch (menuItem) {
     case MenuItem.ADD_NEW_POINT:
       // Скрыть статистику
-
-      tripPresenter.removeTripContent(); // Скрыть доску
-      // tripPresenter.destroy(); // Показать доску
-      // filterModel.setFilter(UpdateType.MAJOR, FILTER_TYPES.EVERYTHING);
-      // tripPresenter.init();
-
-      tripPresenter.createPoint(); // Показать форму добавления новой задачи
-      tripTabsStatisticHeaderView.switchOnSelectTab(SortType.TABLE); // Убрать выделение с ADD NEW TASK после сохранения
+      if (prevMenuItem !== MenuItem.ADD_NEW_POINT) {
+        tripPresenter.removeTripContent();
+        tripPresenter.createPoint();
+        tripTabsStatisticHeaderView.switchOnSelectTab(SortType.TABLE);
+        prevMenuItem = MenuItem.ADD_NEW_POINT;
+      }
       break;
     case MenuItem.POINTS:
-      tripPresenter.createTripContent(); // Показать доску
+      if (prevMenuItem !== MenuItem.POINTS) {
+        tripPresenter.createTripContent();
+        prevMenuItem = MenuItem.POINTS;
+        tripPresenter.setDefaultModeFilters();
+      }
       // Скрыть статистику
       break;
     case MenuItem.STATISTICS:
-      // new PointSortView().removeElement();
-      tripPresenter.removeTripContent(); // Скрыть доску
-
+      if (prevMenuItem !== MenuItem.STATISTICS) {
+        tripPresenter.removeTripContent(); // Скрыть доску
+        prevMenuItem = MenuItem.STATISTICS;
+        filterPresenter.isDisabledFilters();
+      }
       // Показать статистику
       break;
   }

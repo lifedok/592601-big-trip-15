@@ -45,4 +45,12 @@ export default class TripFiltersHeader extends Abstract {
     this._callback.filterTypeChange = callback;
     this.getElement().addEventListener('change', this._filterTypeChangeHandler);
   }
+
+  isDisabledFilter() {
+    const filters = this.getElement().querySelectorAll('.trip-filters__filter-input');
+    filters.forEach((filter) => {
+      filter.checked = false;
+      filter.disabled = true;
+    });
+  }
 }
