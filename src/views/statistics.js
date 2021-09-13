@@ -23,22 +23,52 @@ const createStatisticsTemplate = () => (
 
 
 export const countPointsByType = (points, type) => points.filter((point) => point.type === type).length;
-export const countPointsByPrice = (points, price) => points.filter((point) => point.basePrice === price).length;
+export const sortPriceByType = (pointPrices, type) => pointPrices.filter((point) => point.type === type);
+
+
 
 export const makeItemsUniq = (items) => [...new Set(items)];
 
 const renderMoneyChart = (moneyCtx, points) => {
-  // const pointPrices = points.map((point) => point.basePrice);
-  // const uniqPrice = makeItemsUniq(pointPrices);
-  // console.log('TETS ===> uniqPrice',uniqPrice);
-  // const uniqTypePriceToUpperCase = uniqPrice.map((type) => type.toUpperCase());
-  // const pointsByPriceCounts = uniqPrice.map((price) => countPointsByPrice(points, price));
+
+
+  const pointPricesByType = points.map((point) => ({
+    price: point.basePrice,
+    type: point.type, // получаю объект всех цен и типов
+  }));
+  console.log('TETS ===> pointPricesByType',pointPricesByType);
+
+  // создаю уникальный массив типов и полученного объекта и перевожу в апперкейс
+  const pointTypeToUpperCase = pointPricesByType.map((type) => type.type.toUpperCase());
+  const pointTypeToUpperCaseUniq = makeItemsUniq(pointTypeToUpperCase);
+
+  function getTotalPrice(pointByTypes) {
+    let total = 0;
+    console.log('TETS ===> pointByTypes',pointByTypes);
+    console.log('TETS ===> pointByTypes.length',pointByTypes.length);
+
+    for(let item = 0; item <= pointByTypes.length; item++){
+      pointByTypes.map((point) => total += point.price);
+    }
+    return total;
+  }
+
+  const pointPricesByTypeSum = pointTypeToUpperCaseUniq.map((type) => sortPriceByType(pointPricesByType, type.toLowerCase()));
+  const arrayPriceByTypes = [];
+  pointPricesByTypeSum.forEach((item) => {
+    // console.log('item', ...item);
+    // const totalSum = () => let sum = 0; sum += i;
+    // arrayPriceByTypes.push((item) => getTotalPrice(item));
+    const total = getTotalPrice(item);
+    console.log('total', total);
+    return arrayPriceByTypes;
+  });
 
   return new Chart(moneyCtx, {
     plugins: [ChartDataLabels],
     type: 'horizontalBar',
     data: {
-      labels: ['A', 'B'],
+      labels: pointTypeToUpperCaseUniq,
       datasets: [{
         data: ['200', '500'],
         backgroundColor: '#ffffff',
