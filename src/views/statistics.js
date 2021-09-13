@@ -2,6 +2,7 @@ import SmartView from './smart.js';
 import Chart from 'chart.js';
 import {OFFER_TITTLES, POINT_TYPES} from '../const.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
+import {countPointsByType, getTotalPrice, makeItemsUniq, sortPriceByType} from '../utils/statistics';
 
 const createStatisticsTemplate = () => (
   `<section class="statistics">
@@ -22,55 +23,33 @@ const createStatisticsTemplate = () => (
 );
 
 
-export const countPointsByType = (points, type) => points.filter((point) => point.type === type).length;
-export const sortPriceByType = (pointPrices, type) => pointPrices.filter((point) => point.type === type);
-
-
-
-export const makeItemsUniq = (items) => [...new Set(items)];
-
 const renderMoneyChart = (moneyCtx, points) => {
 
-
-  const pointPricesByType = points.map((point) => ({
+  const pointWithPricesAndTypes = points.map((point) => ({
     price: point.basePrice,
-    type: point.type, // получаю объект всех цен и типов
+    type: point.type,
   }));
-  console.log('TETS ===> pointPricesByType',pointPricesByType);
+  const pointTypeToUpperCase = pointWithPricesAndTypes.map((type) => type.type.toUpperCase());
+  const pointTypeUniqToUpperCase = makeItemsUniq(pointTypeToUpperCase);
 
-  // создаю уникальный массив типов и полученного объекта и перевожу в апперкейс
-  const pointTypeToUpperCase = pointPricesByType.map((type) => type.type.toUpperCase());
-  const pointTypeToUpperCaseUniq = makeItemsUniq(pointTypeToUpperCase);
 
-  function getTotalPrice(pointByTypes) {
-    let total = 0;
-    console.log('TETS ===> pointByTypes',pointByTypes);
-    console.log('TETS ===> pointByTypes.length',pointByTypes.length);
+  const pointPricesByTypes = pointTypeUniqToUpperCase.map((type) => sortPriceByType(pointWithPricesAndTypes, type.toLowerCase()));
 
-    for(let item = 0; item <= pointByTypes.length; item++){
-      pointByTypes.map((point) => total += point.price);
-    }
-    return total;
-  }
-
-  const pointPricesByTypeSum = pointTypeToUpperCaseUniq.map((type) => sortPriceByType(pointPricesByType, type.toLowerCase()));
-  const arrayPriceByTypes = [];
-  pointPricesByTypeSum.forEach((item) => {
-    // console.log('item', ...item);
-    // const totalSum = () => let sum = 0; sum += i;
+  const totalPriceByType = () => pointPricesByTypes.forEach((item) => {
     // arrayPriceByTypes.push((item) => getTotalPrice(item));
     const total = getTotalPrice(item);
     console.log('total', total);
-    return arrayPriceByTypes;
+    return total;
   });
+  // console.log('totalPriceByType', totalPriceByType());
 
   return new Chart(moneyCtx, {
     plugins: [ChartDataLabels],
     type: 'horizontalBar',
     data: {
-      labels: pointTypeToUpperCaseUniq,
+      labels: pointTypeUniqToUpperCase,
       datasets: [{
-        data: ['200', '500'],
+        data: totalPriceByType(),
         backgroundColor: '#ffffff',
         hoverBackgroundColor: '#ffffff',
         anchor: 'start',
@@ -203,8 +182,8 @@ const renderTypeChart = (typeCtx, points) => {
 };
 
 const renderTimeSpentChart = (timeSpendCtx, points) => {
-  console.log('renderTimeSpentChart timeSpendCtx', timeSpendCtx);
-  console.log('renderTimeSpentChart points', points);
+  // console.log('renderTimeSpentChart timeSpendCtx', timeSpendCtx);
+  // console.log('renderTimeSpentChart points', points);
   // Функция для отрисовки графика по датам
 };
 
@@ -212,25 +191,13 @@ export default class Statistics extends SmartView {
 
   constructor(points) {
     super();
+    this._points = points;
 
     this._moneyCart = null;
     this._typeChart = null;
     this._timeSpentChart = null;
 
-    this._data = {
-      points,
-      // По условиям техзадания по умолчанию интервал - неделя от текущей даты
-      // dateFrom: (() => {
-      //   // const daysToFullWeek = 6;
-      //   // return dayjs().subtract(daysToFullWeek, 'day').toDate();
-      // })(),
-      // dateTo: dayjs().toDate(),
-    };
-
-    // this._dateChangeHandler = this._dateChangeHandler.bind(this);
-
     this._setCharts();
-    // this._setDatepicker();
   }
 
   removeElement() {
@@ -249,55 +216,20 @@ export default class Statistics extends SmartView {
 
   restoreHandlers() {
     this._setCharts();
-    // this._setDatepicker();
   }
 
-  // _dateChangeHandler([dateFrom, dateTo]) {
-  //   if (!dateFrom || !dateTo) {
-  //     return;
-  //   }
-  //
-  //   this.updateData({
-  //     dateFrom,
-  //     dateTo,
-  //   });
-  // }
-
-  // _setDatepicker() {
-  //   if (this._datepicker) {
-  //     this._datepicker.destroy();
-  //     this._datepicker = null;
-  //   }
-  //
-  //   this._datepicker = flatpickr(
-  //     this.getElement().querySelector('.statistic__period-input'),
-  //     {
-  //       mode: 'range',
-  //       dateFormat: 'j F',
-  //       defaultDate: [this._data.dateFrom, this._data.dateTo],
-  //       onChange: this._dateChangeHandler,
-  //     },
-  //   );
-  // }
-
   _setCharts() {
-    // Нужно отрисовать три графика
     if (this._moneyCart !== null || this._typeChart !== null || this._timeSpentChart !==null) {
       this._moneyCart = null;
       this._typeChart = null;
       this._timeSpentChart = null;
     }
-    const {points} = this._data;
     const moneyCtx = this.getElement().querySelector('#money');
     const typeCtx = this.getElement().querySelector('#type');
     const timeSpendCtx = this.getElement().querySelector('#time-spend');
 
-    console.log('moneyCtx', moneyCtx);
-    console.log('typeCtx', typeCtx);
-    console.log('timeSpendCtx', timeSpendCtx);
-
-    this._moneyCart = renderMoneyChart(moneyCtx, points);
-    this._typeChart = renderTypeChart(typeCtx, points);
-    this._timeSpentChart = renderTimeSpentChart(timeSpendCtx, points);
+    this._moneyCart = renderMoneyChart(moneyCtx, this._points);
+    this._typeChart = renderTypeChart(typeCtx, this._points);
+    this._timeSpentChart = renderTimeSpentChart(timeSpendCtx, this._points);
   }
 }
