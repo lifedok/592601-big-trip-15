@@ -32,16 +32,13 @@ const renderMoneyChart = (moneyCtx, points) => {
   const pointTypeToUpperCase = pointWithPricesAndTypes.map((type) => type.type.toUpperCase());
   const pointTypeUniqToUpperCase = makeItemsUniq(pointTypeToUpperCase);
 
-
   const pointPricesByTypes = pointTypeUniqToUpperCase.map((type) => sortPriceByType(pointWithPricesAndTypes, type.toLowerCase()));
-
-  const totalPriceByType = () => pointPricesByTypes.forEach((item) => {
-    // arrayPriceByTypes.push((item) => getTotalPrice(item));
+  let arrPrice = [];
+  pointPricesByTypes.forEach((item) => {
     const total = getTotalPrice(item);
-    console.log('total', total);
-    return total;
+    return arrPrice = arrPrice.concat([total]);
   });
-  // console.log('totalPriceByType', totalPriceByType());
+
 
   return new Chart(moneyCtx, {
     plugins: [ChartDataLabels],
@@ -49,7 +46,7 @@ const renderMoneyChart = (moneyCtx, points) => {
     data: {
       labels: pointTypeUniqToUpperCase,
       datasets: [{
-        data: totalPriceByType(),
+        data: arrPrice,
         backgroundColor: '#ffffff',
         hoverBackgroundColor: '#ffffff',
         anchor: 'start',
