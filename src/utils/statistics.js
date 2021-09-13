@@ -1,6 +1,8 @@
 import Chart from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
-
+import {getDurationByData} from './common';
+// import {getDate} from './point';
+import dayjs from 'dayjs';
 
 export const makeItemsUniq = (items) => [...new Set(items)];
 
@@ -8,12 +10,45 @@ export const countPointsByType = (points, type) => points.filter((point) => poin
 
 export const sortPriceByType = (pointPrices, type) => pointPrices.filter((point) => point.type === type);
 
+export const sortDataByType = (pointData, type) => pointData.filter((point) => point.type === type);
 
 export function getTotalPrice(pointByTypes) {
   let total = 0;
   pointByTypes.map((pointType) => total += pointType.price);
   return total;
 }
+
+// export function getTotalDate(pointByTypes) {
+//   let dateFrom = '';
+//   let dateTo = '';
+//   pointByTypes.map((pointType) => {
+//     dateFrom += pointType.dateFrom;
+//     dateTo += pointType.dateTo;
+//   });
+//   return total;
+// }
+//
+export function getTotalDate(pointByTypes) {
+  let total = '';
+  pointByTypes.map((pointType) => total += getDurationByData(pointType));
+  console.log('total',total);
+  return total;
+}
+
+// const getDuration = (pointType) => {
+//   console.log('pointType',pointType);
+//   const day = dayjs.duration(1, 'd');
+//   console.log('day',day);
+//
+//
+//   return pointType.dateFrom;
+// };
+// export function getTotalDate(pointByTypes) {
+//   let total = '';
+//   pointByTypes.map((pointType) => total += getDuration(pointType));
+//   console.log('total',total);
+//   return total;
+// }
 
 
 export const getGraphChart = (

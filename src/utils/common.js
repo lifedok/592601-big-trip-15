@@ -1,3 +1,4 @@
+import {getDate} from './point';
 
 export const getRandomInteger = (a = 0, b = 1) => {
   const lower = Math.ceil(Math.min(a, b));
@@ -31,3 +32,11 @@ export const generateRandomBoolean = (probability) => Math.random() < probabilit
 
 export const capitalizeFirstLetter = (string) => string[0].toUpperCase() + string.slice(1);
 
+
+export const getDurationByData = (item) => {
+  console.log('item',item);
+  const days = ((getDate(item.dateTo).diff(getDate(item.dateFrom), 'd')) % 24);
+  const hours = ((getDate(item.dateTo).diff(getDate(item.dateFrom), 'h')) % 24);
+  const minutes = (getDate(item.dateTo).diff(getDate(item.dateFrom), 'm')) % 60;
+  return `${days ? `${days}D ` : ''}${hours ? `${hours}H ` : ''}${minutes}M`;
+};

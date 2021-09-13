@@ -1,5 +1,13 @@
 import SmartView from './smart.js';
-import {countPointsByType, getGraphChart, getTotalPrice, makeItemsUniq, sortPriceByType} from '../utils/statistics';
+import {
+  countPointsByType,
+  getGraphChart, getTotalDate,
+  getTotalPrice,
+  makeItemsUniq,
+  sortDataByType,
+  sortPriceByType
+} from '../utils/statistics';
+import {getDurationByData} from '../utils/common';
 
 const createStatisticsTemplate = () => (
   `<section class="statistics">
@@ -63,11 +71,27 @@ const renderTypeChart = (typeCtx, points) => {
 };
 
 const renderTimeSpentChart = (timeSpendCtx, points) => {
-  // Функция для отрисовки графика по датам
+  const pointWithDataAndTypes = points.map((point) => ({
+    dateFrom: point.dateFrom,
+    dateTo: point.dateTo,
+    type: point.type,
+  }));
+  const pointTypeToUpperCase = pointWithDataAndTypes.map((type) => type.type.toUpperCase());
+  const pointTypeUniqToUpperCase = makeItemsUniq(pointTypeToUpperCase);
 
+
+  const pointDataByTypes = pointTypeUniqToUpperCase.map((type) => sortDataByType(pointWithDataAndTypes, type.toLowerCase()));
+  let arrData = [];
+  console.log('pointDataByTypes',pointDataByTypes);
+  pointDataByTypes.forEach((item) => {
+    const total = getTotalDate(item);
+    return arrData = arrData.concat([total]);
+  });
+
+  console.log('points', points);
   return getGraphChart(
     timeSpendCtx,
-    ['A', 'B', 'C'],
+    pointTypeUniqToUpperCase,
     [1,2,2],
     'TIME-SPEND',
     '',
