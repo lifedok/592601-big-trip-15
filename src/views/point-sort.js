@@ -1,6 +1,5 @@
 import Abstract from './abstract';
 import {SORT_TYPES} from '../const';
-import {remove} from '../utils/render';
 
 const createPointSortTemplate = (sorts, points) => {
 
