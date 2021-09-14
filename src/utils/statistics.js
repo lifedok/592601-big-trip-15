@@ -21,80 +21,83 @@ export const getDurationInMs = (points) => {
   return duration;
 };
 
+export function timeConversion(timeInMiliseconds) {
+  const days = Math.floor(timeInMiliseconds / (1000 * 60 * 60 * 24));
+  const hours = (Math.floor(timeInMiliseconds / (1000 * 60 * 60))) % 24;
+  const minutes = (Math.floor(timeInMiliseconds / (1000 * 60 * 60))) % 60;
+  return `${days}D ${hours}H ${minutes}M`;
+}
+
 
 export const getGraphChart = (
   context,   // htmlElement
   labels,    // string[]
   data,      // number[]
   titleText, // string
-  formatter, // string
-  carency,   // boolean
-) => {
-  const getFormatter = (val) => carency ? val + formatter : formatter + val;
-  return (
-    new Chart(context, {
-      plugins: [ChartDataLabels],
-      type: 'horizontalBar',
-      data: {
-        labels: labels,
-        datasets: [{
-          data: data,
-          backgroundColor: '#ffffff',
-          hoverBackgroundColor: '#ffffff',
-          anchor: 'start',
+  formatter, // function
+) => (
+  new Chart(context, {
+    plugins: [ChartDataLabels],
+    type: 'horizontalBar',
+    data: {
+      labels: labels,
+      datasets: [{
+        data: data,
+        backgroundColor: '#ffffff',
+        hoverBackgroundColor: '#ffffff',
+        anchor: 'start',
+      }],
+    },
+    options: {
+      plugins: {
+        datalabels: {
+          font: {
+            size: 13,
+          },
+          color: '#000000',
+          anchor: 'end',
+          align: 'start',
+          formatter: formatter,
+        },
+      },
+      title: {
+        display: true,
+        text: titleText,
+        fontColor: '#000000',
+        fontSize: 23,
+        position: 'left',
+      },
+      scales: {
+        yAxes: [{
+          ticks: {
+            fontColor: '#000000',
+            padding: 5,
+            fontSize: 13,
+          },
+          gridLines: {
+            display: false,
+            drawBorder: false,
+          },
+          barThickness: 44,
+        }],
+        xAxes: [{
+          ticks: {
+            display: false,
+            beginAtZero: true,
+          },
+          gridLines: {
+            display: false,
+            drawBorder: false,
+          },
+          minBarLength: 50,
         }],
       },
-      options: {
-        plugins: {
-          datalabels: {
-            font: {
-              size: 13,
-            },
-            color: '#000000',
-            anchor: 'end',
-            align: 'start',
-            formatter: (val) => getFormatter(val),
-          },
-        },
-        title: {
-          display: true,
-          text: titleText,
-          fontColor: '#000000',
-          fontSize: 23,
-          position: 'left',
-        },
-        scales: {
-          yAxes: [{
-            ticks: {
-              fontColor: '#000000',
-              padding: 5,
-              fontSize: 13,
-            },
-            gridLines: {
-              display: false,
-              drawBorder: false,
-            },
-            barThickness: 44,
-          }],
-          xAxes: [{
-            ticks: {
-              display: false,
-              beginAtZero: true,
-            },
-            gridLines: {
-              display: false,
-              drawBorder: false,
-            },
-            minBarLength: 50,
-          }],
-        },
-        legend: {
-          display: false,
-        },
-        tooltips: {
-          enabled: false,
-        },
+      legend: {
+        display: false,
       },
-    })
-  );
-};
+      tooltips: {
+        enabled: false,
+      },
+    },
+  })
+);
