@@ -3,14 +3,12 @@ import Chart from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 import {
   countPointsByType, getDurationInMs,
-  getGraphChart, getTotalDate,
+  getGraphChart,
   getTotalPrice,
   makeItemsUniq,
   sortDataByType,
   sortPriceByType
 } from '../utils/statistics';
-import {getDate, getFormatDate} from '../utils/point';
-import {getDurationByData} from '../utils/common';
 
 const createStatisticsTemplate = () => (
   `<section class="statistics">
@@ -85,78 +83,27 @@ const renderTimeSpentChart = (timeSpendCtx, points) => {
 
   const pointDataByTypes = pointTypeUniqToUpperCase.map((type) => sortDataByType(pointWithDataAndTypes, type.toLowerCase()));
   let arrData = [];
-  console.log('pointDataByTypes', pointDataByTypes);
   pointDataByTypes.forEach((item) => {
     const total = getDurationInMs(item);
     const setTotal = arrData.concat([total]);
     return arrData = setTotal;
   });
 
-  console.log('arrData', arrData);
-
-  arrData.map((dateInMs) => {
-    const asd = dateInMs;
-    console.log('asd', asd);
-    return asd;
-  });
+  function timeConversion(timeInMiliseconds) {
+    const days = Math.floor(timeInMiliseconds / (1000 * 60 * 60 * 24));
+    const hours = (Math.floor(timeInMiliseconds / (1000 * 60 * 60))) % 24;
+    const minutes = (Math.floor(timeInMiliseconds / (1000 * 60 * 60))) % 60;
+    return `${days}D ${hours}H ${minutes}M`;
+  }
 
   // return getGraphChart(
   //   timeSpendCtx,
   //   pointTypeUniqToUpperCase,
   //   arrData,
   //   'TIME-SPEND',
-  //   '',
+  //   (val) => timeConversion(val),
   //   false,
   // );
-
-  function timeConversion(millisec) {
-
-    // const seconds = (millisec / 1000).toFixed(1);
-
-    const minutes = (millisec / (1000 * 60)).toFixed(0);
-
-    const hours = (millisec / (1000 * 60 * 60)).toFixed(0);
-
-    const days = (millisec / (1000 * 60 * 60 * 24)).toFixed(0);
-
-    return `${days ? `${days}D ` : ''}${hours ? `${hours}H ` : ''}${minutes}M`;
-    // if (seconds < 60) {
-    //   return `${seconds  } Sec`;
-    // } else if (minutes < 60) {
-    //   return `${minutes  } Min`;
-    // } else if (hours < 24) {
-    //   return `${hours  } Hrs`;
-    // } else {
-    //   return `${days  } Days`;
-    // }
-  }
-
-  // function msToTime(duration) {
-  //   // let milliseconds = (duration % 1000);
-  //   let seconds = (duration / 1000) % 60;
-  //   let minutes = (duration / (1000 * 60)) % 60;
-  //   let hours = (duration / (1000 * 60 * 60)) % 24;
-  //
-  //   hours = (hours < 10) ? `0${hours}` : hours;
-  //   minutes = (minutes < 10) ? `0${minutes}` : minutes;
-  //   // seconds = (seconds < 10) ? `0${seconds}` : seconds;
-  //
-  //   return `${hours}H ${minutes}M`;
-  // }
-
-  // function timeConversion2(millis) {
-  //   const hours = Math.floor(millis / 1000 * 60 * 60);
-  //   const minutes = Math.floor(millis / 1000 * 60);
-  //   // const seconds = ((millis % 60000) / 1000).toFixed(0);
-  //   return `${hours  }:${  minutes < 10 ? '0' : ''  }${minutes}`;
-  // }
-  //
-  function timeConversion3(timeInMiliseconds) {
-    const days = Math.floor(timeInMiliseconds / (1000 * 60 * 60 * 24));
-    const hours = (Math.floor(timeInMiliseconds / (1000 * 60 * 60))) % 24;
-    const minutes = (Math.floor(timeInMiliseconds / (1000 * 60 * 60))) % 60;
-    return `${days}D ${hours}H ${minutes}M`;
-  }
 
   return (
     new Chart(timeSpendCtx, {
@@ -180,10 +127,7 @@ const renderTimeSpentChart = (timeSpendCtx, points) => {
             color: '#000000',
             anchor: 'end',
             align: 'start',
-            formatter: (val) => {
-              console.log('val', val);
-              return timeConversion3(val);
-            },
+            formatter: (val) => timeConversion(val),
           },
         },
         title: {
