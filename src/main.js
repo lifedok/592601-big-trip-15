@@ -8,7 +8,7 @@ import PointsModel from './model/points';
 import FilterModel from './model/filter';
 import {MenuItem} from './const.js';
 
-import {render, RenderPosition} from './utils/render';
+import {remove, render, RenderPosition} from './utils/render';
 import StatisticsView from './views/statistics.js';
 import NewPointButtonView from './views/header/new-point-button';
 import TripTabsStatisticHeaderView from './views/header/trip-tab-statistic-header';
@@ -49,19 +49,20 @@ render(tripMainHeaderView, newPointButtonView);                  // create new a
 
 // create trip view & create trip info + cost
 const tripPresenter = new TripPresenter(tripInfoWrapperHeader, tripEventsMainContainer, pointsModel, filterModel);
-// tripPresenter.init();
+tripPresenter.init();
 
+let statisticsComponent = null;
 
 let prevMenuItem = MenuItem.POINTS;
 const handleSiteMenuClick = (menuItem) => {
   switch (menuItem) {
     case MenuItem.ADD_NEW_POINT:
-      // Скрыть статистику
       if (prevMenuItem !== MenuItem.ADD_NEW_POINT) {
         tripPresenter.removeTripContent();
         tripPresenter.createPoint();
         tripTabsStatisticHeaderView.switchOnSelectTab(SortType.TABLE);
         prevMenuItem = MenuItem.ADD_NEW_POINT;
+        remove(statisticsComponent);
       }
       break;
     case MenuItem.POINTS:
@@ -70,17 +71,18 @@ const handleSiteMenuClick = (menuItem) => {
         prevMenuItem = MenuItem.POINTS;
         tripPresenter.setDefaultModeFilters();
         newPointButtonView.setDisabledStatus(false);
+        remove(statisticsComponent);
       }
-      // Скрыть статистику
       break;
     case MenuItem.STATISTICS:
       if (prevMenuItem !== MenuItem.STATISTICS) {
-        tripPresenter.removeTripContent(); // Скрыть доску
+        tripPresenter.removeTripContent();
         prevMenuItem = MenuItem.STATISTICS;
         filterPresenter.isDisabledFilters();
         newPointButtonView.setDisabledStatus(true);
+        statisticsComponent = new StatisticsView(pointsModel.getPoints());
+        render(tripEventsMainContainer, statisticsComponent);
       }
-      // Показать статистику
       break;
   }
 };
@@ -91,6 +93,4 @@ document.querySelector('.trip-main__event-add-btn').addEventListener('click', (e
   evt.preventDefault();
   handleSiteMenuClick(MenuItem.ADD_NEW_POINT);
 });
-
-render(tripEventsMainContainer, new StatisticsView(pointsModel.getPoints()));
 
