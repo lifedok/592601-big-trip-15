@@ -21,7 +21,6 @@ const COUNT_ITEMS = 9;
 const END_POINT = 'https://15.ecmascript.pages.academy/big-trip/';
 const token = generateRandomString(17, 17);
 const AUTHORIZATION = `Basic ${token}`;
-console.log('token', token); //yjbslfexvnqfaljnb
 
 const api = new Api(END_POINT, AUTHORIZATION);
 
@@ -55,7 +54,7 @@ const newPointButtonView = new NewPointButtonView();
 render(tripMainHeaderView, newPointButtonView);                  // create new add btn
 
 // create trip view & create trip info + cost
-const tripPresenter = new TripPresenter(tripInfoWrapperHeader, tripEventsMainContainer, pointsModel, filterModel);
+const tripPresenter = new TripPresenter(tripInfoWrapperHeader, tripEventsMainContainer, pointsModel, filterModel, api);
 tripPresenter.init();
 
 let statisticsComponent = null;
@@ -103,7 +102,7 @@ document.querySelector('.trip-main__event-add-btn').addEventListener('click', (e
 
 newPointButtonView.setDisabledStatus(true);
 filterPresenter.isDisabledFilters();
-api.getPoints().then((pointsData) => {
+api.getFetchPoints().then((pointsData) => {
   pointsModel.setPoints(UpdateType.INIT, pointsData);
   newPointButtonView.setDisabledStatus(false);
 })

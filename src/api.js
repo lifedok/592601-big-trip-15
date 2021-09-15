@@ -14,18 +14,18 @@ export default class Api {
     this._authorization = authorization;
   }
 
-  getPoints() {
+  getFetchPoints() {
     return this._fetchData({url: 'points'})
       .then(Api.toJSON)
       .then((points) => points.map(PointsModel.adaptToClient));
     // .then((points) => points.map(FetchAdapters.adaptToClient));
   }
 
-  updatePoint(point) {
+  updateFetchPoint(point) {
     return this._fetchData({
       url: `points/${point.id}`,
       method: Method.PUT,
-      // body: JSON.stringify(PointsModel.adaptToServer(point)),
+      body: JSON.stringify(PointsModel.adaptToServer(point)),
       // body: JSON.stringify(FetchAdapters.adaptToServer(point)),
       headers: new Headers({'Content-Type': 'application/json'}),
     })

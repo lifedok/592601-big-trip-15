@@ -18,11 +18,12 @@ import {filter} from '../utils/filter';
 
 export default class Trip {
 
-  constructor(tripControlsWrapperView, tripMainView, pointsModel, filterModel) {
+  constructor(tripControlsWrapperView, tripMainView, pointsModel, filterModel, api) {
     this._tripControlsWrapperView = tripControlsWrapperView;
     this._tripMainView = tripMainView;
     this._pointsModel = pointsModel;
     this._filterModel = filterModel;
+    this._api = api;
     this._isLoading = true;
 
     this._pointPresenter = new Map();
@@ -116,7 +117,9 @@ export default class Trip {
   _handleViewAction(actionType, updateType, updatePoint) {
     switch (actionType) {
       case UserAction.UPDATE_POINT:
-        this._pointsModel.updatePoint(updateType, updatePoint);
+        this._api.updateFetchPoint(updatePoint).then((response) => {
+          this._pointsModel.updatePoint(updateType, response);
+        });
         break;
       case UserAction.ADD_POINT:
         this._pointsModel.addPoint(updateType, updatePoint);
