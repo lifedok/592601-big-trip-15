@@ -15,9 +15,26 @@ import TripTabsStatisticHeaderView from './views/header/trip-tab-statistic-heade
 import TripInfoWrapperHeader from './views/header/trip-wrapper-info-header';
 import {sortPointsByDay} from './utils/point';
 import {SortType} from './const';
+import {generateRandomString} from './utils/common';
+import Api from './api';
 
 const COUNT_ITEMS = 9;
+
+const END_POINT = 'https://15.ecmascript.pages.academy/big-trip/';
+const token = generateRandomString(17, 17);
+const AUTHORIZATION = `Basic ${token}`;
+console.log('token',token); //yjbslfexvnqfaljnb
+
+const api = new Api(END_POINT, AUTHORIZATION);
+api.getPoints().then((pointsData) => {
+  console.log('pointsData', pointsData);
+  // Есть проблема: cтруктура объекта похожа, но некоторые ключи называются иначе,
+  // а ещё на сервере используется snake_case, а у нас camelCase.
+  // Можно, конечно, переписать часть нашего клиентского приложения, но зачем?
+  // Есть вариант получше - паттерн "Адаптер"
+});
 const points = generateTripEventListData(COUNT_ITEMS);
+console.log('points',points);
 const sortPoint = points.sort(sortPointsByDay);
 
 const pointsModel = new PointsModel();
