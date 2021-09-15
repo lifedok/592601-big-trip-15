@@ -1,6 +1,3 @@
-// generate mock data
-import {generateTripEventListData} from './mock/trip-event-list-data.js';
-
 import TripPresenter from './presenter/trip';
 import FilterPresenter from './presenter/filter';
 import PointsModel from './model/points';
@@ -13,22 +10,14 @@ import NewPointButtonView from './views/header/new-point-button';
 import TripTabsStatisticHeaderView from './views/header/trip-tab-statistic-header';
 import TripInfoWrapperHeader from './views/header/trip-wrapper-info-header';
 import {SortType, UpdateType} from './const';
-import {generateRandomString} from './utils/common';
 import Api from './api';
 
-const COUNT_ITEMS = 9;
 
 const END_POINT = 'https://15.ecmascript.pages.academy/big-trip/';
-const token = generateRandomString(17, 17);
-const AUTHORIZATION = `Basic ${token}`;
-
+const AUTHORIZATION = 'Basic yjbslfexvnqfaljnb';
 const api = new Api(END_POINT, AUTHORIZATION);
 
-const points = generateTripEventListData(COUNT_ITEMS);
-console.log('points', points);
-
 const pointsModel = new PointsModel();
-
 const filterModel = new FilterModel();
 
 const pageBodyElement = document.querySelector('.page-body');

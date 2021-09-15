@@ -1,5 +1,4 @@
 import PointsModel from './model/points';
-// import FetchAdapters from './fetch-adapters';
 
 const Method = {
   GET: 'GET',
@@ -18,7 +17,6 @@ export default class Api {
     return this._fetchData({url: 'points'})
       .then(Api.toJSON)
       .then((points) => points.map(PointsModel.adaptToClient));
-    // .then((points) => points.map(FetchAdapters.adaptToClient));
   }
 
   updateFetchPoint(point) {
@@ -26,12 +24,10 @@ export default class Api {
       url: `points/${point.id}`,
       method: Method.PUT,
       body: JSON.stringify(PointsModel.adaptToServer(point)),
-      // body: JSON.stringify(FetchAdapters.adaptToServer(point)),
       headers: new Headers({'Content-Type': 'application/json'}),
     })
       .then(Api.toJSON)
       .then(PointsModel.adaptToClient);
-    // .then(FetchAdapters.adaptToClient);
   }
 
   _fetchData({
