@@ -1,4 +1,5 @@
 import AbstractObserver from '../utils/abstract-observer.js';
+import {generateRandomString} from '../utils/common';
 
 export default class Points extends AbstractObserver {
   constructor() {
@@ -71,9 +72,11 @@ export default class Points extends AbstractObserver {
           description: point.destination['description'],
           pictures: point.destination['pictures'],
         },
-        // offers: {
-        //
-        // },
+        offers: point.offers.map((offer) => ({
+          id: generateRandomString(5, 9),
+          title: offer['title'],
+          price: offer['price'],
+        })),
       },
     );
 
@@ -83,6 +86,7 @@ export default class Points extends AbstractObserver {
     delete adaptedTask['date_to'];
     delete adaptedTask['is_favorite'];
     delete adaptedTask.destination['name'];
+    delete adaptedTask.offers.map((offer) => offer.id);
 
     return adaptedTask;
   }
@@ -101,6 +105,10 @@ export default class Points extends AbstractObserver {
           'description': point.destination.description,
           'pictures': point.destination.pictures,
         },
+        offers: point.offers.map((offer) => ({
+          title: offer['title'],
+          price: offer['price'],
+        })),
       },
     );
 
