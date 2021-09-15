@@ -32,6 +32,7 @@ export const UpdateType = {
   MINOR: 'MINOR', // change favorite => update list points
   MIDDLE: 'MIDDLE', // change date and city => update point and header
   MAJOR: 'MAJOR', // change add or delete point => update all points & header
+  INIT: 'INIT',
 };
 
 export const UserAction = {

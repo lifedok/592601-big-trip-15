@@ -6,8 +6,10 @@ export default class Points extends AbstractObserver {
     this._points = [];
   }
 
-  setPoints(points) {
+  setPoints(updateType, points) {
     this._points = points.slice();
+
+    this._notify(updateType);
   }
 
   getPoints() {
@@ -60,7 +62,6 @@ export default class Points extends AbstractObserver {
       {},
       point,
       {
-        // dueDate: point.due_date !== null ? new Date(point.due_date) : point.due_date, // На клиенте дата хранится как экземпляр Date
         basePrice: point['base_price'],
         dateFrom: point.date_from !== null ? new Date(point.date_from) : point.date_from,
         dateTo: point.date_to !== null ? new Date(point.date_to) : point.date_to,
@@ -70,7 +71,9 @@ export default class Points extends AbstractObserver {
           description: point.destination['description'],
           pictures: point.destination['pictures'],
         },
-
+        // offers: {
+        //
+        // },
       },
     );
 
@@ -89,10 +92,6 @@ export default class Points extends AbstractObserver {
       {},
       point,
       {
-        //2021-09-03T23:59:59 - в примере
-        //2021-09-14T19:07:36.016Z - получаю с сервера
-        //Sat Sep 11 2021 00:40:06 GMT+0300 (Eastern European Summer Time) - работаю в проекте
-        // 'due_date': point.dueDate instanceof Date ? point.dueDate.toISOString() : null, // На сервере дата хранится в ISO формате
         'base_price': point.basePrice,
         'date_from': point.dateFrom instanceof Date ? point.dateFrom.toISOString() : null,
         'date_to': point.dateTo instanceof Date ? point.dateTo.toISOString() : null,

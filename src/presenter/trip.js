@@ -10,6 +10,7 @@ import PointPresenter from './point';
 import PointNewPresenter from './point-new.js';
 // service message
 import ServiceMessage from '../views/service-message';
+import LoadingView from '../views/loading.js';
 import {render, remove} from '../utils/render';
 import {FILTER_TYPES, SORT_TYPES, UpdateType, UserAction} from '../const';
 import {sortPointsByDay, sortPointsByPrice, sortPointsByTime} from '../utils/point';
@@ -22,6 +23,7 @@ export default class Trip {
     this._tripMainView = tripMainView;
     this._pointsModel = pointsModel;
     this._filterModel = filterModel;
+    this._isLoading = true;
 
     this._pointPresenter = new Map();
     this._pointListWrapper = new PointListWrapperView();
@@ -33,6 +35,7 @@ export default class Trip {
     this._tripInfoHeaderView = null;
     this._tripCostHeaderView = null;
     this._noPointInTrip = null;
+    this._loadingComponent = new LoadingView();
 
     this._handleModelEvent = this._handleModelEvent.bind(this);
     this._handleModeChange = this._handleModeChange.bind(this);
@@ -149,6 +152,11 @@ export default class Trip {
         render(this._tripMainView, this._pointListWrapper);
         this._renderTrip();
         break;
+      case UpdateType.INIT:
+        this._isLoading = false;
+        remove(this._loadingComponent);
+        this._renderTrip();
+        break;
     }
   }
 
@@ -182,6 +190,11 @@ export default class Trip {
   }
 
   _renderTrip() {
+    if (this._isLoading) {
+      this._renderLoading();
+      return;
+    }
+
     const points = this._getPoints();
     const pointsLength = points.length;
 
@@ -231,9 +244,17 @@ export default class Trip {
       remove(this._noPointInTrip);
     }
 
+    if (this._loadingComponent) {
+      remove(this._loadingComponent);
+    }
+
     if(resetSortType) {
       this._currentSortType = SORT_TYPES.DAY;
     }
+  }
+
+  _renderLoading() {
+    render(this._pointListWrapper, this._loadingComponent);
   }
 
   _resetPointList() {

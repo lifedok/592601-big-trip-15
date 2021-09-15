@@ -1,4 +1,3 @@
-
 // generate mock data
 import {generateTripEventListData} from './mock/trip-event-list-data.js';
 
@@ -13,8 +12,7 @@ import StatisticsView from './views/statistics.js';
 import NewPointButtonView from './views/header/new-point-button';
 import TripTabsStatisticHeaderView from './views/header/trip-tab-statistic-header';
 import TripInfoWrapperHeader from './views/header/trip-wrapper-info-header';
-import {sortPointsByDay} from './utils/point';
-import {SortType} from './const';
+import {SortType, UpdateType} from './const';
 import {generateRandomString} from './utils/common';
 import Api from './api';
 
@@ -23,7 +21,7 @@ const COUNT_ITEMS = 9;
 const END_POINT = 'https://15.ecmascript.pages.academy/big-trip/';
 const token = generateRandomString(17, 17);
 const AUTHORIZATION = `Basic ${token}`;
-console.log('token',token); //yjbslfexvnqfaljnb
+console.log('token', token); //yjbslfexvnqfaljnb
 
 const api = new Api(END_POINT, AUTHORIZATION);
 api.getPoints().then((pointsData) => {
@@ -33,12 +31,12 @@ api.getPoints().then((pointsData) => {
   // Можно, конечно, переписать часть нашего клиентского приложения, но зачем?
   // Есть вариант получше - паттерн "Адаптер"
 });
+
+
 const points = generateTripEventListData(COUNT_ITEMS);
-console.log('points',points);
-const sortPoint = points.sort(sortPointsByDay);
+console.log('points', points);
 
 const pointsModel = new PointsModel();
-pointsModel.setPoints(sortPoint);
 
 const filterModel = new FilterModel();
 
@@ -110,4 +108,12 @@ document.querySelector('.trip-main__event-add-btn').addEventListener('click', (e
   evt.preventDefault();
   handleSiteMenuClick(MenuItem.ADD_NEW_POINT);
 });
+
+api.getPoints().then((pointsData) => {
+  pointsModel.setPoints(UpdateType.INIT, pointsData);
+})
+  .catch(() => {
+    pointsModel.setPoints(UpdateType.INIT, []);
+  });
+
 
