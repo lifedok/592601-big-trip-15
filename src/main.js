@@ -24,14 +24,6 @@ const AUTHORIZATION = `Basic ${token}`;
 console.log('token', token); //yjbslfexvnqfaljnb
 
 const api = new Api(END_POINT, AUTHORIZATION);
-api.getPoints().then((pointsData) => {
-  console.log('pointsData', pointsData);
-  // Есть проблема: cтруктура объекта похожа, но некоторые ключи называются иначе,
-  // а ещё на сервере используется snake_case, а у нас camelCase.
-  // Можно, конечно, переписать часть нашего клиентского приложения, но зачем?
-  // Есть вариант получше - паттерн "Адаптер"
-});
-
 
 const points = generateTripEventListData(COUNT_ITEMS);
 console.log('points', points);
@@ -109,11 +101,15 @@ document.querySelector('.trip-main__event-add-btn').addEventListener('click', (e
   handleSiteMenuClick(MenuItem.ADD_NEW_POINT);
 });
 
+newPointButtonView.setDisabledStatus(true);
+filterPresenter.isDisabledFilters();
 api.getPoints().then((pointsData) => {
   pointsModel.setPoints(UpdateType.INIT, pointsData);
+  newPointButtonView.setDisabledStatus(false);
 })
   .catch(() => {
     pointsModel.setPoints(UpdateType.INIT, []);
+    newPointButtonView.setDisabledStatus(true);
   });
 
 

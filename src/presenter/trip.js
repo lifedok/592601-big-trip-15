@@ -155,6 +155,7 @@ export default class Trip {
       case UpdateType.INIT:
         this._isLoading = false;
         remove(this._loadingComponent);
+        this._renderInfoHeader();
         this._renderTrip();
         break;
     }
@@ -172,6 +173,9 @@ export default class Trip {
 
   // render views
   _renderInfoHeader() {
+    if (this._isLoading) {
+      return;
+    }
     this._tripInfoHeaderView = new TripInfoHeaderView(this._getPoints());
     this._tripCostHeaderView = new TripCostHeaderView(this._getPoints());
 
