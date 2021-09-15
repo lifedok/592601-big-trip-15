@@ -64,9 +64,24 @@ export default class Trip {
     this._filterModel.removeObserver(this._handleModelEvent);
   }
 
-  createPoint(callback) {
+  removeTripContent() {
+    this._resetTrip({resetSortType: false});
+    this._resetSort();
+  }
+
+  createTripContent() {
+    this._renderSort();
+    render(this._tripMainView, this._pointListWrapper);
+    this._renderTrip();
+  }
+
+  setDefaultModeFilters() {
     this._currentSortType = SORT_TYPES.DAY;
     this._filterModel.setFilter(UpdateType.MAJOR, FILTER_TYPES.EVERYTHING);
+  }
+
+  createPoint(callback) {
+    this.setDefaultModeFilters();
     this._pointNewPresenter.init(callback);
   }
 

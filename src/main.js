@@ -6,12 +6,15 @@ import TripPresenter from './presenter/trip';
 import FilterPresenter from './presenter/filter';
 import PointsModel from './model/points';
 import FilterModel from './model/filter';
+import {MenuItem} from './const.js';
 
-import {render, RenderPosition} from './utils/render';
+import {remove, render, RenderPosition} from './utils/render';
+import StatisticsView from './views/statistics.js';
 import NewPointButtonView from './views/header/new-point-button';
 import TripTabsStatisticHeaderView from './views/header/trip-tab-statistic-header';
 import TripInfoWrapperHeader from './views/header/trip-wrapper-info-header';
 import {sortPointsByDay} from './utils/point';
+import {SortType} from './const';
 
 const COUNT_ITEMS = 9;
 const points = generateTripEventListData(COUNT_ITEMS);
@@ -39,7 +42,7 @@ render(tripMainHeaderView, tripInfoWrapperHeader, RenderPosition.AFTERBEGIN); //
 const filterPresenter = new FilterPresenter(tripFilteringWrapperView, filterModel, pointsModel);
 filterPresenter.init();                                           // create filters
 render(tripStatisticsWrapperView, tripTabsStatisticHeaderView);   // create statistics
-
+tripTabsStatisticHeaderView.switchOnSelectTab(SortType.TABLE); // by default sort = table
 
 const newPointButtonView = new NewPointButtonView();
 render(tripMainHeaderView, newPointButtonView);                  // create new add btn
@@ -48,7 +51,46 @@ render(tripMainHeaderView, newPointButtonView);                  // create new a
 const tripPresenter = new TripPresenter(tripInfoWrapperHeader, tripEventsMainContainer, pointsModel, filterModel);
 tripPresenter.init();
 
+let statisticsComponent = null;
+
+let prevMenuItem = MenuItem.POINTS;
+const handleSiteMenuClick = (menuItem) => {
+  switch (menuItem) {
+    case MenuItem.ADD_NEW_POINT:
+      if (prevMenuItem !== MenuItem.ADD_NEW_POINT) {
+        tripPresenter.removeTripContent();
+        tripPresenter.createPoint();
+        tripTabsStatisticHeaderView.switchOnSelectTab(SortType.TABLE);
+        prevMenuItem = MenuItem.ADD_NEW_POINT;
+        remove(statisticsComponent);
+      }
+      break;
+    case MenuItem.POINTS:
+      if (prevMenuItem !== MenuItem.POINTS) {
+        tripPresenter.createTripContent();
+        prevMenuItem = MenuItem.POINTS;
+        tripPresenter.setDefaultModeFilters();
+        newPointButtonView.setDisabledStatus(false);
+        remove(statisticsComponent);
+      }
+      break;
+    case MenuItem.STATISTICS:
+      if (prevMenuItem !== MenuItem.STATISTICS) {
+        tripPresenter.removeTripContent();
+        prevMenuItem = MenuItem.STATISTICS;
+        filterPresenter.isDisabledFilters();
+        newPointButtonView.setDisabledStatus(true);
+        statisticsComponent = new StatisticsView(pointsModel.getPoints());
+        render(tripEventsMainContainer, statisticsComponent);
+      }
+      break;
+  }
+};
+tripTabsStatisticHeaderView.setTabSortClickHandler(handleSiteMenuClick);
+
+
 document.querySelector('.trip-main__event-add-btn').addEventListener('click', (evt) => {
   evt.preventDefault();
-  tripPresenter.createPoint();
+  handleSiteMenuClick(MenuItem.ADD_NEW_POINT);
 });
+

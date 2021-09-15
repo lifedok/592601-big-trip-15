@@ -27,4 +27,8 @@ export default class NewPointButton extends Abstract {
     this._callback.click = callback;
     this.getElement().addEventListener('click', this._clickHandler);
   }
+
+  setDisabledStatus(value) {
+    return this.getElement().disabled = value;
+  }
 }

@@ -67,4 +67,5 @@ export default class PointSort extends Abstract {
     this._callback.sortTypeChange = callback;
     this.getElement().addEventListener('click', this._sortTypeChangeHandler);
   }
+
 }

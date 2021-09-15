@@ -68,4 +68,8 @@ export default class Filter {
       },
     ];
   }
+
+  isDisabledFilters() {
+    this._filtersView.isDisabledFilter();
+  }
 }

@@ -1,5 +1,6 @@
 import Abstract from './abstract';
-import {getDate, getFormatDate} from '../utils/point';
+import {getFormatDate} from '../utils/point';
+import {getDurationByData} from '../utils/common';
 
 
 const createPointItemTemplate = (item) => {
@@ -14,14 +15,6 @@ const createPointItemTemplate = (item) => {
             &plus;&euro;&nbsp;<span class="event__offer-price">${offer.price}</span>
           </li>` : '').join('') : ''
   );
-
-
-  const getDuration = () => {
-    const days = ((getDate(item.dateTo).diff(getDate(item.dateFrom), 'd')) % 24);
-    const hours = ((getDate(item.dateTo).diff(getDate(item.dateFrom), 'h')) % 24);
-    const minutes = (getDate(item.dateTo).diff(getDate(item.dateFrom), 'm')) % 60;
-    return `${days ? `${days}D ` : ''}${hours ? `${hours}H ` : ''}${minutes}M`;
-  };
 
   return `<li class="trip-events__item">
       <div class="event">
@@ -38,7 +31,7 @@ const createPointItemTemplate = (item) => {
             &mdash;
             <time class="event__end-time" datetime="2019-03-18T11:00">${getFormatDate(item.dateTo, 'HH:mm')}</time>
           </p>
-          <p class="event__duration">${getDuration()}</p>
+          <p class="event__duration">${getDurationByData(item)}</p>
         </div>
         <p class="event__price">
           &euro;&nbsp;<span class="event__price-value">${item.basePrice}</span>
