@@ -14,7 +14,7 @@ const getOfferType = () => {
   return POINT_TYPES[randomIndex];
 };
 
-
+// так как не получаем с сервера данные, когда изменям type, то ещё временно используем моки.
 export const generateTripOfferData = () => {
   const type = getOfferType();
 

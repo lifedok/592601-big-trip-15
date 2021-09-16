@@ -44,7 +44,7 @@ const generatePictures = () => {
   };
 };
 
-
+// так как не получаем с сервера данные, когда изменяем город, то ещё временно используем моки.
 export const generateTripDestinationData = (_city) => {
   const COUNT_IMAGES = 7;
 
