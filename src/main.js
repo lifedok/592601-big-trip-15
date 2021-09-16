@@ -48,6 +48,7 @@ tripPresenter.init();
 
 let statisticsComponent = null;
 
+
 let prevMenuItem = MenuItem.POINTS;
 const handleSiteMenuClick = (menuItem) => {
   switch (menuItem) {
@@ -57,7 +58,9 @@ const handleSiteMenuClick = (menuItem) => {
         tripPresenter.createPoint();
         tripTabsStatisticHeaderView.switchOnSelectTab(SortType.TABLE);
         prevMenuItem = MenuItem.ADD_NEW_POINT;
-        remove(statisticsComponent);
+        if(statisticsComponent !== null) {
+          remove(statisticsComponent);
+        }
       }
       break;
     case MenuItem.POINTS:
@@ -84,11 +87,6 @@ const handleSiteMenuClick = (menuItem) => {
 tripTabsStatisticHeaderView.setTabSortClickHandler(handleSiteMenuClick);
 
 
-document.querySelector('.trip-main__event-add-btn').addEventListener('click', (evt) => {
-  evt.preventDefault();
-  handleSiteMenuClick(MenuItem.ADD_NEW_POINT);
-});
-
 newPointButtonView.setDisabledStatus(true);
 filterPresenter.isDisabledFilters();
 api.getFetchPoints().then((pointsData) => {
@@ -101,3 +99,7 @@ api.getFetchPoints().then((pointsData) => {
   });
 
 
+document.querySelector('.trip-main__event-add-btn').addEventListener('click', (evt) => {
+  evt.preventDefault();
+  handleSiteMenuClick(MenuItem.ADD_NEW_POINT);
+});
