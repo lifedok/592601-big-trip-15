@@ -33,6 +33,9 @@ export const UpdateType = {
   MIDDLE: 'MIDDLE', // change date and city => update point and header
   MAJOR: 'MAJOR', // change add or delete point => update all points & header
   INIT: 'INIT',
+  INIT_POINT: 'INIT_POINT',
+  INIT_OFFERS: 'INIT_OFFERS',
+  INIT_DESTINATIONS: 'INIT_DESTINATIONS',
 };
 
 export const UserAction = {
@@ -51,4 +54,25 @@ export const MenuItem = {
 export const SortType = {
   TABLE: 'Table',
   STATS: 'Stats',
+};
+
+export const ITEM_BLANK = {
+  basePrice: 0,
+  dateFrom: null,
+  dateTo: null,
+  destination: {
+    city: 'Geneva',
+    description: ' ',
+    pictures: [
+      {
+        src: ' ',
+        description: ' ',
+      },
+    ],
+  },
+  isFavorite: false,
+  offers: [{
+    id: 'nmuxdo', title: 'Add meal', price: 90,
+  }],
+  type: POINT_TYPES[0],
 };

@@ -11,33 +11,15 @@ import flatpickr from 'flatpickr';
 
 import '../../node_modules/flatpickr/dist/flatpickr.min.css';
 import {getDate, getFormatDate} from '../utils/point';
+import {ITEM_BLANK} from '../const';
 
-
-const BLANK_POINT = {
-  basePrice: 0,
-  dateFrom: null,
-  dateTo: null,
-  destination: {
-    city: 'Geneva',
-    description: 'Geneva ipsum dolor sit amet, consectetur adipiscing elit. Cras aliquet varius magna, non porta ligula feugiat eget. Fusce tristique felis at fermentum pharetra.',
-    pictures: [
-      {
-        src: 'http://picsum.photos/248/152?r=85',
-        description: '',
-      },
-    ],
-  },
-  isFavorite: false,
-  offers: [{
-    id: 'nmuxdo', title: 'Add meal', price: 90,
-  }],
-  type: POINT_TYPES[0],
-};
-
-const createPointItemModifyTemplate = (data, isEdit) => {
-  if (!data) {
+const createPointItemModifyTemplate = (data, isEdit, offerList, destinationList) => {
+  if (!data || !offerList || !destinationList) {
     return;
   }
+  console.log('data', data);
+  console.log('offerList', offerList);
+  console.log('destinationList', destinationList);
   const {type, offers, destination, isDescription, isPictures} = data;
 
 
@@ -162,9 +144,11 @@ const createPointItemModifyTemplate = (data, isEdit) => {
 
 export default class PointItemModify extends SmartView {
 
-  constructor(pointEvent = BLANK_POINT, isEdit) {
+  constructor(pointEvent = ITEM_BLANK, isEdit, offers, destinations) {
     super();
     this._isEdit = isEdit;
+    this._offers = offers;
+    this._destinations = destinations;
 
     this._data = PointItemModify.parsePointToDataState(pointEvent);
     this._datepickerFrom = null;
@@ -208,7 +192,7 @@ export default class PointItemModify extends SmartView {
   }
 
   getTemplate() {
-    return createPointItemModifyTemplate(this._data, this._isEdit);
+    return createPointItemModifyTemplate(this._data, this._isEdit, this._offers, this._destinations);
   }
 
   restoreHandlers() {

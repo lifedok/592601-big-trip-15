@@ -2,6 +2,8 @@ import TripPresenter from './presenter/trip';
 import FilterPresenter from './presenter/filter';
 import PointsModel from './model/points';
 import FilterModel from './model/filter';
+import DestinationsModel from './model/destinations';
+import OffersModel from './model/offers';
 import {MenuItem} from './const.js';
 
 import {remove, render, RenderPosition} from './utils/render';
@@ -19,6 +21,8 @@ const api = new Api(END_POINT, AUTHORIZATION);
 
 const pointsModel = new PointsModel();
 const filterModel = new FilterModel();
+const destinationsModel = new DestinationsModel();
+const offersModel = new OffersModel();
 
 const pageBodyElement = document.querySelector('.page-body');
 const tripMainHeaderView = pageBodyElement.querySelector('.trip-main');
@@ -43,7 +47,7 @@ const newPointButtonView = new NewPointButtonView();
 render(tripMainHeaderView, newPointButtonView);                  // create new add btn
 
 // create trip view & create trip info + cost
-const tripPresenter = new TripPresenter(tripInfoWrapperHeader, tripEventsMainContainer, pointsModel, filterModel, api);
+const tripPresenter = new TripPresenter(tripInfoWrapperHeader, tripEventsMainContainer, pointsModel, filterModel, api, offersModel, destinationsModel);
 tripPresenter.init();
 
 let statisticsComponent = null;
@@ -58,7 +62,7 @@ const handleSiteMenuClick = (menuItem) => {
         tripPresenter.createPoint();
         tripTabsStatisticHeaderView.switchOnSelectTab(SortType.TABLE);
         prevMenuItem = MenuItem.ADD_NEW_POINT;
-        if(statisticsComponent !== null) {
+        if (statisticsComponent !== null) {
           remove(statisticsComponent);
         }
       }
@@ -89,14 +93,34 @@ tripTabsStatisticHeaderView.setTabSortClickHandler(handleSiteMenuClick);
 
 newPointButtonView.setDisabledStatus(true);
 filterPresenter.isDisabledFilters();
-api.getFetchPoints().then((pointsData) => {
+
+Promise.all([
+  api.getFetchDestinations(),
+  api.getFetchPoints(),
+  api.getFetchOffers(),
+]).then((values) => {
+  const [pointsData, offersData, destinationsData] = values;
+  // console.log('pointsData', pointsData);
+  // console.log('offersData', offersData);
+  // console.log('destinationsData', destinationsData);
   pointsModel.setPoints(UpdateType.INIT, pointsData);
   newPointButtonView.setDisabledStatus(false);
-})
-  .catch(() => {
-    pointsModel.setPoints(UpdateType.INIT, []);
-    newPointButtonView.setDisabledStatus(true);
-  });
+
+  offersModel.setOffers(UpdateType.INIT_OFFERS, offersData);
+  destinationsModel.setDestinations(UpdateType.INIT_DESTINATIONS, destinationsData);
+}).catch(() => {
+  pointsModel.setPoints(UpdateType.INIT, []);
+  newPointButtonView.setDisabledStatus(true);
+});
+
+// api.getFetchPoints().then((pointsData) => {
+//   pointsModel.setPoints(UpdateType.INIT, pointsData);
+//   newPointButtonView.setDisabledStatus(false);
+// })
+//   .catch(() => {
+//     pointsModel.setPoints(UpdateType.INIT, []);
+//     newPointButtonView.setDisabledStatus(true);
+//   });
 
 
 document.querySelector('.trip-main__event-add-btn').addEventListener('click', (evt) => {

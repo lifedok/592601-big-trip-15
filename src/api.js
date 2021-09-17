@@ -1,4 +1,5 @@
 import PointsModel from './model/points';
+import DestinationsModel from './model/destinations';
 
 const Method = {
   GET: 'GET',
@@ -17,6 +18,23 @@ export default class Api {
     return this._fetchData({url: 'points'})
       .then(Api.toJSON)
       .then((points) => points.map(PointsModel.adaptToClient));
+  }
+
+  getFetchOffers() {
+    return this._fetchData({url: 'offers'})
+      .then(Api.toJSON);
+  }
+
+  getFetchDestinations() {
+    return this._fetchData({url: 'destinations'})
+      .then(Api.toJSON);
+      // .then((destinations) => destinations.map(DestinationsModel.adaptToClient));
+  }
+
+  updateFetchDestinations() {
+    return this._fetchData({url: 'destinations'})
+      .then(Api.toJSON);
+      // .then((destinations) => destinations.map(DestinationsModel.adaptToServer));
   }
 
   updateFetchPoint(point) {
