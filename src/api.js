@@ -28,7 +28,8 @@ export default class Api {
   getFetchDestinations() {
     return this._fetchData({url: 'destinations'})
       .then(Api.toJSON);
-      // .then((destinations) => destinations.map(DestinationsModel.adaptToClient));
+      // .then((destinations) => destinations.map(DestinationsModel.adaptToClient))
+      // .then((i) => console.log('response' ,i));
   }
 
   updateFetchDestinations() {

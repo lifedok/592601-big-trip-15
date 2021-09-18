@@ -17,9 +17,13 @@ const createPointItemModifyTemplate = (data, isEdit, offerList, destinationList)
   if (!data || !offerList || !destinationList) {
     return;
   }
-  console.log('data', data);
   console.log('offerList', offerList);
-  console.log('destinationList', destinationList);
+
+
+
+  // console.log('data', data);
+
+  // console.log('destinationList', destinationList);
   const {type, offers, destination, isDescription, isPictures} = data;
 
 
@@ -42,13 +46,33 @@ const createPointItemModifyTemplate = (data, isEdit, offerList, destinationList)
     destination.pictures.map((picture) => !picture.src ? '' : `<img class="event__photo" src=${picture.src} alt=${picture.description}>`).join('')
   );
 
-  const createPointTypesTemplate = () => (
-    POINT_TYPES.map((pointType) =>
-      `<div class="event__type-item">
-        <input id="event-type-${pointType}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${pointType}">
-        <label class="event__type-label  event__type-label--${pointType}" for="event-type-${pointType}-1">${capitalizeFirstLetter(pointType)}</label>
-      </div>`).join('')
-  );
+  const createPointTypesTemplate = () => {
+    // const types = !offerList ? '' : offerList.map((offer) => {
+    //   console.log('offer', offer);
+    //
+    //   return offer.types;
+    // });
+    // console.log('types', types);
+    // console.log('POINT_TYPES', POINT_TYPES);
+
+    // console.log('offerList', Object.values(offerList));
+
+    offerList.map((offer) => {
+      console.log('offer', offer);
+      return offer;
+    });
+
+
+    offerList.map((offerItem) => {
+      console.log('offerItem', offerItem);
+      console.log('type', offerItem.type);
+      return (
+        `<div class="event__type-item">
+      <input id="event-type-${offerItem.type}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${offerItem.type}">
+      <label class="event__type-label  event__type-label--${offerItem.type}" for="event-type-${offerItem.type}-1">${offerItem.type}</label>
+    </div>`).join('');
+    });
+  };
 
   const createDestinationListTemplate = () => (
     CITIES.map((city) => `<option value="${city}"></option>`).join('')

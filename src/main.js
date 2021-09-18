@@ -95,9 +95,9 @@ newPointButtonView.setDisabledStatus(true);
 filterPresenter.isDisabledFilters();
 
 Promise.all([
-  api.getFetchDestinations(),
   api.getFetchPoints(),
   api.getFetchOffers(),
+  api.getFetchDestinations(),
 ]).then((values) => {
   const [pointsData, offersData, destinationsData] = values;
   // console.log('pointsData', pointsData);
