@@ -17,13 +17,7 @@ const createPointItemModifyTemplate = (data, isEdit, offerList, destinationList)
   if (!data || !offerList || !destinationList) {
     return;
   }
-  console.log('offerList', offerList);
 
-
-
-  // console.log('data', data);
-
-  // console.log('destinationList', destinationList);
   const {type, offers, destination, isDescription, isPictures} = data;
 
 
@@ -47,30 +41,14 @@ const createPointItemModifyTemplate = (data, isEdit, offerList, destinationList)
   );
 
   const createPointTypesTemplate = () => {
-    // const types = !offerList ? '' : offerList.map((offer) => {
-    //   console.log('offer', offer);
-    //
-    //   return offer.types;
-    // });
-    // console.log('types', types);
-    // console.log('POINT_TYPES', POINT_TYPES);
-
-    // console.log('offerList', Object.values(offerList));
-
-    offerList.map((offer) => {
-      console.log('offer', offer);
-      return offer;
-    });
-
-
     offerList.map((offerItem) => {
-      console.log('offerItem', offerItem);
-      console.log('type', offerItem.type);
+      // console.log('offerItem', offerItem);
+      // console.log('type', offerItem.type);
       return (
         `<div class="event__type-item">
       <input id="event-type-${offerItem.type}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${offerItem.type}">
       <label class="event__type-label  event__type-label--${offerItem.type}" for="event-type-${offerItem.type}-1">${offerItem.type}</label>
-    </div>`).join('');
+    </div>`);
     });
   };
 
