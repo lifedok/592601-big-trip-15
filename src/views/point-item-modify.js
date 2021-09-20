@@ -1,11 +1,9 @@
 import he from 'he';
-import {OFFER_TITTLES, CITIES} from '../const.js';
+import {OFFER_TITTLES} from '../const.js';
 import SmartView from './smart.js';
 import {
   getRandomInteger
 } from '../utils/common';
-import {generateTripDestinationData} from '../mock/trip-destination-data';
-import {generateTripOfferData} from '../mock/trip-offer-data';
 import flatpickr from 'flatpickr';
 
 import '../../node_modules/flatpickr/dist/flatpickr.min.css';
@@ -291,9 +289,13 @@ export default class PointItemModify extends SmartView {
     const parent = evt.target.parentElement;
     parent.querySelector('input').checked = true;
 
-    this.updateData({
-      type: evt.target.innerText,
-      offers: generateTripOfferData().offers,
+    this._offers.map((offer) => {
+      if (evt.target.innerText === offer.type) {
+        this.updateData({
+          type: evt.target.innerText,
+          offers: offer.offers,
+        });
+      }
     });
   }
 
@@ -327,10 +329,6 @@ export default class PointItemModify extends SmartView {
         offers: updateOffers,
       })
     );
-  }
-
-  getTripDestinationData() {
-
   }
 
   //change input Destination
