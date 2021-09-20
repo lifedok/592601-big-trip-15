@@ -100,27 +100,16 @@ Promise.all([
   api.getFetchDestinations(),
 ]).then((values) => {
   const [pointsData, offersData, destinationsData] = values;
-  // console.log('pointsData', pointsData);
-  // console.log('offersData', offersData);
-  // console.log('destinationsData', destinationsData);
-  pointsModel.setPoints(UpdateType.INIT, pointsData);
-  newPointButtonView.setDisabledStatus(false);
 
   offersModel.setOffers(UpdateType.INIT_OFFERS, offersData);
   destinationsModel.setDestinations(UpdateType.INIT_DESTINATIONS, destinationsData);
+
+  pointsModel.setPoints(UpdateType.INIT, pointsData);
+  newPointButtonView.setDisabledStatus(false);
 }).catch(() => {
   pointsModel.setPoints(UpdateType.INIT, []);
   newPointButtonView.setDisabledStatus(true);
 });
-
-// api.getFetchPoints().then((pointsData) => {
-//   pointsModel.setPoints(UpdateType.INIT, pointsData);
-//   newPointButtonView.setDisabledStatus(false);
-// })
-//   .catch(() => {
-//     pointsModel.setPoints(UpdateType.INIT, []);
-//     newPointButtonView.setDisabledStatus(true);
-//   });
 
 
 document.querySelector('.trip-main__event-add-btn').addEventListener('click', (evt) => {

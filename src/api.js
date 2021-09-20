@@ -21,8 +21,7 @@ export default class Api {
   }
 
   getFetchOffers() {
-    return this._fetchData({url: 'offers'})
-      .then(Api.toJSON);
+    return this._fetchData({url: 'offers'}).then(Api.toJSON);
   }
 
   getFetchDestinations() {

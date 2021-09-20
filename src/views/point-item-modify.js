@@ -1,8 +1,7 @@
 import he from 'he';
-import {OFFER_TITTLES, POINT_TYPES, CITIES} from '../const.js';
+import {OFFER_TITTLES, CITIES} from '../const.js';
 import SmartView from './smart.js';
 import {
-  capitalizeFirstLetter,
   getRandomInteger
 } from '../utils/common';
 import {generateTripDestinationData} from '../mock/trip-destination-data';
@@ -40,21 +39,18 @@ const createPointItemModifyTemplate = (data, isEdit, offerList, destinationList)
     destination.pictures.map((picture) => !picture.src ? '' : `<img class="event__photo" src=${picture.src} alt=${picture.description}>`).join('')
   );
 
-  const createPointTypesTemplate = () => {
-    offerList.map((offerItem) => {
-      // console.log('offerItem', offerItem);
-      // console.log('type', offerItem.type);
-      return (
-        `<div class="event__type-item">
-      <input id="event-type-${offerItem.type}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${offerItem.type}">
-      <label class="event__type-label  event__type-label--${offerItem.type}" for="event-type-${offerItem.type}-1">${offerItem.type}</label>
-    </div>`);
-    });
+  const createPointTypesTemplate2 = () => {
+    return offerList.map((offerItem) => {
+      return (`<div class="event__type-item">
+            <input id="event-type-${offerItem.type}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${offerItem.type}">
+            <label class="event__type-label  event__type-label--${offerItem.type}" for="event-type-${offerItem.type}-1">${offerItem.type}</label>
+        </div>`);
+    }).join('');
   };
 
-  const createDestinationListTemplate = () => (
-    CITIES.map((city) => `<option value="${city}"></option>`).join('')
-  );
+  const createDestinationListTemplate = () => {
+    return destinationList.map((city) => `<option value="${city.name}"></option>`).join('');
+  };
 
   return `<li class="trip-events__item">
     <form class="event event--edit" action="#" method="post">
@@ -69,7 +65,7 @@ const createPointItemModifyTemplate = (data, isEdit, offerList, destinationList)
           <div class="event__type-list">
             <fieldset class="event__type-group">
               <legend class="visually-hidden">Event type</legend>
-              ${createPointTypesTemplate()}
+              ${createPointTypesTemplate2()}
             </fieldset>
           </div>
           
@@ -312,6 +308,10 @@ export default class PointItemModify extends SmartView {
         offers: updateOffers,
       })
     );
+  }
+
+  getTripDestinationData() {
+
   }
 
   //change input Destination
