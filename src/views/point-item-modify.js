@@ -1,59 +1,60 @@
 import he from 'he';
-import {OFFER_TITTLES} from '../const.js';
 import SmartView from './smart.js';
-import {
-  getRandomInteger
-} from '../utils/common';
 import flatpickr from 'flatpickr';
 
 import '../../node_modules/flatpickr/dist/flatpickr.min.css';
 import {getDate, getFormatDate} from '../utils/point';
+import {ITEM_BLANK} from '../const';
 
 
-const ITEM_BLANK = {
-  basePrice: 0,
-  dateFrom: null,
-  dateTo: null,
-  destination: {
-    city: '',
-    description: ' ',
-    pictures: [
-      {
-        src: ' ',
-        description: ' ',
-      },
-    ],
-  },
-  isFavorite: false,
-  offers: null,
-  type: 'drive',
-};
-
-const createPointItemModifyTemplate = (data, isEdit, offerList, destinationList) => {
-  if (!data || !offerList || !destinationList) {
+const createPointItemModifyTemplate = (dataPoint, isEdit, offerList, destinationList) => {
+  if (!dataPoint || !offerList || !destinationList) {
     return;
   }
 
-  const {type, offers, destination, isDescription, isPictures} = data;
+  const {type, offers, destination, isDescription, isPictures} = dataPoint;
+
+  const getChecked = (offer) => {
+    return offerList.map((offerArray) => {
+      if (type === offerArray.type) {
+        offerArray.offers.map((offerItem) => {
+          return offerItem.title === offer.title ? 'checked' : null;
+        }).join('');
+      }
+    });
+
+    // return offerList.map((offerArray) => {
+    //   return dataPoint.type !== offerArray.type ? '' : offerArray.offers.map((offerItem) => {
+    //     return ((offer.title + offer.price) === (offerItem.title + offerItem.price)) ? 'checked' : '';
+    //   });
+    // });
+  };
 
 
-  const createOffersTemplate = () => (
-    !offers || !offers.length ? '' : offers.map((offer) =>
-      !offer ? '' :
-        `<div class="event__offer-selector">
-          <input class="event__offer-checkbox  visually-hidden" id="${offer.id}" 
-                 type="checkbox" name="event-offer-${OFFER_TITTLES[offer.title]}" ${offer.isChecked}>
-          <label class="event__offer-label" for="${offer.id}">
-            <span class="event__offer-title">${offer.title}</span>
-            &plus;&euro;&nbsp;
-            <span class="event__offer-price">${offer.price ? offer.price : getRandomInteger(20, 120)}</span>
-      </label>
-    </div>`).join('')
-  );
+  // return offers.map((offer) => ((offer.title + offer.price) === (offerItem.title + offerItem.price)) ? 'checked' : '');
 
+
+  const createOffersTemplate = () => {
+    return !offerList.length ? '' : offerList.map((offerItem) => {
+      return (
+        (offerItem.type !== type || !offerItem.offers.length) ? '' : offerItem.offers.map((offer) => {
+          return (`<div class="event__offer-selector">
+              <input class="event__offer-checkbox  visually-hidden" id="${offer.title + offer.price}" 
+                     type="checkbox" name="event-offer-${offer.title}" >
+              <label class="event__offer-label" for="${offer.title + offer.price}">
+                 <span class="event__offer-title">${offer.title}</span>
+                  &plus;&euro;&nbsp;
+                 <span class="event__offer-price">${offer.price}</span>
+              </label>
+          </div>`);
+        }).join('')
+      );
+    }).join('');
+  };
 
   const createPicturesSrcTemplate = () => (
-    destination.pictures.map((picture) => !picture.src ? '' : `<img class="event__photo" src=${picture.src} alt=${picture.description}>`).join('')
+    destination.pictures.map((picture) =>
+      !picture.src ? '' : `<img class="event__photo" src=${picture.src} alt=${picture.description}>`).join('')
   );
 
   const createPointTypesTemplate = () =>
@@ -99,11 +100,11 @@ const createPointItemModifyTemplate = (data, isEdit, offerList, destinationList)
         <div class="event__field-group  event__field-group--time">
           <label class="visually-hidden" for="event-start-time-1">From</label>
           <input class="event__input  event__input--time" 
-          id="event-start-time-1" type="text" name="event-start-time" value="${getFormatDate(data.dateFrom, 'DD/MM/YY HH:mm')}">
+          id="event-start-time-1" type="text" name="event-start-time" value="${getFormatDate(dataPoint.dateFrom, 'DD/MM/YY HH:mm')}">
           &mdash;
           <label class="visually-hidden" for="event-end-time-1">To</label>
           <input class="event__input  event__input--time" 
-          id="event-end-time-1" type="text" name="event-end-time" value="${getFormatDate(data.dateTo, 'DD/MM/YY HH:mm')}">
+          id="event-end-time-1" type="text" name="event-end-time" value="${getFormatDate(dataPoint.dateTo, 'DD/MM/YY HH:mm')}">
         </div>
 
         <div class="event__field-group  event__field-group--price">
@@ -111,7 +112,7 @@ const createPointItemModifyTemplate = (data, isEdit, offerList, destinationList)
             <span class="visually-hidden">Price</span>
             &euro;
           </label>
-          <input class="event__input  event__input--price" id="event-price-1" type="number" name="event-price" value="${!data ? '' : data.basePrice}">
+          <input class="event__input  event__input--price" id="event-price-1" type="number" name="event-price" value="${!dataPoint ? '' : dataPoint.basePrice}">
         </div>
 
         <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
@@ -159,11 +160,8 @@ export default class PointItemModify extends SmartView {
   constructor(pointEvent = ITEM_BLANK, isEdit, offers, destinations) {
     super();
     this._isEdit = isEdit;
-    this._offers = offers;
+    this._offerList = offers;
     this._destinations = destinations;
-
-    // console.log('offers', offers);
-    // console.log('destinations', destinations);
 
     this._data = PointItemModify.parsePointToDataState(pointEvent);
     this._datepickerFrom = null;
@@ -207,7 +205,7 @@ export default class PointItemModify extends SmartView {
   }
 
   getTemplate() {
-    return createPointItemModifyTemplate(this._data, this._isEdit, this._offers, this._destinations);
+    return createPointItemModifyTemplate(this._data, this._isEdit, this._offerList, this._destinations);
   }
 
   restoreHandlers() {
@@ -289,7 +287,7 @@ export default class PointItemModify extends SmartView {
     const parent = evt.target.parentElement;
     parent.querySelector('input').checked = true;
 
-    this._offers.map((offer) => {
+    this._offerList.map((offer) => {
       if (evt.target.innerText === offer.type) {
         this.updateData({
           type: evt.target.innerText,
@@ -311,6 +309,7 @@ export default class PointItemModify extends SmartView {
   //change offers
   _setOffersHandler(evt) {
     evt.preventDefault();
+    // this._offerList
     const updateOffers = this._data.offers.map((offer) => {
       const offerId = offer.id === evt.target.id ? offer.id : null;
       if (!offerId) {

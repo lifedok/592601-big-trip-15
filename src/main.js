@@ -104,6 +104,9 @@ Promise.all([
   offersModel.setOffers(UpdateType.INIT_OFFERS, offersData);
   destinationsModel.setDestinations(UpdateType.INIT_DESTINATIONS, destinationsData);
 
+  console.log('offersData',offersData);
+  console.log('destinationsData',destinationsData);
+  console.log('pointsData',pointsData);
   pointsModel.setPoints(UpdateType.INIT, pointsData);
   newPointButtonView.setDisabledStatus(false);
 }).catch(() => {

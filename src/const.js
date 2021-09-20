@@ -1,17 +1,3 @@
-export const OFFER_TITTLES = {
-  'Add luggage': 'luggage',
-  'Switch to comfort class': 'comfort',
-  'Add meal': 'meal',
-  'Choose seats': 'seats',
-  'Travel by train': 'train',
-  'Order Uber': 'uber',
-};
-
-export const POINT_TYPES = [
-  'taxi', 'bus', 'train', 'ship', 'drive', 'flight', 'check-in', 'sightseeing', 'restaurant',
-];
-
-export const CITIES = ['Geneva', 'Berlin', 'Athens', 'Tallinn', 'Riga', 'Vologda'];
 
 export const FILTER_TYPES = {
   EVERYTHING: 'everything',
@@ -54,4 +40,23 @@ export const MenuItem = {
 export const SortType = {
   TABLE: 'Table',
   STATS: 'Stats',
+};
+
+export const ITEM_BLANK = {
+  basePrice: 0,
+  dateFrom: null,
+  dateTo: null,
+  destination: {
+    city: '',
+    description: ' ',
+    pictures: [
+      {
+        src: ' ',
+        description: ' ',
+      },
+    ],
+  },
+  isFavorite: false,
+  offers: null,
+  type: 'drive',
 };
