@@ -55,24 +55,3 @@ export const SortType = {
   TABLE: 'Table',
   STATS: 'Stats',
 };
-
-export const ITEM_BLANK = {
-  basePrice: 0,
-  dateFrom: null,
-  dateTo: null,
-  destination: {
-    city: 'Geneva',
-    description: ' ',
-    pictures: [
-      {
-        src: ' ',
-        description: ' ',
-      },
-    ],
-  },
-  isFavorite: false,
-  offers: [{
-    id: 'nmuxdo', title: 'Add meal', price: 90,
-  }],
-  type: POINT_TYPES[0],
-};

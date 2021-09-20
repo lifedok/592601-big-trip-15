@@ -18,8 +18,6 @@ export default class Destinations extends AbstractObserver {
 
 
   static adaptToClient(destinations) {
-
-    // console.log('destinations', destinations);
     const adaptedDestinations = Object.assign(
       {},
       destinations,
@@ -27,10 +25,7 @@ export default class Destinations extends AbstractObserver {
         city: destinations['name'],
       },
     );
-
-    //
-    // // Ненужные ключи мы удаляем
-    delete destinations['name'];
+    delete adaptedDestinations['name'];
     return adaptedDestinations;
   }
 
@@ -42,8 +37,6 @@ export default class Destinations extends AbstractObserver {
         'name': destinations.city,
       },
     );
-
-    // Ненужные ключи мы удаляем
     delete adaptedTask.city;
     return adaptedTask;
   }

@@ -26,15 +26,14 @@ export default class Api {
 
   getFetchDestinations() {
     return this._fetchData({url: 'destinations'})
-      .then(Api.toJSON);
-      // .then((destinations) => destinations.map(DestinationsModel.adaptToClient))
-      // .then((i) => console.log('response' ,i));
+      .then(Api.toJSON)
+      .then((destinations) => destinations.map(DestinationsModel.adaptToClient));
   }
 
   updateFetchDestinations() {
     return this._fetchData({url: 'destinations'})
-      .then(Api.toJSON);
-      // .then((destinations) => destinations.map(DestinationsModel.adaptToServer));
+      .then(Api.toJSON)
+      .then((destinations) => destinations.map(DestinationsModel.adaptToServer));
   }
 
   updateFetchPoint(point) {

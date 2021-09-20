@@ -10,7 +10,26 @@ import flatpickr from 'flatpickr';
 
 import '../../node_modules/flatpickr/dist/flatpickr.min.css';
 import {getDate, getFormatDate} from '../utils/point';
-import {ITEM_BLANK} from '../const';
+
+
+const ITEM_BLANK = {
+  basePrice: 0,
+  dateFrom: null,
+  dateTo: null,
+  destination: {
+    city: '',
+    description: ' ',
+    pictures: [
+      {
+        src: ' ',
+        description: ' ',
+      },
+    ],
+  },
+  isFavorite: false,
+  offers: null,
+  type: 'drive',
+};
 
 const createPointItemModifyTemplate = (data, isEdit, offerList, destinationList) => {
   if (!data || !offerList || !destinationList) {
@@ -39,18 +58,15 @@ const createPointItemModifyTemplate = (data, isEdit, offerList, destinationList)
     destination.pictures.map((picture) => !picture.src ? '' : `<img class="event__photo" src=${picture.src} alt=${picture.description}>`).join('')
   );
 
-  const createPointTypesTemplate2 = () => {
-    return offerList.map((offerItem) => {
-      return (`<div class="event__type-item">
+  const createPointTypesTemplate = () =>
+    offerList.map((offerItem) =>
+      (`<div class="event__type-item">
             <input id="event-type-${offerItem.type}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${offerItem.type}">
             <label class="event__type-label  event__type-label--${offerItem.type}" for="event-type-${offerItem.type}-1">${offerItem.type}</label>
-        </div>`);
-    }).join('');
-  };
+        </div>`)).join('');
 
-  const createDestinationListTemplate = () => {
-    return destinationList.map((city) => `<option value="${city.name}"></option>`).join('');
-  };
+  const createDestinationListTemplate = () =>
+    destinationList.map((destinationItem) => `<option value="${destinationItem.city}"></option>`).join('');
 
   return `<li class="trip-events__item">
     <form class="event event--edit" action="#" method="post">
@@ -65,7 +81,7 @@ const createPointItemModifyTemplate = (data, isEdit, offerList, destinationList)
           <div class="event__type-list">
             <fieldset class="event__type-group">
               <legend class="visually-hidden">Event type</legend>
-              ${createPointTypesTemplate2()}
+              ${createPointTypesTemplate()}
             </fieldset>
           </div>
           
@@ -147,6 +163,9 @@ export default class PointItemModify extends SmartView {
     this._isEdit = isEdit;
     this._offers = offers;
     this._destinations = destinations;
+
+    // console.log('offers', offers);
+    // console.log('destinations', destinations);
 
     this._data = PointItemModify.parsePointToDataState(pointEvent);
     this._datepickerFrom = null;
@@ -290,7 +309,7 @@ export default class PointItemModify extends SmartView {
   //change offers
   _setOffersHandler(evt) {
     evt.preventDefault();
-    const updateOffers =  this._data.offers.map((offer) => {
+    const updateOffers = this._data.offers.map((offer) => {
       const offerId = offer.id === evt.target.id ? offer.id : null;
       if (!offerId) {
         return offer;
@@ -317,13 +336,13 @@ export default class PointItemModify extends SmartView {
   //change input Destination
   _selectingDestinationInputHandler(evt) {
     evt.preventDefault();
-    CITIES.map((city) => {
-      if (evt.target.value === city) {
+    this._destinations.map((destination) => {
+      if (evt.target.value === destination.city) {
         this.updateData({
           destination: {
             city: evt.target.value,
-            pictures: generateTripDestinationData().pictures,
-            description: generateTripDestinationData(evt.target.value).description,
+            pictures: destination.pictures,
+            description: destination.description,
           },
         });
       }
