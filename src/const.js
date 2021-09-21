@@ -57,6 +57,6 @@ export const ITEM_BLANK = {
     ],
   },
   isFavorite: false,
-  offers: null,
+  offers: [],
   type: 'drive',
 };
