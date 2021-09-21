@@ -14,41 +14,42 @@ const createPointItemModifyTemplate = (dataPoint, isEdit, offerList, destination
 
   const {type, offers, destination, isDescription, isPictures} = dataPoint;
 
-  const getChecked = (offer) => {
-    return offerList.map((offerArray) => {
-      if (type === offerArray.type) {
-        offerArray.offers.map((offerItem) => {
-          return offerItem.title === offer.title ? 'checked' : null;
-        }).join('');
+  function getChecked(offer) {
+    let checked = null;
+    for (const off of offerList) {
+      if (off.type === type) {
+        for (const oo of offers) {
+          if (oo.title === offer.title) {
+            checked = 'checked';
+            break;
+          }
+        }
       }
-    });
 
-    // return offerList.map((offerArray) => {
-    //   return dataPoint.type !== offerArray.type ? '' : offerArray.offers.map((offerItem) => {
-    //     return ((offer.title + offer.price) === (offerItem.title + offerItem.price)) ? 'checked' : '';
-    //   });
-    // });
-  };
-
-
-  // return offers.map((offer) => ((offer.title + offer.price) === (offerItem.title + offerItem.price)) ? 'checked' : '');
+    }
+    return checked;
+  }
 
 
   const createOffersTemplate = () => {
-    return !offerList.length ? '' : offerList.map((offerItem) => {
-      return (
-        (offerItem.type !== type || !offerItem.offers.length) ? '' : offerItem.offers.map((offer) => {
+    if(!offerList.length) {
+      return;
+    }
+
+    return offerList.map((offerItem) => {
+      if (offerItem.type === type) {
+        return offerItem.offers.map((offer) => {
           return (`<div class="event__offer-selector">
               <input class="event__offer-checkbox  visually-hidden" id="${offer.title + offer.price}" 
-                     type="checkbox" name="event-offer-${offer.title}" >
+                     type="checkbox" name="event-offer-${offer.title}" ${getChecked(offer)}>
               <label class="event__offer-label" for="${offer.title + offer.price}">
                  <span class="event__offer-title">${offer.title}</span>
                   &plus;&euro;&nbsp;
                  <span class="event__offer-price">${offer.price}</span>
               </label>
           </div>`);
-        }).join('')
-      );
+        }).join('');
+      }
     }).join('');
   };
 
@@ -217,6 +218,7 @@ export default class PointItemModify extends SmartView {
   }
 
   _setOuterHandlers() {
+    // console.log('this.getElement()', this.getElement());
     this.getElement().querySelector('.event__reset-btn').addEventListener('click', !this._isEdit ? this._cancelClickHandler : this._formDeleteClickHandler);
     this._isEdit && this.getElement().querySelector('.event__rollup-btn').addEventListener('click', this._closeClickHandler);
   }
