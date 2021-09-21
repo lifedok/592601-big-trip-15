@@ -38,8 +38,8 @@ const createPointItemModifyTemplate = (dataPoint, isEdit, offerList, destination
 
     return offerList.map((offerItem) => {
       if (offerItem.type === type) {
-        return offerItem.offers.map((offer) => {
-          return (`<div class="event__offer-selector">
+        return offerItem.offers.map((offer) => (
+          `<div class="event__offer-selector">
               <input class="event__offer-checkbox  visually-hidden" id="${offer.title + offer.price}" 
                      type="checkbox" name="${offer.title}" ${getChecked(offer)}>
               <label class="event__offer-label" for="${offer.title + offer.price}">
@@ -47,8 +47,7 @@ const createPointItemModifyTemplate = (dataPoint, isEdit, offerList, destination
                   &plus;&euro;&nbsp;
                  <span class="event__offer-price">${offer.price}</span>
               </label>
-          </div>`);
-        }).join('');
+          </div>`)).join('');
       }
     }).join('');
   };
