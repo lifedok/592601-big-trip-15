@@ -1,6 +1,5 @@
 import Abstract from './abstract';
-import {getFormatDate} from '../utils/point';
-import {getDurationByData} from '../utils/common';
+import {getDurationByData, getFormatDate} from '../utils/point';
 
 
 const createPointItemTemplate = (item) => {

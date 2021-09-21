@@ -32,3 +32,11 @@ export const getFormatDate = (date, template) => {
 };
 
 export const sortPointsByPrice = (pointA, pointB) => pointA.basePrice - pointB.basePrice;
+
+
+export const getDurationByData = (item) => {
+  const days = ((getDate(item.dateTo).diff(getDate(item.dateFrom), 'd')) % 24);
+  const hours = ((getDate(item.dateTo).diff(getDate(item.dateFrom), 'h')) % 24);
+  const minutes = (getDate(item.dateTo).diff(getDate(item.dateFrom), 'm')) % 60;
+  return `${days ? `${days}D ` : ''}${hours ? `${hours}H ` : ''}${minutes}M`;
+};

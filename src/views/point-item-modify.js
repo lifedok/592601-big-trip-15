@@ -16,10 +16,10 @@ const createPointItemModifyTemplate = (dataPoint, isEdit, offerList, destination
 
   function getChecked(offer) {
     let checked = null;
-    for (const off of offerList) {
-      if (off.type === type) {
-        for (const oo of offers) {
-          if (oo.title === offer.title) {
+    for (const offerItem of offerList) {
+      if (offerItem.type === type) {
+        for (const offerEl of offers) {
+          if (offerEl.title === offer.title && offerEl.price === offer.price) {
             checked = 'checked';
             break;
           }
@@ -41,7 +41,7 @@ const createPointItemModifyTemplate = (dataPoint, isEdit, offerList, destination
         return offerItem.offers.map((offer) => {
           return (`<div class="event__offer-selector">
               <input class="event__offer-checkbox  visually-hidden" id="${offer.title + offer.price}" 
-                     type="checkbox" name="event-offer-${offer.title}" ${getChecked(offer)}>
+                     type="checkbox" name="${offer.title}" ${getChecked(offer)}>
               <label class="event__offer-label" for="${offer.title + offer.price}">
                  <span class="event__offer-title">${offer.title}</span>
                   &plus;&euro;&nbsp;
@@ -218,7 +218,6 @@ export default class PointItemModify extends SmartView {
   }
 
   _setOuterHandlers() {
-    // console.log('this.getElement()', this.getElement());
     this.getElement().querySelector('.event__reset-btn').addEventListener('click', !this._isEdit ? this._cancelClickHandler : this._formDeleteClickHandler);
     this._isEdit && this.getElement().querySelector('.event__rollup-btn').addEventListener('click', this._closeClickHandler);
   }
@@ -308,28 +307,16 @@ export default class PointItemModify extends SmartView {
     this.getElement().querySelector('.event__input--price').focus();
   }
 
-  //change offers
   _setOffersHandler(evt) {
-    evt.preventDefault();
-    // this._offerList
-    const updateOffers = this._data.offers.map((offer) => {
-      const offerId = offer.id === evt.target.id ? offer.id : null;
-      if (!offerId) {
-        return offer;
-      }
-      return {
-        id: offer.id,
-        isChecked: offer.isChecked !== 'checked' ? offer.isChecked = 'checked' : offer.isChecked = '',
-        title: offer.title,
-        price: offer.price,
-      };
-    });
-
-    return (
-      this.updateData({
-        offers: updateOffers,
-      })
-    );
+    evt.target.toggleAttribute('checked');
+    const offerElements = Array.from(this.getElement().querySelectorAll('.event__offer-checkbox:checked'));
+    const selectedOffers = Array.from(offerElements.map((elem) => elem = {
+      'title': elem.dataset.offerTitle,
+      'price': Number(elem.dataset.offerPrice),
+    }));
+    this.updateData({
+      offers: selectedOffers,
+    }, true);
   }
 
   //change input Destination
