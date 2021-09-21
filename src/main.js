@@ -78,6 +78,7 @@ const handleSiteMenuClick = (menuItem) => {
       break;
     case MenuItem.STATISTICS:
       if (prevMenuItem !== MenuItem.STATISTICS) {
+        tripPresenter.setDefaultModeFilters();
         tripPresenter.removeTripContent();
         prevMenuItem = MenuItem.STATISTICS;
         filterPresenter.isDisabledFilters();
@@ -104,11 +105,9 @@ Promise.all([
   offersModel.setOffers(UpdateType.INIT_OFFERS, offersData);
   destinationsModel.setDestinations(UpdateType.INIT_DESTINATIONS, destinationsData);
 
-  console.log('offersData',offersData);
-  console.log('destinationsData',destinationsData);
-  console.log('pointsData',pointsData);
   pointsModel.setPoints(UpdateType.INIT, pointsData);
   newPointButtonView.setDisabledStatus(false);
+  tripPresenter.setDefaultModeFilters();
 }).catch(() => {
   pointsModel.setPoints(UpdateType.INIT, []);
   newPointButtonView.setDisabledStatus(true);
