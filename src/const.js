@@ -1,17 +1,3 @@
-export const OFFER_TITTLES = {
-  'Add luggage': 'luggage',
-  'Switch to comfort class': 'comfort',
-  'Add meal': 'meal',
-  'Choose seats': 'seats',
-  'Travel by train': 'train',
-  'Order Uber': 'uber',
-};
-
-export const POINT_TYPES = [
-  'taxi', 'bus', 'train', 'ship', 'drive', 'flight', 'check-in', 'sightseeing', 'restaurant',
-];
-
-export const CITIES = ['Geneva', 'Berlin', 'Athens', 'Tallinn', 'Riga', 'Vologda'];
 
 export const FILTER_TYPES = {
   EVERYTHING: 'everything',
@@ -32,6 +18,10 @@ export const UpdateType = {
   MINOR: 'MINOR', // change favorite => update list points
   MIDDLE: 'MIDDLE', // change date and city => update point and header
   MAJOR: 'MAJOR', // change add or delete point => update all points & header
+  INIT: 'INIT',
+  INIT_POINT: 'INIT_POINT',
+  INIT_OFFERS: 'INIT_OFFERS',
+  INIT_DESTINATIONS: 'INIT_DESTINATIONS',
 };
 
 export const UserAction = {
@@ -50,4 +40,23 @@ export const MenuItem = {
 export const SortType = {
   TABLE: 'Table',
   STATS: 'Stats',
+};
+
+export const ITEM_BLANK = {
+  basePrice: 0,
+  dateFrom: null,
+  dateTo: null,
+  destination: {
+    city: '',
+    description: ' ',
+    pictures: [
+      {
+        src: ' ',
+        description: ' ',
+      },
+    ],
+  },
+  isFavorite: false,
+  offers: [],
+  type: 'drive',
 };

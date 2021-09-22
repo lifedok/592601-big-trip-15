@@ -1,6 +1,5 @@
 import Abstract from './abstract';
-import {getFormatDate} from '../utils/point';
-import {getDurationByData} from '../utils/common';
+import {getDurationByData, getFormatDate} from '../utils/point';
 
 
 const createPointItemTemplate = (item) => {
@@ -9,11 +8,10 @@ const createPointItemTemplate = (item) => {
   const createOffersTemplate = () => (
     offers.length ?
       offers.map((offer) =>
-        offer.isChecked === 'checked' ?
-          `<li class="event__offer">
-            <span class="event__offer-title">${offer.title}</span>
-            &plus;&euro;&nbsp;<span class="event__offer-price">${offer.price}</span>
-          </li>` : '').join('') : ''
+        `<li class="event__offer">
+          <span class="event__offer-title">${offer.title}</span>
+          &plus;&euro;&nbsp;<span class="event__offer-price">${offer.price}</span>
+        </li>`).join('') : ''
   );
 
   return `<li class="trip-events__item">

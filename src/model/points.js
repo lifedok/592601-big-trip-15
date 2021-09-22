@@ -6,8 +6,10 @@ export default class Points extends AbstractObserver {
     this._points = [];
   }
 
-  setPoints(points) {
+  setPoints(updateType, points) {
     this._points = points.slice();
+
+    this._notify(updateType);
   }
 
   getPoints() {
@@ -52,5 +54,60 @@ export default class Points extends AbstractObserver {
     ];
 
     this._notify(updateType);
+  }
+
+
+  static adaptToClient(point) {
+    const adaptedTask = Object.assign(
+      {},
+      point,
+      {
+        basePrice: point['base_price'],
+        dateFrom: point.date_from !== null ? new Date(point.date_from) : point.date_from,
+        dateTo: point.date_to !== null ? new Date(point.date_to) : point.date_to,
+        isFavorite: point['is_favorite'],
+        destination: {
+          city: point.destination['name'],
+          description: point.destination['description'],
+          pictures: point.destination['pictures'],
+        },
+      },
+    );
+
+    // Ненужные ключи мы удаляем
+    delete adaptedTask['base_price'];
+    delete adaptedTask['date_from'];
+    delete adaptedTask['date_to'];
+    delete adaptedTask['is_favorite'];
+    delete adaptedTask.destination['name'];
+
+    return adaptedTask;
+  }
+
+  static adaptToServer(point) {
+    const adaptedTask = Object.assign(
+      {},
+      point,
+      {
+        'base_price': point.basePrice,
+        'date_from': point.dateFrom instanceof Date ? point.dateFrom.toISOString() : null,
+        'date_to': point.dateTo instanceof Date ? point.dateTo.toISOString() : null,
+        'is_favorite': point.isFavorite,
+        destination: {
+          'name': point.destination.city,
+          'description': point.destination.description,
+          'pictures': point.destination.pictures,
+        },
+      },
+    );
+
+    // Ненужные ключи мы удаляем
+    delete adaptedTask.basePrice;
+    delete adaptedTask.dateFrom;
+    delete adaptedTask.dateTo;
+    delete adaptedTask.isFavorite;
+    delete adaptedTask.destination.city;
+
+    return adaptedTask;
   }
 }

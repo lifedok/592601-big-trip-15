@@ -1,7 +1,7 @@
 import PointItemEditView from '../views/point-item-modify';
 import {remove, render, RenderPosition} from '../utils/render.js';
 import {UserAction, UpdateType} from '../const.js';
-import {generateRandomString} from '../utils/common';
+import {ITEM_BLANK} from '../const';
 
 export default class PointNew {
   constructor(pointListWrapper, changeData) {
@@ -15,12 +15,14 @@ export default class PointNew {
     this._escKeyDownHandler = this._escKeyDownHandler.bind(this);
   }
 
-  init() {
+  init(offers, destinations ) {
     if (this._pointEditComponent !== null) {
       return;
     }
+    this._offers = offers;
+    this._destinations = destinations;
 
-    this._pointEditComponent = new PointItemEditView();
+    this._pointEditComponent = new PointItemEditView(ITEM_BLANK, false, this._offers, this._destinations);
     this._pointEditComponent.setFormSubmitHandler(this._handleFormSubmit);
     this._pointEditComponent.setDeleteClickHandler(this._handleDeleteClick);
 
@@ -44,9 +46,7 @@ export default class PointNew {
     this._changeData(
       UserAction.ADD_POINT,
       UpdateType.MAJOR,
-      // Пока у нас нет сервера, который бы после сохранения
-      // выдывал честный id задачи, нам нужно позаботиться об этом самим
-      Object.assign({id: generateRandomString(8, 15)}, point),
+      point,
     );
     this.destroy();
   }
