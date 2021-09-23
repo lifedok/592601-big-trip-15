@@ -14,22 +14,11 @@ const createPointItemModifyTemplate = (dataPoint, isEdit, offerList, destination
 
   const {type, offers, destination, isDescription, isPictures} = dataPoint;
 
-  function getChecked(offer) {
-    let checked = null;
-    for (const offerItem of offerList) {
-      if (offerItem.type === type) {
-        for (const offerEl of offers) {
-          if (offerEl.title === offer.title && offerEl.price === offer.price) {
-            checked = 'checked';
-            break;
-          }
-        }
-      }
 
-    }
-    return checked;
+  function isChecked(offer) {
+    return offers.some((offerEl) =>
+      offerEl.type === offer.type && offerEl.title === offer.title && offerEl.price === offer.price);
   }
-
 
   const createOffersTemplate = () => {
     if(!offerList.length) {
@@ -40,17 +29,18 @@ const createPointItemModifyTemplate = (dataPoint, isEdit, offerList, destination
       if (offerItem.type === type) {
         return offerItem.offers.map((offer) => (
           `<div class="event__offer-selector">
-              <input class="event__offer-checkbox  visually-hidden" id="${offer.title + offer.price}" 
-                     type="checkbox" name="${offer.title}" ${getChecked(offer)}>
-              <label class="event__offer-label" for="${offer.title + offer.price}">
-                 <span class="event__offer-title">${offer.title}</span>
-                  &plus;&euro;&nbsp;
-                 <span class="event__offer-price">${offer.price}</span>
-              </label>
-          </div>`)).join('');
+            <input class="event__offer-checkbox  visually-hidden" id="${offer.title + offer.price}" 
+                   type="checkbox" name="${offer.title}" ${isChecked(offer) ? 'checked' : null}>
+            <label class="event__offer-label" for="${offer.title + offer.price}">
+               <span class="event__offer-title">${offer.title}</span>
+                &plus;&euro;&nbsp;
+               <span class="event__offer-price">${offer.price}</span>
+            </label>
+        </div>`)).join('');
       }
     }).join('');
   };
+
 
   const createPicturesSrcTemplate = () => (
     destination.pictures.map((picture) =>
