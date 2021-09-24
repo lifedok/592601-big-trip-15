@@ -21,7 +21,7 @@ const createPointItemModifyTemplate = (dataPoint, isEdit, offerList, destination
   }
 
   const createOffersTemplate = () => {
-    if(!offerList.length) {
+    if (!offerList.length) {
       return;
     }
 
@@ -159,6 +159,7 @@ export default class PointItemModify extends SmartView {
 
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
     this._cancelClickHandler = this._cancelClickHandler.bind(this);
+    this._resetClickHandler = this._resetClickHandler.bind(this);
     this._formDeleteClickHandler = this._formDeleteClickHandler.bind(this);
     this._closeClickHandler = this._closeClickHandler.bind(this);
     this._choosePointTypeClickHandler = this._choosePointTypeClickHandler.bind(this);
@@ -207,7 +208,7 @@ export default class PointItemModify extends SmartView {
   }
 
   _setOuterHandlers() {
-    this.getElement().querySelector('.event__reset-btn').addEventListener('click', !this._isEdit ? this._cancelClickHandler : this._formDeleteClickHandler);
+    this.getElement().querySelector('.event__reset-btn').addEventListener('click', this._resetClickHandler);
     this._isEdit && this.getElement().querySelector('.event__rollup-btn').addEventListener('click', this._closeClickHandler);
   }
 
@@ -227,6 +228,10 @@ export default class PointItemModify extends SmartView {
   setFormSubmitHandler(callback) {
     this._callback.formSubmit = callback;
     this.getElement().querySelector('form').addEventListener('submit', this._formSubmitHandler);
+  }
+
+  _resetClickHandler() {
+    return this._isEdit ? this._formDeleteClickHandler : this._cancelClickHandler;
   }
 
   // cancel point click
@@ -281,7 +286,7 @@ export default class PointItemModify extends SmartView {
       if (evt.target.innerText === offer.type) {
         this.updateData({
           type: evt.target.innerText,
-          offers: offer.offers,
+          // offers: offer.offers,
         });
       }
     });
@@ -290,6 +295,18 @@ export default class PointItemModify extends SmartView {
   //change input price
   _setPriceInputHandler(evt) {
     evt.preventDefault();
+    let info = '';
+    const value = Number(evt.target.value);
+    if (value < 0) {
+      info = 'Данное поле работает только с положительным числом';
+    }
+
+    evt.target.setCustomValidity(info);
+    evt.target.reportValidity();
+    if (!evt.target.validity.valid) {
+      return;
+    }
+
     this.updateData({
       basePrice: Number(evt.target.value),
     });
