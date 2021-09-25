@@ -12,8 +12,20 @@ const createPointItemModifyTemplate = (dataPoint, isEdit, offerList, destination
     return;
   }
 
-  const {type, offers, destination, isDescription, isPictures} = dataPoint;
+  const {
+    type,
+    offers,
+    destination,
+    dateFrom,
+    dateTo,
+    isDescription,
+    isPictures,
+    isDisabled,
+    isSaving,
+    isDeleting,
+  } = dataPoint;
 
+  const isSubmitDisabled = (!dateFrom || !dateTo || !type || !destination.city);
 
   function isChecked(offer) {
     return offers.some((offerEl) =>
@@ -30,7 +42,9 @@ const createPointItemModifyTemplate = (dataPoint, isEdit, offerList, destination
         return offerItem.offers.map((offer) => (
           `<div class="event__offer-selector">
             <input class="event__offer-checkbox  visually-hidden" id="${offer.title + offer.price}" 
-                   type="checkbox" name="${offer.title}" ${isChecked(offer) ? 'checked' : null}>
+                   type="checkbox" 
+                   ${isDisabled ? 'disabled' : ''}
+                   name="${offer.title}" ${isChecked(offer) ? 'checked' : null}>
             <label class="event__offer-label" for="${offer.title + offer.price}">
                <span class="event__offer-title">${offer.title}</span>
                 &plus;&euro;&nbsp;
@@ -50,13 +64,20 @@ const createPointItemModifyTemplate = (dataPoint, isEdit, offerList, destination
   const createPointTypesTemplate = () =>
     offerList.map((offerItem) =>
       (`<div class="event__type-item">
-            <input id="event-type-${offerItem.type}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${offerItem.type}">
+            <input 
+            id="event-type-${offerItem.type}-1" 
+            class="event__type-input  visually-hidden" 
+            type="radio" 
+            name="event-type" 
+            ${isDisabled ? 'disabled' : ''}
+            value="${offerItem.type}">
             <label class="event__type-label  event__type-label--${offerItem.type}" for="event-type-${offerItem.type}-1">${offerItem.type}</label>
         </div>`)).join('');
 
   const createDestinationListTemplate = () =>
     destinationList.map((destinationItem) => `<option value="${destinationItem.city}"></option>`).join('');
 
+  const deleteText = isDeleting ? 'Deleting...' : 'Delete';
   return `<li class="trip-events__item">
     <form class="event event--edit" action="#" method="post">
       <header class="event__header">
@@ -65,7 +86,7 @@ const createPointItemModifyTemplate = (dataPoint, isEdit, offerList, destination
             <span class="visually-hidden">Choose event type</span>
             <img class="event__type-icon" width="17" height="17" src="img/icons/${type.toLowerCase()}.png" alt="Event type icon">
           </label>
-          <input class="event__type-toggle visually-hidden" id="event-type-toggle-1" type="checkbox">
+          <input class="event__type-toggle visually-hidden" id="event-type-toggle-1" type="checkbox" ${isDisabled ? 'disabled' : ''}>
 
           <div class="event__type-list">
             <fieldset class="event__type-group">
@@ -80,8 +101,14 @@ const createPointItemModifyTemplate = (dataPoint, isEdit, offerList, destination
           <label class="event__label  event__type-output" for="event-destination-1">
             ${type}
           </label>
-          <input class="event__input  event__input--destination" id="event-destination-1" 
-                 type="text" name="event-destination" value="${he.encode(destination.city)}" list="destination-list-1">
+          <input 
+                class="event__input  event__input--destination" 
+                id="event-destination-1" 
+                type="text" 
+                name="event-destination" 
+                ${isDisabled ? 'disabled' : ''}
+                value="${he.encode(destination.city)}" 
+                list="destination-list-1">
           <datalist id="destination-list-1">
             ${createDestinationListTemplate()}
           </datalist>
@@ -89,12 +116,22 @@ const createPointItemModifyTemplate = (dataPoint, isEdit, offerList, destination
 
         <div class="event__field-group  event__field-group--time">
           <label class="visually-hidden" for="event-start-time-1">From</label>
-          <input class="event__input  event__input--time" 
-          id="event-start-time-1" type="text" name="event-start-time" value="${getFormatDate(dataPoint.dateFrom, 'DD/MM/YY HH:mm')}">
+          <input 
+                class="event__input  event__input--time" 
+                id="event-start-time-1" 
+                type="text" 
+                name="event-start-time" 
+                ${isDisabled ? 'disabled' : ''}
+                value="${getFormatDate(dateFrom, 'DD/MM/YY HH:mm')}">
           &mdash;
           <label class="visually-hidden" for="event-end-time-1">To</label>
-          <input class="event__input  event__input--time" 
-          id="event-end-time-1" type="text" name="event-end-time" value="${getFormatDate(dataPoint.dateTo, 'DD/MM/YY HH:mm')}">
+          <input 
+                class="event__input  event__input--time" 
+                id="event-end-time-1" 
+                type="text" 
+                name="event-end-time" 
+                ${isDisabled ? 'disabled' : ''}
+                value="${getFormatDate(dateTo, 'DD/MM/YY HH:mm')}">
         </div>
 
         <div class="event__field-group  event__field-group--price">
@@ -102,11 +139,21 @@ const createPointItemModifyTemplate = (dataPoint, isEdit, offerList, destination
             <span class="visually-hidden">Price</span>
             &euro;
           </label>
-          <input class="event__input  event__input--price" id="event-price-1" type="number" name="event-price" value="${!dataPoint ? '' : dataPoint.basePrice}">
+          <input 
+                class="event__input  event__input--price" 
+                id="event-price-1" 
+                type="number" 
+                name="event-price" 
+                ${isDisabled ? 'disabled' : ''}
+                value="${!dataPoint ? '' : dataPoint.basePrice}">
         </div>
 
-        <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
-        <button class="event__reset-btn" type="reset">${isEdit ? 'Delete' : 'Cancel'}</button>
+        <button class="event__save-btn  btn  btn--blue" type="submit" ${isSubmitDisabled || isDisabled ? 'disabled' : ''}>
+              ${isSaving ? 'Saving...' : 'Save'}
+        </button>
+        <button class="event__reset-btn" type="reset" ${isDisabled ? 'disabled' : ''}>
+              ${isEdit ? deleteText : 'Cancel'}
+        </button>
         
 <!--        optional button according to the state of the point (create or edit).-->
           ${isEdit === true ?
@@ -196,7 +243,7 @@ export default class PointItemModify extends SmartView {
   }
 
   getTemplate() {
-    return createPointItemModifyTemplate(this._data, this._isEdit, this._offerList, this._destinations);
+    return createPointItemModifyTemplate(this._data, this._isEdit, this._offerList, this._destinations, this._isDisabled);
   }
 
   restoreHandlers() {
@@ -345,7 +392,7 @@ export default class PointItemModify extends SmartView {
   _dateFromChangeHandler([userDate]) {
     const fromDate = getDate(userDate).diff(getDate(this._data.dateTo, 'm')); // -1
     let newFromDate = fromDate < 0 ? userDate : this._data.dateTo;
-    if(newFromDate === null){
+    if (newFromDate === null) {
       newFromDate = getDate(new Date()).toString();
     }
     this.updateData({
@@ -356,7 +403,7 @@ export default class PointItemModify extends SmartView {
   _dateToChangeHandler([userDate]) {
     const toDate = getDate(userDate).diff(getDate(this._data.dateFrom, 'm')); // +1
     let newToDate = toDate > 0 ? userDate : this._data.dateFrom;
-    if(newToDate === null){
+    if (newToDate === null) {
       newToDate = getDate(new Date()).toString();
     }
     this.updateData({
@@ -409,6 +456,9 @@ export default class PointItemModify extends SmartView {
       {
         isDescription: !!point.destination.description,
         isPictures: !!point.destination.pictures.length,
+        isDisabled: false,
+        isSaving: false,
+        isDeleting: false,
       },
     );
   }
@@ -424,6 +474,9 @@ export default class PointItemModify extends SmartView {
 
     delete state.isDescription;
     delete state.isPictures;
+    delete state.isDisabled;
+    delete state.isSaving;
+    delete state.isDeleting;
 
     return state;
   }
