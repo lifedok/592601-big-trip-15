@@ -128,10 +128,14 @@ export default class Trip {
         });
         break;
       case UserAction.ADD_POINT:
-        this._pointsModel.addPoint(updateType, updatePoint);
+        this._api.addFetchPoint(updatePoint).then((response) => {
+          this._pointsModel.addPoint(updateType, response);
+        });
         break;
       case UserAction.DELETE_POINT:
-        this._pointsModel.deletePoint(updateType, updatePoint);
+        this._api.deleteFetchPoint(updatePoint).then(() => {
+          this._pointsModel.deletePoint(updateType, updatePoint);
+        });
         break;
     }
   }
