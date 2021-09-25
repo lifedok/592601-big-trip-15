@@ -140,14 +140,14 @@ export default class Trip {
   _handleModelEvent(updateType, data) {
     switch (updateType) {
       case UpdateType.PATCH:
-        this._pointPresenter.get(data.id).init(data);
+        this._pointPresenter.get(data.id).init(data, this._offers, this._destinations);
         break;
       case UpdateType.MINOR: // перерисовать весь список
         this._resetTrip();
         this._renderTrip();
         break;
       case UpdateType.MIDDLE: // перерисовать info in header
-        this._pointPresenter.get(data.id).init(data);
+        this._pointPresenter.get(data.id).init(data, this._offers, this._destinations);
         this._resetInfoHeader();
         this._renderInfoHeader();
         break;
