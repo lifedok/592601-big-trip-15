@@ -5,7 +5,7 @@ import TripCostHeaderView from '../views/header/trip-cost-header.js';
 // main
 import PointSortView from '../views/point-sort';
 import PointListWrapperView from '../views/point-list-wrapper';
-import PointPresenter from './point';
+import PointPresenter, {State as PointPresenterViewState} from './point';
 
 import PointNewPresenter from './point-new.js';
 // service message
@@ -123,16 +123,19 @@ export default class Trip {
   _handleViewAction(actionType, updateType, updatePoint) {
     switch (actionType) {
       case UserAction.UPDATE_POINT:
+        this._pointPresenter.get(updatePoint.id).setViewState(PointPresenterViewState.SAVING);
         this._api.updateFetchPoint(updatePoint).then((response) => {
           this._pointsModel.updatePoint(updateType, response);
         });
         break;
       case UserAction.ADD_POINT:
+        this._pointNewPresenter.setSaving();
         this._api.addFetchPoint(updatePoint).then((response) => {
           this._pointsModel.addPoint(updateType, response);
         });
         break;
       case UserAction.DELETE_POINT:
+        this._pointPresenter.get(updatePoint.id).setViewState(PointPresenterViewState.DELETING);
         this._api.deleteFetchPoint(updatePoint).then(() => {
           this._pointsModel.deletePoint(updateType, updatePoint);
         });
