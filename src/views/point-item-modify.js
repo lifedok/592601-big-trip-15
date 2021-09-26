@@ -43,6 +43,8 @@ const createPointItemModifyTemplate = (dataPoint, isEdit, offerList, destination
           `<div class="event__offer-selector">
             <input class="event__offer-checkbox  visually-hidden" id="${offer.title + offer.price}" 
                    type="checkbox" 
+                   data-offer-title="${offer.title}"
+                   data-offer-price="${offer.price}"
                    ${isDisabled ? 'disabled' : ''}
                    name="${offer.title}" ${isChecked(offer) ? 'checked' : null}>
             <label class="event__offer-label" for="${offer.title + offer.price}">
@@ -363,10 +365,11 @@ export default class PointItemModify extends SmartView {
   _setOffersHandler(evt) {
     evt.target.toggleAttribute('checked');
     const offerElements = Array.from(this.getElement().querySelectorAll('.event__offer-checkbox:checked'));
-    const selectedOffers = Array.from(offerElements.map((elem) => elem = {
-      'title': elem.dataset.offerTitle,
-      'price': Number(elem.dataset.offerPrice),
-    }));
+    const selectedOffers = Array.from(offerElements.map((elem) => ({
+      title: elem.dataset.offerTitle,
+      price: Number(elem.dataset.offerPrice),
+    })));
+
     this.updateData({
       offers: selectedOffers,
     }, true);
