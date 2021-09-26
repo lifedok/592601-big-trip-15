@@ -5,7 +5,7 @@ import TripCostHeaderView from '../views/header/trip-cost-header.js';
 // main
 import PointSortView from '../views/point-sort';
 import PointListWrapperView from '../views/point-list-wrapper';
-import PointPresenter from './point';
+import PointPresenter, {State as PointPresenterViewState} from './point';
 
 import PointNewPresenter from './point-new.js';
 // service message
@@ -123,15 +123,33 @@ export default class Trip {
   _handleViewAction(actionType, updateType, updatePoint) {
     switch (actionType) {
       case UserAction.UPDATE_POINT:
-        this._api.updateFetchPoint(updatePoint).then((response) => {
-          this._pointsModel.updatePoint(updateType, response);
-        });
+        this._pointPresenter.get(updatePoint.id).setViewState(PointPresenterViewState.SAVING);
+        this._api.updateFetchPoint(updatePoint)
+          .then((response) => {
+            this._pointsModel.updatePoint(updateType, response);
+          }).catch(() => {
+            this._pointPresenter.get(updatePoint.id).setViewState(PointPresenterViewState.ABORTING);
+          });
         break;
       case UserAction.ADD_POINT:
-        this._pointsModel.addPoint(updateType, updatePoint);
+        this._pointNewPresenter.setSaving();
+        this._api.addFetchPoint(updatePoint)
+          .then((response) => {
+            this._pointsModel.addPoint(updateType, response);
+          })
+          .catch(() => {
+            this._pointNewPresenter.setAborting();
+          });
         break;
       case UserAction.DELETE_POINT:
-        this._pointsModel.deletePoint(updateType, updatePoint);
+        this._pointPresenter.get(updatePoint.id).setViewState(PointPresenterViewState.DELETING);
+        this._api.deleteFetchPoint(updatePoint)
+          .then(() => {
+            this._pointsModel.deletePoint(updateType, updatePoint);
+          })
+          .catch(() => {
+            this._pointPresenter.get(updatePoint.id).setViewState(PointPresenterViewState.ABORTING);
+          });
         break;
     }
   }
@@ -140,14 +158,14 @@ export default class Trip {
   _handleModelEvent(updateType, data) {
     switch (updateType) {
       case UpdateType.PATCH:
-        this._pointPresenter.get(data.id).init(data);
+        this._pointPresenter.get(data.id).init(data, this._offers, this._destinations);
         break;
       case UpdateType.MINOR: // перерисовать весь список
         this._resetTrip();
         this._renderTrip();
         break;
       case UpdateType.MIDDLE: // перерисовать info in header
-        this._pointPresenter.get(data.id).init(data);
+        this._pointPresenter.get(data.id).init(data, this._offers, this._destinations);
         this._resetInfoHeader();
         this._renderInfoHeader();
         break;

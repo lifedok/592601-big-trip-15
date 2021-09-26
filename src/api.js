@@ -4,6 +4,8 @@ import DestinationsModel from './model/destinations';
 const Method = {
   GET: 'GET',
   PUT: 'PUT',
+  POST: 'POST',
+  DELETE: 'DELETE',
 };
 
 //endPoint - ссылка к серверу https://15.ecmascript.pages.academy/big-trip/
@@ -30,12 +32,6 @@ export default class Api {
       .then((destinations) => destinations.map(DestinationsModel.adaptToClient));
   }
 
-  updateFetchDestinations() {
-    return this._fetchData({url: 'destinations'})
-      .then(Api.toJSON)
-      .then((destinations) => destinations.map(DestinationsModel.adaptToServer));
-  }
-
   updateFetchPoint(point) {
     return this._fetchData({
       url: `points/${point.id}`,
@@ -45,6 +41,24 @@ export default class Api {
     })
       .then(Api.toJSON)
       .then(PointsModel.adaptToClient);
+  }
+
+  addFetchPoint(point) {
+    return this._fetchData({
+      url: 'points',
+      method: Method.POST,
+      body: JSON.stringify(PointsModel.adaptToServer(point)),
+      headers: new Headers({'Content-Type': 'application/json'}),
+    })
+      .then(Api.toJSON)
+      .then(PointsModel.adaptToClient);
+  }
+
+  deleteFetchPoint(point) {
+    return this._fetchData({
+      url: `points/${point.id}`,
+      method: Method.DELETE,
+    });
   }
 
   _fetchData({

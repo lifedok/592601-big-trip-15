@@ -12,27 +12,28 @@ const createPointItemModifyTemplate = (dataPoint, isEdit, offerList, destination
     return;
   }
 
-  const {type, offers, destination, isDescription, isPictures} = dataPoint;
+  const {
+    type,
+    offers,
+    destination,
+    dateFrom,
+    dateTo,
+    isDescription,
+    isPictures,
+    isDisabled,
+    isSaving,
+    isDeleting,
+  } = dataPoint;
 
-  function getChecked(offer) {
-    let checked = null;
-    for (const offerItem of offerList) {
-      if (offerItem.type === type) {
-        for (const offerEl of offers) {
-          if (offerEl.title === offer.title && offerEl.price === offer.price) {
-            checked = 'checked';
-            break;
-          }
-        }
-      }
+  const isSubmitDisabled = (!dateFrom || !dateTo || !type || !destination.city);
 
-    }
-    return checked;
+  function isChecked(offer) {
+    return offers.some((offerEl) =>
+      offerEl.type === offer.type && offerEl.title === offer.title && offerEl.price === offer.price);
   }
 
-
   const createOffersTemplate = () => {
-    if(!offerList.length) {
+    if (!offerList.length) {
       return;
     }
 
@@ -40,17 +41,22 @@ const createPointItemModifyTemplate = (dataPoint, isEdit, offerList, destination
       if (offerItem.type === type) {
         return offerItem.offers.map((offer) => (
           `<div class="event__offer-selector">
-              <input class="event__offer-checkbox  visually-hidden" id="${offer.title + offer.price}" 
-                     type="checkbox" name="${offer.title}" ${getChecked(offer)}>
-              <label class="event__offer-label" for="${offer.title + offer.price}">
-                 <span class="event__offer-title">${offer.title}</span>
-                  &plus;&euro;&nbsp;
-                 <span class="event__offer-price">${offer.price}</span>
-              </label>
-          </div>`)).join('');
+            <input class="event__offer-checkbox  visually-hidden" id="${offer.title + offer.price}" 
+                   type="checkbox" 
+                   data-offer-title="${offer.title}"
+                   data-offer-price="${offer.price}"
+                   ${isDisabled ? 'disabled' : ''}
+                   name="${offer.title}" ${isChecked(offer) ? 'checked' : null}>
+            <label class="event__offer-label" for="${offer.title + offer.price}">
+               <span class="event__offer-title">${offer.title}</span>
+                &plus;&euro;&nbsp;
+               <span class="event__offer-price">${offer.price}</span>
+            </label>
+        </div>`)).join('');
       }
     }).join('');
   };
+
 
   const createPicturesSrcTemplate = () => (
     destination.pictures.map((picture) =>
@@ -60,13 +66,20 @@ const createPointItemModifyTemplate = (dataPoint, isEdit, offerList, destination
   const createPointTypesTemplate = () =>
     offerList.map((offerItem) =>
       (`<div class="event__type-item">
-            <input id="event-type-${offerItem.type}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${offerItem.type}">
+            <input 
+            id="event-type-${offerItem.type}-1" 
+            class="event__type-input  visually-hidden" 
+            type="radio" 
+            name="event-type" 
+            ${isDisabled ? 'disabled' : ''}
+            value="${offerItem.type}">
             <label class="event__type-label  event__type-label--${offerItem.type}" for="event-type-${offerItem.type}-1">${offerItem.type}</label>
         </div>`)).join('');
 
   const createDestinationListTemplate = () =>
     destinationList.map((destinationItem) => `<option value="${destinationItem.city}"></option>`).join('');
 
+  const deleteText = isDeleting ? 'Deleting...' : 'Delete';
   return `<li class="trip-events__item">
     <form class="event event--edit" action="#" method="post">
       <header class="event__header">
@@ -75,7 +88,7 @@ const createPointItemModifyTemplate = (dataPoint, isEdit, offerList, destination
             <span class="visually-hidden">Choose event type</span>
             <img class="event__type-icon" width="17" height="17" src="img/icons/${type.toLowerCase()}.png" alt="Event type icon">
           </label>
-          <input class="event__type-toggle visually-hidden" id="event-type-toggle-1" type="checkbox">
+          <input class="event__type-toggle visually-hidden" id="event-type-toggle-1" type="checkbox" ${isDisabled ? 'disabled' : ''}>
 
           <div class="event__type-list">
             <fieldset class="event__type-group">
@@ -90,8 +103,14 @@ const createPointItemModifyTemplate = (dataPoint, isEdit, offerList, destination
           <label class="event__label  event__type-output" for="event-destination-1">
             ${type}
           </label>
-          <input class="event__input  event__input--destination" id="event-destination-1" 
-                 type="text" name="event-destination" value="${he.encode(destination.city)}" list="destination-list-1">
+          <input 
+                class="event__input  event__input--destination" 
+                id="event-destination-1" 
+                type="text" 
+                name="event-destination" 
+                ${isDisabled ? 'disabled' : ''}
+                value="${he.encode(destination.city)}" 
+                list="destination-list-1">
           <datalist id="destination-list-1">
             ${createDestinationListTemplate()}
           </datalist>
@@ -99,12 +118,22 @@ const createPointItemModifyTemplate = (dataPoint, isEdit, offerList, destination
 
         <div class="event__field-group  event__field-group--time">
           <label class="visually-hidden" for="event-start-time-1">From</label>
-          <input class="event__input  event__input--time" 
-          id="event-start-time-1" type="text" name="event-start-time" value="${getFormatDate(dataPoint.dateFrom, 'DD/MM/YY HH:mm')}">
+          <input 
+                class="event__input  event__input--time" 
+                id="event-start-time-1" 
+                type="text" 
+                name="event-start-time" 
+                ${isDisabled ? 'disabled' : ''}
+                value="${getFormatDate(dateFrom, 'DD/MM/YY HH:mm')}">
           &mdash;
           <label class="visually-hidden" for="event-end-time-1">To</label>
-          <input class="event__input  event__input--time" 
-          id="event-end-time-1" type="text" name="event-end-time" value="${getFormatDate(dataPoint.dateTo, 'DD/MM/YY HH:mm')}">
+          <input 
+                class="event__input  event__input--time" 
+                id="event-end-time-1" 
+                type="text" 
+                name="event-end-time" 
+                ${isDisabled ? 'disabled' : ''}
+                value="${getFormatDate(dateTo, 'DD/MM/YY HH:mm')}">
         </div>
 
         <div class="event__field-group  event__field-group--price">
@@ -112,11 +141,21 @@ const createPointItemModifyTemplate = (dataPoint, isEdit, offerList, destination
             <span class="visually-hidden">Price</span>
             &euro;
           </label>
-          <input class="event__input  event__input--price" id="event-price-1" type="number" name="event-price" value="${!dataPoint ? '' : dataPoint.basePrice}">
+          <input 
+                class="event__input  event__input--price" 
+                id="event-price-1" 
+                type="number" 
+                name="event-price" 
+                ${isDisabled ? 'disabled' : ''}
+                value="${!dataPoint ? '' : dataPoint.basePrice}">
         </div>
 
-        <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
-        <button class="event__reset-btn" type="reset">${isEdit ? 'Delete' : 'Cancel'}</button>
+        <button class="event__save-btn  btn  btn--blue" type="submit" ${isSubmitDisabled || isDisabled ? 'disabled' : ''}>
+              ${isSaving ? 'Saving...' : 'Save'}
+        </button>
+        <button class="event__reset-btn" type="reset" ${isDisabled ? 'disabled' : ''}>
+              ${isEdit ? deleteText : 'Cancel'}
+        </button>
         
 <!--        optional button according to the state of the point (create or edit).-->
           ${isEdit === true ?
@@ -169,6 +208,7 @@ export default class PointItemModify extends SmartView {
 
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
     this._cancelClickHandler = this._cancelClickHandler.bind(this);
+    this._resetClickHandler = this._resetClickHandler.bind(this);
     this._formDeleteClickHandler = this._formDeleteClickHandler.bind(this);
     this._closeClickHandler = this._closeClickHandler.bind(this);
     this._choosePointTypeClickHandler = this._choosePointTypeClickHandler.bind(this);
@@ -205,7 +245,7 @@ export default class PointItemModify extends SmartView {
   }
 
   getTemplate() {
-    return createPointItemModifyTemplate(this._data, this._isEdit, this._offerList, this._destinations);
+    return createPointItemModifyTemplate(this._data, this._isEdit, this._offerList, this._destinations, this._isDisabled);
   }
 
   restoreHandlers() {
@@ -217,7 +257,7 @@ export default class PointItemModify extends SmartView {
   }
 
   _setOuterHandlers() {
-    this.getElement().querySelector('.event__reset-btn').addEventListener('click', !this._isEdit ? this._cancelClickHandler : this._formDeleteClickHandler);
+    this.getElement().querySelector('.event__reset-btn').addEventListener('click', this._resetClickHandler);
     this._isEdit && this.getElement().querySelector('.event__rollup-btn').addEventListener('click', this._closeClickHandler);
   }
 
@@ -237,6 +277,10 @@ export default class PointItemModify extends SmartView {
   setFormSubmitHandler(callback) {
     this._callback.formSubmit = callback;
     this.getElement().querySelector('form').addEventListener('submit', this._formSubmitHandler);
+  }
+
+  _resetClickHandler() {
+    return this._isEdit ? this._formDeleteClickHandler : this._cancelClickHandler;
   }
 
   // cancel point click
@@ -291,7 +335,7 @@ export default class PointItemModify extends SmartView {
       if (evt.target.innerText === offer.type) {
         this.updateData({
           type: evt.target.innerText,
-          offers: offer.offers,
+          // offers: offer.offers,
         });
       }
     });
@@ -300,6 +344,18 @@ export default class PointItemModify extends SmartView {
   //change input price
   _setPriceInputHandler(evt) {
     evt.preventDefault();
+    let info = '';
+    const value = Number(evt.target.value);
+    if (value < 0) {
+      info = 'Данное поле работает только с положительным числом';
+    }
+
+    evt.target.setCustomValidity(info);
+    evt.target.reportValidity();
+    if (!evt.target.validity.valid) {
+      return;
+    }
+
     this.updateData({
       basePrice: Number(evt.target.value),
     });
@@ -309,10 +365,11 @@ export default class PointItemModify extends SmartView {
   _setOffersHandler(evt) {
     evt.target.toggleAttribute('checked');
     const offerElements = Array.from(this.getElement().querySelectorAll('.event__offer-checkbox:checked'));
-    const selectedOffers = Array.from(offerElements.map((elem) => elem = {
-      'title': elem.dataset.offerTitle,
-      'price': Number(elem.dataset.offerPrice),
-    }));
+    const selectedOffers = Array.from(offerElements.map((elem) => ({
+      title: elem.dataset.offerTitle,
+      price: Number(elem.dataset.offerPrice),
+    })));
+
     this.updateData({
       offers: selectedOffers,
     }, true);
@@ -337,7 +394,10 @@ export default class PointItemModify extends SmartView {
   // date from and to
   _dateFromChangeHandler([userDate]) {
     const fromDate = getDate(userDate).diff(getDate(this._data.dateTo, 'm')); // -1
-    const newFromDate = fromDate < 0 ? userDate : this._data.dateTo;
+    let newFromDate = fromDate < 0 ? userDate : this._data.dateTo;
+    if (newFromDate === null) {
+      newFromDate = getDate(new Date()).$d;
+    }
     this.updateData({
       dateFrom: newFromDate,
     });
@@ -345,7 +405,10 @@ export default class PointItemModify extends SmartView {
 
   _dateToChangeHandler([userDate]) {
     const toDate = getDate(userDate).diff(getDate(this._data.dateFrom, 'm')); // +1
-    const newToDate = toDate > 0 ? userDate : this._data.dateFrom;
+    let newToDate = toDate > 0 ? userDate : this._data.dateFrom;
+    if (newToDate === null) {
+      newToDate = getDate(new Date()).$d;
+    }
     this.updateData({
       dateTo: newToDate,
     });
@@ -396,6 +459,9 @@ export default class PointItemModify extends SmartView {
       {
         isDescription: !!point.destination.description,
         isPictures: !!point.destination.pictures.length,
+        isDisabled: false,
+        isSaving: false,
+        isDeleting: false,
       },
     );
   }
@@ -411,6 +477,9 @@ export default class PointItemModify extends SmartView {
 
     delete state.isDescription;
     delete state.isPictures;
+    delete state.isDisabled;
+    delete state.isSaving;
+    delete state.isDeleting;
 
     return state;
   }
