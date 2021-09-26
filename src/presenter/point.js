@@ -182,7 +182,7 @@ export default class Point {
       type,
       point,
     );
-    this._replaceFormToPointItem();
+
   }
 
   _handleDeleteClick(task) {
