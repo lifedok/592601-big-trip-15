@@ -68,6 +68,7 @@ export default class Point {
 
     if (this._pointListWrapper.getElement().contains(prevPointEditComponent.getElement())) {
       replace(this._pointEditComponent, prevPointEditComponent);
+      this._replaceFormToPointItem();
     }
 
     remove(prevPointItemComponent);

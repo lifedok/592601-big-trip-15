@@ -57,14 +57,12 @@ let prevMenuItem = MenuItem.POINTS;
 const handleSiteMenuClick = (menuItem) => {
   switch (menuItem) {
     case MenuItem.ADD_NEW_POINT:
-      if (prevMenuItem !== MenuItem.ADD_NEW_POINT) {
-        tripPresenter.removeTripContent();
-        tripPresenter.createPoint();
-        tripTabsStatisticHeaderView.switchOnSelectTab(SortType.TABLE);
-        prevMenuItem = MenuItem.ADD_NEW_POINT;
-        if (statisticsComponent !== null) {
-          remove(statisticsComponent);
-        }
+      tripPresenter.removeTripContent();
+      tripPresenter.createPoint();
+      tripTabsStatisticHeaderView.switchOnSelectTab(SortType.TABLE);
+      prevMenuItem = MenuItem.ADD_NEW_POINT;
+      if (statisticsComponent !== null) {
+        remove(statisticsComponent);
       }
       break;
     case MenuItem.POINTS:
