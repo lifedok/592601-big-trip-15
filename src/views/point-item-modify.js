@@ -393,7 +393,7 @@ export default class PointItemModify extends SmartView {
     const fromDate = getDate(userDate).diff(getDate(this._data.dateTo, 'm')); // -1
     let newFromDate = fromDate < 0 ? userDate : this._data.dateTo;
     if (newFromDate === null) {
-      newFromDate = getDate(new Date()).toString();
+      newFromDate = getDate(new Date()).$d;
     }
     this.updateData({
       dateFrom: newFromDate,
@@ -404,7 +404,7 @@ export default class PointItemModify extends SmartView {
     const toDate = getDate(userDate).diff(getDate(this._data.dateFrom, 'm')); // +1
     let newToDate = toDate > 0 ? userDate : this._data.dateFrom;
     if (newToDate === null) {
-      newToDate = getDate(new Date()).toString();
+      newToDate = getDate(new Date()).$d;
     }
     this.updateData({
       dateTo: newToDate,

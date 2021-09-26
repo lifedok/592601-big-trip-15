@@ -128,8 +128,8 @@ export default class Trip {
           .then((response) => {
             this._pointsModel.updatePoint(updateType, response);
           }).catch(() => {
-          this._pointPresenter.get(updatePoint.id).setViewState(PointPresenterViewState.ABORTING);
-        });
+            this._pointPresenter.get(updatePoint.id).setViewState(PointPresenterViewState.ABORTING);
+          });
         break;
       case UserAction.ADD_POINT:
         this._pointNewPresenter.setSaving();

@@ -32,12 +32,6 @@ export default class Api {
       .then((destinations) => destinations.map(DestinationsModel.adaptToClient));
   }
 
-  updateFetchDestinations() {
-    return this._fetchData({url: 'destinations'})
-      .then(Api.toJSON)
-      .then((destinations) => destinations.map(DestinationsModel.adaptToServer));
-  }
-
   updateFetchPoint(point) {
     return this._fetchData({
       url: `points/${point.id}`,
